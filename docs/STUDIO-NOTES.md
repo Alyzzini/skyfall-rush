@@ -157,3 +157,12 @@ Course centers are now X = 0, 4096, 8192, 12288. The enclosures are 2200 studs w
 An in-Studio preview showed the continuous sky with no neighboring course visible. The project builds successfully with the edited-world model. The earlier QA notes document previous passes; this update does not claim a complete run of all 56 sections or physical-device profiling.
 
 The saved-world exporter retains editable geometry and shared-string references, while omitting derived model mesh/hash caches for compatibility with Rojo 7.7.1. A backup of the pre-environment user-edited place is kept locally under `.backups` and is not uploaded.
+
+
+## October 20, 2026: enclosed 3D environments
+
+Following the user's clarification, the hidden-room/flat-backdrop approach was replaced with a visible enclosing sky shell and physical scenery. The shell curves around the route and its ends, disguising square room edges. Its material is unlit on every face to prevent shaded panel seams. The active enclosure is now visible during Play.
+
+Ascent has floating gardens and cloud volumes, Ember has cliff/ruin silhouettes and a sun, Stormworks has cloud banks and steady lightning/spires, and Solar has two planets, rings, asteroid fields and stars. Scene screenshots are in `docs/images`. The user's tree edits and invisible fall hazard remain preserved. The camera remains unrestricted by environment collision and has a 512-stud zoom limit.
+
+Space and garden scenes were visually inspected in Studio. The Play preview reported the active world visible, camera query/collision disabled for its shell, and zoom 512. No Studio script errors appeared. The edited-world snapshot and Rojo place build were refreshed. A full 56-section run and hardware performance profiling were not part of this visual iteration.

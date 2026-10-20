@@ -21,18 +21,25 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.2.0/SkyfallRush.rbxlx) from the [v0.2.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.2.0), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, new skies, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.0/SkyfallRush.rbxlx) from the [v0.3.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.0), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
 
-### Latest update: separate skies
+### Latest update: enclosed 3D worlds
 
-- Preserves the hand-edited tree islands in the checked-in world snapshot.
-- Makes the user's bottom hazard completely transparent; quick fall returns remain active.
-- Places course centers 4,096 studs apart, with spacious 2,200-stud-wide environment enclosures.
-- Players see a continuous rendered sky, with enclosure geometry hidden locally, so no corners or ceiling interrupt the view. Other courses are hidden per player, including geometry that streams in later.
-- Each course has different client-side lighting, atmosphere and cloud cover: blue daylight, amber sunset, storm haze, and a clear starry night.
-- Allows zoom from 0.5 to 512 studs. Environment surfaces cannot collide with the player or participate in camera ray queries.
+Each course is enclosed by a **visible, rounded sky shell**, with 3D scenery inside. The distant shell uses the same unlit color on every surface to disguise panel joins and avoids square wall/ceiling corners. The active course environment stays visible during gameplay; other course regions are hidden locally.
 
-The sky presentation is intended for **Play mode**. In the editor, the distant gradient enclosure geometry remains visible so it can be inspected and selected.
+| Course | Surrounding 3D world |
+| --- | --- |
+| The Ascent | Floating garden islands, distant trees, cloud banks and a cloud sea below |
+| Ember Ruins | Obsidian cliffs, glowing ember fissures, ruined arches and a setting sun |
+| Stormworks | Storm-cloud volumes, steady lightning shapes, collector rings and spires |
+| Solar Collapse | Ringed planets, cloud bands, asteroid fields and a surrounding star field |
+
+The course centers remain 4,096 studs apart. The enclosure spans about 2,500 studs across and curves around both ends. Scenery sits away from the playable route and the supported 512-stud camera zoom. It cannot collide or obstruct camera ray queries. The user's edited tree islands and invisible bottom hazard remain intact.
+
+![Enclosed space world](docs/images/space-world.jpg)
+
+![Floating cloud-garden world](docs/images/garden-world.jpg)
+
 
 ## Features
 

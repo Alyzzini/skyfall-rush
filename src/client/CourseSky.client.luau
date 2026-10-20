@@ -9,8 +9,8 @@ player.CameraMinZoomDistance=.5
 local themes={
  {Clock=14,Color=Color3.fromRGB(190,225,255),Decay=Color3.fromRGB(113,158,211),Ambient=Color3.fromRGB(107,127,161),Density=.18,Haze=.4,CloudCover=.24},
  {Clock=17.7,Color=Color3.fromRGB(255,211,179),Decay=Color3.fromRGB(149,108,147),Ambient=Color3.fromRGB(139,115,129),Density=.20,Haze=.8,CloudCover=.16},
- {Clock=16,Color=Color3.fromRGB(168,186,220),Decay=Color3.fromRGB(73,86,130),Ambient=Color3.fromRGB(106,117,151),Density=.32,Haze=1.8,CloudCover=.82},
- {Clock=0,Color=Color3.fromRGB(158,140,207),Decay=Color3.fromRGB(64,53,117),Ambient=Color3.fromRGB(108,105,151),Density=.08,Haze=.2,CloudCover=.02},
+ {Clock=16,Color=Color3.fromRGB(168,186,220),Decay=Color3.fromRGB(73,86,130),Ambient=Color3.fromRGB(106,117,151),Density=.16,Haze=.8,CloudCover=.82},
+ {Clock=0,Color=Color3.fromRGB(158,140,207),Decay=Color3.fromRGB(64,53,117),Ambient=Color3.fromRGB(108,105,151),Density=.02,Haze=.05,CloudCover=.02},
 }
 local sky=Lighting:FindFirstChildOfClass("Sky") or Instance.new("Sky")
 sky.Name="CourseSkybox";sky.StarCount=5000;sky.CelestialBodiesShown=true;sky.Parent=Lighting
@@ -25,7 +25,7 @@ local function visibility(obj)
   cursor=cursor.Parent
  end
  if not map then return end
- local hidden=room or map.Name~="Level"..(player:GetAttribute("CurrentLevel") or 1)
+ local hidden=map.Name~="Level"..(player:GetAttribute("CurrentLevel") or 1)
  if obj:IsA("BasePart") then
   if hidden then
    if original[obj]==nil then original[obj]=obj.LocalTransparencyModifier end
@@ -53,3 +53,4 @@ game.ReplicatedStorage:WaitForChild("SkyfallAction").OnClientEvent:Connect(funct
  if kind=="Reset" then task.defer(updateVisibility) end
 end)
 update()
+
