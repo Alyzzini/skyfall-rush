@@ -250,3 +250,7 @@ Added six trails and six auras (18 total cosmetics), configurable gradient/twin/
 ## v0.8.1 — top-bar HUD toggle and R shortcut
 Added separate HUDControls module. Its persistent HIDE UI / SHOW UI capsule follows GuiService.TopbarInset beside Roblox controls, with a fallback below the bar when space is limited. It hides only SkyfallHUD, leaving its restore button and Roblox controls available. Panels close before hiding so race controls are restored. R uses the same server Start action as RESET, restarting the current course with an armed timer; processed inputs and focused text boxes are ignored, with a one-second debounce. The existing user play session was stopped for editing; no new Play session was started. Source packaging built. API reference: https://create.roblox.com/docs/reference/engine/classes/GuiService#TopbarInset
 
+
+## v0.8.2 — mobile shift lock
+Added a separate MobileShiftLock client module for touch devices. A lock capsule above the jump area toggles shoulder camera offset, a center aim dot and avatar yaw following the camera. Roblox touch camera gestures and zoom remain available. Menu/panel/sitting/death states suspend the effect; release restores the previous Humanoid.CameraOffset and AutoRotate. Character replacement is supported and the control persists when the game HUD is hidden. Desktop behavior is unchanged. Saved full place and source build succeeded. No Play session or touch-device test was started.
+

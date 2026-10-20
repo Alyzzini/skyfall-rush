@@ -108,6 +108,9 @@
         },
         "HUDControls": {
           "$path": "src/client/HUDControls.luau"
+        },
+        "MobileShiftLock": {
+          "$path": "src/client/MobileShiftLock.luau"
         }
       },
       "$properties": {
