@@ -12,14 +12,14 @@ local profileStore=live and DataStoreService:GetDataStore(Config.ProfileStore) o
 local catalog={}; for _,item in ipairs(Config.Catalog) do catalog[item.Id]=item end
 local boards={}; local stores={}; local memory={}; local nameCache={}
 local function sanitize(old)
- local data={Coins=Config.StartingCoins,Unlocked=1,Wins=0,Owned={},EquippedTrail="None",EquippedAura="None",Best={},Cleared={}}
+ local data={Coins=Config.StartingCoins,Unlocked=1,Wins=0,Owned={},EquippedTrail="None",EquippedAura="None",Best={},Cleared={},RecordVersion=Config.Version}
  if typeof(old)=="table" then
   data.Coins=math.clamp(math.floor(tonumber(old.Coins) or Config.StartingCoins),0,2147483647)
   data.Unlocked=math.clamp(math.floor(tonumber(old.Unlocked) or 1),1,4)
   data.Wins=math.clamp(math.floor(tonumber(old.Wins) or 0),0,2147483647)
   if typeof(old.Owned)=="table" then for id in pairs(old.Owned) do if catalog[id] then data.Owned[id]=true end end end
   for _,kind in {"Trail","Aura"} do local id=old["Equipped"..kind]; if catalog[id] and catalog[id].Kind==kind and data.Owned[id] then data["Equipped"..kind]=id end end
-  if typeof(old.Best)=="table" then for key,v in pairs(old.Best) do if typeof(v)=="number" and v>0 and v<86400000 then data.Best[tostring(key)]=math.floor(v) end end end
+  if old.RecordVersion==Config.Version and typeof(old.Best)=="table" then for key,v in pairs(old.Best) do if typeof(v)=="number" and v>0 and v<86400000 then data.Best[tostring(key)]=math.floor(v) end end end
   if typeof(old.Cleared)=="table" then for i=1,4 do data.Cleared[tostring(i)]=old.Cleared[tostring(i)]==true end end
  end
  return data

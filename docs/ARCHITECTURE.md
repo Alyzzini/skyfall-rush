@@ -67,3 +67,8 @@ This replaces the v0.2.0 approach of hiding the active enclosure. `CourseEnviron
 The shell contains real 3D themed scenery: cloud volumes and floating islands, cliff/ruin clusters, lightning/spires, or planets/rings/asteroids/stars. Those models provide depth as the camera moves. The existing hand-edited course decorations are not regenerated.
 
 `CourseSky` hides only inactive courses. It keeps the current enclosure and scenery visible and applies matching local lighting. The saved-world source contains the new environments, and the installer recreates only its own `CourseSky` model at startup. Physical-device performance of the expanded scenery still needs profiling.
+
+
+## Phase rest balance patch
+
+`PhaseRestPlatforms.Apply` groups phase pads by section, computes the midpoint of the middle pair, and installs an anchored solid rest platform. It is idempotent and runs before the race runtime enumerates hazards and phase pads. The rest platform has no phase/crumble/movement attributes and is not a checkpoint. `RecordVersion` now scopes personal bests to `Config.Version`; global record stores use the new v4 prefix while the wallet/profile namespace is retained.

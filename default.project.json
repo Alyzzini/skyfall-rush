@@ -56,6 +56,9 @@
         },
         "CourseEnvironments": {
           "$path": "src/build/CourseEnvironments.luau"
+        },
+        "PhaseRestPlatforms": {
+          "$path": "src/build/PhaseRestPlatforms.luau"
         }
       }
     },

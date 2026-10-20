@@ -166,3 +166,10 @@ Following the user's clarification, the hidden-room/flat-backdrop approach was r
 Ascent has floating gardens and cloud volumes, Ember has cliff/ruin silhouettes and a sun, Stormworks has cloud banks and steady lightning/spires, and Solar has two planets, rings, asteroid fields and stars. Scene screenshots are in `docs/images`. The user's tree edits and invisible fall hazard remain preserved. The camera remains unrestricted by environment collision and has a 512-stud zoom limit.
 
 Space and garden scenes were visually inspected in Studio. The Play preview reported the active world visible, camera query/collision disabled for its shell, and zoom 512. No Studio script errors appeared. The edited-world snapshot and Rojo place build were refreshed. A full 56-section run and hardware performance profiling were not part of this visual iteration.
+
+
+## Permanent phase rests (v0.3.1)
+
+Added six permanent, centered resting platforms: Ascent section 4, Ember section 7, Stormworks sections 1 and 10, and Solar sections 2 and 11. Each is centered between the two middle phase pads, measures 14 by 16 studs, and sits slightly above those pads to avoid surface flicker. No PhasePlatform, Crumble or Moving flag is attached. The route gates, checkpoints and rewards are unchanged.
+
+The saved world and fallback startup installer both include this change. Course version/record namespace advances to Rush_v4 because the ranked route is easier. Coins, owned cosmetics, unlocks, wins and clear progress remain in the same profile store; personal bests are scoped to the current record version. Old global records are retained in their old namespace.
