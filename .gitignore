@@ -16,3 +16,7 @@ Thumbs.db
 .tools/
 /build/
 .vscode/*.log
+
+# Edited world snapshot is part of the game source.
+!src/world/*.rbxm
+.backups/

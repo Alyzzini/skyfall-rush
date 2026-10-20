@@ -21,7 +21,18 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.1.0/SkyfallRush.rbxlx) from the [v0.1.0 portfolio release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.1.0), open it in Roblox Studio, and press **Play → Start Speedrun**. The file includes the source and builders; all four courses generate when Play starts. You do not need Rojo to open this download. This release has been built successfully; fresh-file runtime startup still needs a separate end-to-end check.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.2.0/SkyfallRush.rbxlx) from the [v0.2.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.2.0), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, new skies, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Latest update: separate skies
+
+- Preserves the hand-edited tree islands in the checked-in world snapshot.
+- Makes the user's bottom hazard completely transparent; quick fall returns remain active.
+- Places course centers 4,096 studs apart, with spacious 2,200-stud-wide environment enclosures.
+- Players see a continuous rendered sky, with enclosure geometry hidden locally, so no corners or ceiling interrupt the view. Other courses are hidden per player, including geometry that streams in later.
+- Each course has different client-side lighting, atmosphere and cloud cover: blue daylight, amber sunset, storm haze, and a clear starry night.
+- Allows zoom from 0.5 to 512 studs. Environment surfaces cannot collide with the player or participate in camera ray queries.
+
+The sky presentation is intended for **Play mode**. In the editor, the distant gradient enclosure geometry remains visible so it can be inspected and selected.
 
 ## Features
 
@@ -51,7 +62,7 @@ On Windows, run the **Rojo: setup local CLI (Windows)** VS Code task once, follo
 rojo build default.project.json --output SkyfallRush.rbxlx
 ```
 
-Open `SkyfallRush.rbxlx` in Roblox Studio and press **Play**, then **Start Speedrun**. A fresh build generates all four courses before initializing the HUD and race runtime. This initial construction happens in Play mode, so it is regenerated on the next Play session.
+Open `SkyfallRush.rbxlx` in Roblox Studio and press **Play**, then **Start Speedrun**. The build loads the checked-in edited world snapshot. Startup configures the course environments before the HUD and race runtime begin. Procedural generation is retained only as a fallback if the world is absent.
 
 ### Live editing
 
@@ -68,7 +79,7 @@ require(game.ServerStorage.SkyfallBuildTools.BuildCourse)
 require(game.ServerStorage.SkyfallBuildTools.ArtDirection)
 ```
 
-The course builder moves an existing `SkyfallSprint` world into ServerStorage as a backup before rebuilding. ModuleScripts cache their return values within a Studio session; reopen the place for a fresh builder invocation. Ordinary source sync does not rebuild existing geometry automatically.
+**These builders recreate the baseline geometry and art. They do not reproduce later manual tree edits.** The current hand-edited world is stored separately in `src/world/SkyfallSprint.rbxm` and is the default source for builds. The course builder backs up an existing world into ServerStorage before rebuilding. ModuleScripts cache their results within a Studio session.
 
 ## Project layout
 
@@ -77,7 +88,8 @@ src/
   client/    HUD, menus, input, camera, local animation and ferry carry
   server/    Race state, route validation, purchases, profiles and records
   shared/    Course, movement, catalog and persistence configuration
-  build/     Procedural course and scenery installers
+  build/     Baseline installers and course environment layout
+  world/     Saved, hand-edited world snapshot
 docs/
   images/    In-game screenshots
   ARCHITECTURE.md
@@ -88,6 +100,16 @@ SkyfallRush.code-workspace
 ```
 
 See [architecture and tradeoffs](docs/ARCHITECTURE.md), [portfolio/résumé notes](docs/PORTFOLIO.md), and [detailed Studio setup and QA notes](docs/STUDIO-NOTES.md).
+
+## Keep Studio edits in source control
+
+Disconnect live Rojo sync before manually editing geometry. Save `SkyfallRush.rbxlx` in this project folder, then export the current world with Python 3:
+
+```sh
+python scripts/Export-World.py
+```
+
+This updates `src/world/SkyfallSprint.rbxm`, which future Rojo builds and GitHub source downloads use. The exporter preserves editable instances and shared-string data, omitting two derived model render-cache properties that Roblox regenerates. Review and commit the updated model before reconnecting Rojo. Raw place builds, local tools and `.backups` remain ignored by Git; the current Studio file is distributed separately through Releases.
 
 ## Current status and limitations
 

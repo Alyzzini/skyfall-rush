@@ -5,7 +5,7 @@ local HttpService=game:GetService("HttpService")
 local UIS=game:GetService("UserInputService")
 local p=Players.LocalPlayer
 local Config=require(game.ReplicatedStorage:WaitForChild("SkyfallConfig"))
-game.ReplicatedStorage:WaitForChild("SkyfallReady") -- The server finishes procedural construction before the HUD reads the map.
+game.ReplicatedStorage:WaitForChild("SkyfallReady")
 local maps=workspace:WaitForChild("SkyfallSprint"):WaitForChild("Levels")
 local action=game.ReplicatedStorage:WaitForChild("SkyfallAction")
 local query=game.ReplicatedStorage:WaitForChild("SkyfallQuery")
@@ -325,6 +325,9 @@ end
 for _,attr in {"State","Coins","CurrentLevel","UnlockedLevel","Orbs","Stage","Section","Progress","RankStatus","RankEligible","UsedSkip","BestTime","FinishTime","OwnedItems","EquippedTrail","EquippedAura","DataStatus"} do p:GetAttributeChangedSignal(attr):Connect(refresh) end
 p:GetAttributeChangedSignal("MessageId"):Connect(function() showToast(p:GetAttribute("Message") or "") end)
 local initial={}; local moving={}
+maps.DescendantAdded:Connect(function(obj)
+ if obj:IsA("BasePart") and obj.Parent and obj.Parent.Name=="Orbs" then initial[obj]=obj.Position end
+end)
 for _,map in maps:GetChildren() do
  for _,orb in map.Orbs:GetChildren() do initial[orb]=orb.Position end
  for _,platform in map.Platforms:GetChildren() do if platform:GetAttribute("Moving") then moving[platform]=platform.Position end end
@@ -391,21 +394,26 @@ p:GetAttributeChangedSignal("Stage"):Connect(function()
  showToast("CHECKPOINT "..stage.."  /  "..timeString(t)..(previous and string.format("  /  %+.2fs vs session best",t-previous) or "  /  SPLIT SAVED"))
 end)
 
-local visualRotors={}
-for level,map in ipairs(maps:GetChildren()) do
- for _,model in map.Decor:GetDescendants() do
-  if model:IsA("Model") and model:GetAttribute("SpinVisual") then
-   table.insert(visualRotors,{model=model,base=model:GetPivot(),level=map.Name,angle=0})
-  end
- end
+local visualRotors={}; local registeredRotors=setmetatable({},{__mode="k"})
+local function registerRotor(model)
+ if not model:IsA("Model") or not model:GetAttribute("SpinVisual") or registeredRotors[model] then return end
+ local map=model
+ while map and map.Parent~=maps do map=map.Parent end
+ if not map then return end
+ registeredRotors[model]=true
+ table.insert(visualRotors,{model=model,base=model:GetPivot(),level=map.Name,angle=0})
 end
+for _,model in maps:GetDescendants() do registerRotor(model) end
+maps.DescendantAdded:Connect(function(obj)
+ if obj:IsA("Model") then task.defer(function() if obj.Parent then registerRotor(obj) end end) end
+end)
 local rotorTick=0
 RunService.Heartbeat:Connect(function(dt)
  rotorTick+=dt; if rotorTick<1/30 then return end
  local step=rotorTick; rotorTick=0
  local current="Level"..(p:GetAttribute("CurrentLevel") or 1)
  for _,rotor in ipairs(visualRotors) do
-  if rotor.level==current then rotor.angle+=step*.25; rotor.model:PivotTo(rotor.base*CFrame.Angles(0,0,rotor.angle)) end
+  if rotor.model.Parent and rotor.level==current then rotor.angle+=step*.25; rotor.model:PivotTo(rotor.base*CFrame.Angles(0,0,rotor.angle)) end
  end
 end)
 
@@ -425,3 +433,5 @@ RunService.RenderStepped:Connect(function()
   local h=p.Character and p.Character:FindFirstChildOfClass("Humanoid"); if h then camera.CameraSubject=h end
  end
 end)
+
+

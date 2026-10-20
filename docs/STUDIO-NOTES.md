@@ -146,3 +146,14 @@ This was not a full human playthrough of all 56 sections. Tune Expert difficulty
 - [Roblox's global leaderboard tutorial](https://create.roblox.com/docs/tutorials/use-case-tutorials/data-storage/create-leaderboard) informed server-owned ordered records and ascending time rankings.
 - [Roblox data-store documentation](https://create.roblox.com/docs/cloud-services/data-stores) supports the publishing/API setup requirements.
 - [Roblox developer-product guidance](https://create.roblox.com/docs/production/monetization/developer-products) is the reference for the future receipt integration.
+
+
+## October 20, 2026: user edits and course skies
+
+The user's hand-edited trees are preserved in `src/world/SkyfallSprint.rbxm` and the saved Studio place. `Hurdle_Bottem` is retained and made fully transparent. Other courses get matching invisible fall catchers. Server quick returns below the course remain active.
+
+Course centers are now X = 0, 4096, 8192, 12288. The enclosures are 2200 studs wide and 1600 studs high, with generous front/back margins. They are visual-only and excluded from collisions, touches and queries. The Play-mode sky presenter hides enclosing geometry and other courses locally, applying daylight, sunset, storm and night settings per player. Normal editor camera controls are retained in the saved place.
+
+An in-Studio preview showed the continuous sky with no neighboring course visible. The project builds successfully with the edited-world model. The earlier QA notes document previous passes; this update does not claim a complete run of all 56 sections or physical-device profiling.
+
+The saved-world exporter retains editable geometry and shared-string references, while omitting derived model mesh/hash caches for compatibility with Rojo 7.7.1. A backup of the pre-environment user-edited place is kept locally under `.backups` and is not uploaded.

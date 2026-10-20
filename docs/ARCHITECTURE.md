@@ -49,3 +49,13 @@ Basic movement checks cannot guarantee an exploit-free leaderboard. Server-verif
 The world uses procedural anchored parts for reproducibility. More detailed scenery should follow device profiling, streaming checks and draw-call measurements. Current client startup waits for server construction; streaming behavior across course transitions still needs broader physical-device coverage.
 
 The skip prototype has a runtime grant hook for later receipt integration. Never replace it with a client purchase-success message; real developer products require idempotent server receipt handling.
+
+## Sky rooms and edited-world source (v0.2.0)
+
+The default project imports `src/world/SkyfallSprint.rbxm`, preserving manual island/tree edits. `Export-World.py` extracts that world from the saved Studio place; the baseline builders are fallback tooling rather than the source of the edited scene.
+
+`CourseEnvironments.Apply` translates each whole course to its configured region without rebuilding obstacles, creates spacious persistent backdrop models, and keeps the fall catchers invisible. Relative obstacle spacing and the Z-based route gates are unchanged. The server retains control of fall returns and race eligibility.
+
+`CourseSky` applies lighting and cloud settings locally for each player's current course. It hides other course instances and the enclosing backdrop from the local camera, preserving an unbroken real sky at all supported zoom distances. Visibility is reapplied to streamed instances and reset events. This is presentation only; server geometry and race validation remain authoritative.
+
+Coin visual registration and rotor registration respond to incoming streamed instances. Decorative rotor models use atomic streaming. The zoom limit is 512 studs; the environment half-width is 1,100 studs. Broad physical-device streaming and performance coverage remain follow-up work.

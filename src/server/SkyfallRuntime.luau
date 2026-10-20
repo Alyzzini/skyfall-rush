@@ -254,3 +254,4 @@ task.spawn(function() while true do task.wait(45); for p in pairs(Services.Profi
 game:BindToClose(Services.Close)
 print("Skyfall Rush ready: 56 obstacle sections, ranked timers, skips, coins, shop and global records.")
 return Runtime
+

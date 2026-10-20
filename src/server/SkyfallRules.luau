@@ -11,3 +11,4 @@ function Rules.FormatTime(seconds)
     return string.format("%02d:%02d.%03d",math.floor(ms/60000),math.floor(ms/1000)%60,ms%1000)
 end
 return Rules
+

@@ -9,6 +9,9 @@
         "Gravity": 196.2,
         "FallenPartsDestroyHeight": -100,
         "StreamingEnabled": true
+      },
+      "SkyfallSprint": {
+        "$path": "src/world/SkyfallSprint.rbxm"
       }
     },
     "ReplicatedStorage": {
@@ -50,6 +53,9 @@
         },
         "ArtDirection": {
           "$path": "src/build/ArtDirection.luau"
+        },
+        "CourseEnvironments": {
+          "$path": "src/build/CourseEnvironments.luau"
         }
       }
     },
@@ -60,7 +66,14 @@
         "$ignoreUnknownInstances": true,
         "SkyfallClient": {
           "$path": "src/client/SkyfallClient.client.luau"
+        },
+        "CourseSky": {
+          "$path": "src/client/CourseSky.client.luau"
         }
+      },
+      "$properties": {
+        "CameraMaxZoomDistance": 512,
+        "CameraMinZoomDistance": 0.5
       }
     },
     "StarterGui": {
