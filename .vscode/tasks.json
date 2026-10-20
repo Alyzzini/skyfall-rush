@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Rojo: serve",
+      "type": "process",
+      "command": "rojo",
+      "windows": { "command": "${workspaceFolder}\\.tools\\rojo.exe" },
+      "args": [
+        "serve",
+        "default.project.json"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Rojo: build place",
+      "type": "process",
+      "command": "rojo",
+      "windows": { "command": "${workspaceFolder}\\.tools\\rojo.exe" },
+      "args": [
+        "build",
+        "default.project.json",
+        "--output",
+        "SkyfallRush.rbxlx"
+      ],
+      "problemMatcher": []
+    },
+    {
+      "label": "Rojo: setup local CLI (Windows)",
+      "type": "process",
+      "command": "powershell.exe",
+      "args": ["-NoProfile", "-File", "${workspaceFolder}\\scripts\\Setup-Rojo.ps1"],
+      "problemMatcher": []
+    }
+  ]
+}

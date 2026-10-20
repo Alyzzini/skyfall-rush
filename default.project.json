@@ -1,0 +1,112 @@
+{
+  "name": "Skyfall Rush",
+  "tree": {
+    "$className": "DataModel",
+    "Workspace": {
+      "$className": "Workspace",
+      "$ignoreUnknownInstances": true,
+      "$properties": {
+        "Gravity": 196.2,
+        "FallenPartsDestroyHeight": -100,
+        "StreamingEnabled": true
+      }
+    },
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "$ignoreUnknownInstances": true,
+      "SkyfallConfig": {
+        "$path": "src/shared/SkyfallConfig.luau"
+      },
+      "SkyfallAction": {
+        "$className": "RemoteEvent"
+      },
+      "SkyfallQuery": {
+        "$className": "RemoteFunction"
+      }
+    },
+    "ServerScriptService": {
+      "$className": "ServerScriptService",
+      "$ignoreUnknownInstances": true,
+      "SkyfallServer": {
+        "$path": "src/server/SkyfallServer.server.luau"
+      },
+      "SkyfallRuntime": {
+        "$path": "src/server/SkyfallRuntime.luau"
+      },
+      "SkyfallServices": {
+        "$path": "src/server/SkyfallServices.luau"
+      },
+      "SkyfallRules": {
+        "$path": "src/server/SkyfallRules.luau"
+      }
+    },
+    "ServerStorage": {
+      "$className": "ServerStorage",
+      "$ignoreUnknownInstances": true,
+      "SkyfallBuildTools": {
+        "$className": "Folder",
+        "BuildCourse": {
+          "$path": "src/build/BuildCourse.luau"
+        },
+        "ArtDirection": {
+          "$path": "src/build/ArtDirection.luau"
+        }
+      }
+    },
+    "StarterPlayer": {
+      "$className": "StarterPlayer",
+      "StarterPlayerScripts": {
+        "$className": "StarterPlayerScripts",
+        "$ignoreUnknownInstances": true,
+        "SkyfallClient": {
+          "$path": "src/client/SkyfallClient.client.luau"
+        }
+      }
+    },
+    "StarterGui": {
+      "$className": "StarterGui",
+      "$properties": {
+        "ScreenOrientation": "Sensor"
+      }
+    },
+    "Lighting": {
+      "$className": "Lighting",
+      "$properties": {
+        "ClockTime": 14,
+        "Brightness": 2.5,
+        "Ambient": [
+          0.4196078431372549,
+          0.4980392156862745,
+          0.6313725490196078
+        ],
+        "OutdoorAmbient": [
+          0.5647058823529412,
+          0.6313725490196078,
+          0.7372549019607844
+        ]
+      },
+      "SkyfallAtmosphere": {
+        "$className": "Atmosphere",
+        "$properties": {
+          "Density": 0.2,
+          "Haze": 0.6
+        }
+      },
+      "SkyfallBloom": {
+        "$className": "BloomEffect",
+        "$properties": {
+          "Intensity": 0.16,
+          "Threshold": 1.8,
+          "Size": 16
+        }
+      },
+      "SkyfallColor": {
+        "$className": "ColorCorrectionEffect",
+        "$properties": {
+          "Saturation": 0.12,
+          "Contrast": 0.08
+        }
+      }
+    }
+  }
+}
