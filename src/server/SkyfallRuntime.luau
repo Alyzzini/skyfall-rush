@@ -31,14 +31,16 @@ local function teleport(p,position)
  if r then r.authorizedUntil=now()+.6; r.lastPosition=position; r.lastObserved=now(); r.lastReturn=now() end
  if root then root.CFrame=CFrame.new(position); root.AssemblyLinearVelocity=Vector3.zero; root.AssemblyAngularVelocity=Vector3.zero end
 end
-function Runtime.Start(p)
+function Runtime.Start(p,crossedGate)
  local r=runs[p]; if not r or not Services.Profiles[p] then return false end
  if r.level==1 then r.campaignBaseTime=0; r.campaignBaseEligible=true end
- r.usedSkip=false; r.eligible=true; r.invalidReason=nil; r.startedAt=now(); r.penalty=0; r.elapsed=0; r.cpStage=0; r.completedSections=0; r.totalSections=Config.Levels[r.level].Sections; r.lastSplit=now(); r.collected={}; r.orbs=0; r.lastSpring=0
+ r.usedSkip=false; r.eligible=true; r.invalidReason=nil; r.startedAt=crossedGate and now() or nil; r.penalty=0; r.elapsed=0; r.cpStage=0; r.completedSections=0; r.totalSections=Config.Levels[r.level].Sections; r.lastSplit=now(); r.collected={}; r.orbs=0; r.lastSpring=0
  r.portalDebounce=0
- p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("FinishTime",0); p:SetAttribute("RunStartedAt",r.startedAt); p:SetAttribute("PenaltySeconds",0)
- syncRank(p,r); setState(p,r,"Racing"); teleport(p,checkpointPosition(r)); action:FireClient(p,"Reset",r.level)
- tell(p,"GO! Coins are optional. Follow every route marker for a ranked run.")
+ p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("FinishTime",0); p:SetAttribute("RunStartedAt",r.startedAt or 0); p:SetAttribute("PenaltySeconds",0)
+ syncRank(p,r); setState(p,r,crossedGate and "Racing" or "Armed")
+ if not crossedGate then teleport(p,checkpointPosition(r));r.gatePrevious=nil end
+ action:FireClient(p,"Reset",r.level)
+ tell(p,crossedGate and "GO! Timer started at the blue gate." or "Walk through the blue gate to start. Your timer is waiting.")
  return true
 end
 function Runtime.ChooseLevel(p,index,fromNext,autoStart)
@@ -47,6 +49,13 @@ function Runtime.ChooseLevel(p,index,fromNext,autoStart)
  if fromNext then r.campaignBaseTime=r.campaignTotal or 0; r.campaignBaseEligible=r.campaignFinishedEligible==true
  else r.campaignBaseTime=0; r.campaignBaseEligible=index==1 end
  r.level=index; r.cpStage=0; r.completedSections=0; r.orbs=0; r.collected={}; r.usedSkip=false; r.eligible=true; r.totalSections=Config.Levels[index].Sections
+ r.gatePrevious=nil;r.startedAt=nil
+ -- Keep only this player's selected sky environment persistent. Never hide platforms.
+ local selectedRoom=mapOf(r):FindFirstChild("CourseSky")
+ if selectedRoom~=r.room then
+  if r.room then r.room:RemovePersistentPlayer(p) end
+  r.room=selectedRoom;if selectedRoom then selectedRoom:AddPersistentPlayer(p) end
+ end
  local spec=Config.Levels[index]
  p:SetAttribute("CurrentLevel",index); p:SetAttribute("LevelTitle",spec.Title); p:SetAttribute("LevelDifficulty",spec.Difficulty); p:SetAttribute("LevelSummary",spec.Summary); p:SetAttribute("LevelSections",spec.Sections); p:SetAttribute("LevelCheckpointCount",spec.Sections/4-1); p:SetAttribute("LevelTotalOrbs",spec.Sections*3)
  p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("RunStartedAt",0); p:SetAttribute("FinishTime",0); p:SetAttribute("PenaltySeconds",0); p:SetAttribute("BestTime",(profile.Best["Level"..index] or 0)/1000)
@@ -144,7 +153,7 @@ local function init(p)
  Runtime.ChooseLevel(p,1,false,false); Services.ApplyCosmetics(p)
 end
 Players.PlayerAdded:Connect(init)
-Players.PlayerRemoving:Connect(function(p) Services.Save(p,true); runs[p]=nil end)
+Players.PlayerRemoving:Connect(function(p) local r=runs[p];if r and r.room then r.room:RemovePersistentPlayer(p) end;Services.Save(p,true); runs[p]=nil end)
 for _,p in Players:GetPlayers() do task.spawn(init,p) end
 local cooldown={Start=1,Next=.6,SelectLevel=.4,Campaign=.8,Skip=1,BuyItem=.35,EquipItem=.35,Unequip=.35}
 action.OnServerEvent:Connect(function(p,request,arg)
@@ -171,43 +180,60 @@ Players.PlayerRemoving:Connect(function(p) lastQuery[p]=nil end)
 local grant=Instance.new("BindableFunction"); grant.Name="SkyfallGrantSkip"; grant.Parent=script.Parent; grant.OnInvoke=Runtime.Skip
 for level=1,4 do
  local map=maps["Level"..level]
- map.StartLine.Touched:Connect(function(hit) local p=touchedPlayer(hit); local r=p and runs[p]; if r and r.level==level and r.state=="Ready" then Runtime.Start(p) end end)
  for _,h in map.Hazards:GetChildren() do table.insert(hazards,{Part=h,Base=h.CFrame,Kind=h:GetAttribute("Kind"),Level=level}) end
  for _,p in map.Platforms:GetChildren() do
-  if p:GetAttribute("PhasePlatform") then table.insert(phasePads,p) end
-  if p:GetAttribute("Moving") then table.insert(ferries,{Part=p,Base=p.CFrame}) end
+  if p:GetAttribute("PhasePlatform") then p:SetAttribute("CourseLevel",level);table.insert(phasePads,p) end
+  if p:GetAttribute("Moving") then table.insert(ferries,{Part=p,Base=p.CFrame,Level=level}) end
   if p:GetAttribute("Crumble") then
    p:SetAttribute("CrumbleState","Solid"); p:SetAttribute("OriginalColor",p.Color)
    p.Touched:Connect(function(hit) local player=touchedPlayer(hit); if player then armCrumble(player,p,level) end end)
   end
   if p:GetAttribute("Spring") then p.Touched:Connect(function(hit) local player=touchedPlayer(hit); if player then spring(player,p,level) end end) end
  end
- for _,orb in map.Orbs:GetChildren() do if orb:GetAttribute("FollowPlatform") then table.insert(following,{Orb=orb,Platform=map.Platforms[orb:GetAttribute("FollowPlatform")],Offset=orb:GetAttribute("FollowOffset")}) end end
+ for _,orb in map.Orbs:GetChildren() do if orb:GetAttribute("FollowPlatform") then table.insert(following,{Orb=orb,Platform=map.Platforms[orb:GetAttribute("FollowPlatform")],Offset=orb:GetAttribute("FollowOffset"),Level=level}) end end
  for _,obj in map.Decor:GetDescendants() do
   if obj:IsA("ProximityPrompt") then obj.Triggered:Connect(function(p) action:FireClient(p,obj.Parent.Name=="ShopKiosk" and "OpenShop" or "OpenBoard",level) end) end
  end
 end
-local accumulator=0
+local accumulator=0;local motionAccumulator=0
 RunService.Heartbeat:Connect(function(dt)
- local t=now(); accumulator+=dt
+ local t=now(); accumulator+=dt;motionAccumulator+=dt
+ local active={};for p,r in pairs(runs) do if p.Parent then active[r.level]=true end end
+ if motionAccumulator>=1/30 then
+ motionAccumulator=0
  for _,entry in ipairs(hazards) do
+  if not active[entry.Level] then continue end
   local h=entry.Part; local phase=t*(h:GetAttribute("Speed") or 1)+(h:GetAttribute("Phase") or 0)
   if entry.Kind=="Spin" then h.CFrame=entry.Base*CFrame.Angles(0,phase,0)
   elseif entry.Kind=="Slide" then h.CFrame=entry.Base+Vector3.new(math.sin(phase)*(h:GetAttribute("Amplitude") or 7),0,0)
   elseif entry.Kind=="Lift" then h.CFrame=entry.Base+Vector3.new(0,(math.sin(phase)+1)*.5*(h:GetAttribute("Amplitude") or 8),0) end
  end
- for _,entry in ipairs(ferries) do local p=entry.Part; p.CFrame=entry.Base+Vector3.new(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude"),0,0) end
- for _,entry in ipairs(following) do entry.Orb.Position=entry.Platform.Position+entry.Offset end
+ for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; p.CFrame=entry.Base+Vector3.new(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude"),0,0) end end
+ for _,entry in ipairs(following) do if active[entry.Level] then entry.Orb.Position=entry.Platform.Position+entry.Offset end end
+ end
  if accumulator<.1 then return end; accumulator=0
  for _,pad in ipairs(phasePads) do
+  if not active[pad:GetAttribute("CourseLevel")] then continue end
   local phase=(t+pad:GetAttribute("Phase"))%pad:GetAttribute("Period"); local remaining=pad:GetAttribute("SolidTime")-phase; local solid=remaining>0
-  pad.CanCollide=solid; pad.Transparency=solid and .1 or .78; pad.Color=not solid and Color3.fromRGB(223,95,235) or remaining<.45 and Color3.fromRGB(255,217,90) or Color3.fromRGB(65,239,215)
-  pad:SetAttribute("PhaseState",not solid and "GHOST" or remaining<.45 and "WARNING" or "SOLID")
+  local phaseState=not solid and "GHOST" or remaining<.45 and "WARNING" or "SOLID"
+  if pad:GetAttribute("PhaseState")~=phaseState then
+   pad.CanCollide=solid;pad.Transparency=solid and .1 or .78;pad.Color=not solid and Color3.fromRGB(223,95,235) or remaining<.45 and Color3.fromRGB(255,217,90) or Color3.fromRGB(65,239,215)
+   pad:SetAttribute("PhaseState",phaseState)
+  end
  end
  for p,r in pairs(runs) do
   local root=rootOf(p)
   if root then
    if root.Position.Y<0 then fallReturn(p,"Fell from the course") end
+   -- Server-observed forward crossing, swept between samples, with per-player cooldown.
+   local gate=mapOf(r):FindFirstChild("StartGate")
+   if gate and (r.state=="Armed" or r.state=="Racing") then
+    local q=gate.CFrame:PointToObjectSpace(root.Position);local previous=r.gatePrevious;r.gatePrevious=q
+    if previous and previous.Z>0 and q.Z<=0 and (q-previous).Magnitude<14 and t-(r.lastGate or 0)>1.5 then
+     local fraction=previous.Z/(previous.Z-q.Z);local crossing=previous:Lerp(q,fraction)
+     if math.abs(crossing.X)<gate.Size.X/2 and math.abs(crossing.Y)<gate.Size.Y/2 then r.lastGate=t;Runtime.Start(p,true) end
+    end
+   end
    if r.state=="Racing" then
     local map=mapOf(r); local h=p.Character:FindFirstChildOfClass("Humanoid")
     if h and (r.boostUntil or 0)<t and h.WalkSpeed~=Config.WalkSpeed then h.WalkSpeed=Config.WalkSpeed end

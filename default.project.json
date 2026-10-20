@@ -59,6 +59,9 @@
         },
         "PhaseRestPlatforms": {
           "$path": "src/build/PhaseRestPlatforms.luau"
+        },
+        "PolishWorld": {
+          "$path": "src/build/PolishWorld.luau"
         }
       }
     },
@@ -88,39 +91,46 @@
     "Lighting": {
       "$className": "Lighting",
       "$properties": {
-        "ClockTime": 14,
-        "Brightness": 2.5,
+        "ClockTime": 13.3,
+        "Brightness": 3,
         "Ambient": [
-          0.4196078431372549,
-          0.4980392156862745,
-          0.6313725490196078
+          0.4117647058823529,
+          0.5607843137254902,
+          0.6705882352941176
         ],
         "OutdoorAmbient": [
-          0.5647058823529412,
-          0.6313725490196078,
-          0.7372549019607844
-        ]
+          0.5490196078431373,
+          0.6549019607843137,
+          0.7254901960784313
+        ],
+        "ExposureCompensation": 0.12
       },
       "SkyfallAtmosphere": {
         "$className": "Atmosphere",
         "$properties": {
-          "Density": 0.2,
-          "Haze": 0.6
+          "Density": 0.1,
+          "Haze": 0.15
         }
       },
       "SkyfallBloom": {
         "$className": "BloomEffect",
         "$properties": {
-          "Intensity": 0.16,
-          "Threshold": 1.8,
-          "Size": 16
+          "Intensity": 0.08,
+          "Threshold": 1.7,
+          "Size": 12
         }
       },
       "SkyfallColor": {
         "$className": "ColorCorrectionEffect",
         "$properties": {
-          "Saturation": 0.12,
-          "Contrast": 0.08
+          "Saturation": 0.22,
+          "Contrast": 0.06,
+          "Brightness": 0.015,
+          "TintColor": [
+            1,
+            0.9764705882352941,
+            0.9372549019607843
+          ]
         }
       }
     }

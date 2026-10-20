@@ -1,6 +1,6 @@
 -- ReplicatedStorage > SkyfallConfig. Change the course version after changing ranked routes.
 return {
-    Version = "Rush_v5",
+    Version = "Rush_v6",
     SectionLength = 96,
     CheckpointEvery = 4,
     WalkSpeed = 22,
@@ -11,7 +11,7 @@ return {
     PrototypeSkipEnabled = true, -- Free prototype. No purchase prompt or Robux charge.
     SkipProductId = 0, -- Reserved for a future developer product / ProcessReceipt integration.
     ProfileStore = "Skyfall_Profile_v3",
-    RecordStorePrefix = "Skyfall_Rush_v5_",
+    RecordStorePrefix = "Skyfall_Rush_v6_",
     Levels = {
         {Title="The Ascent", Difficulty="EASY", Sections=8, X=0, Color=Color3.fromRGB(70,235,220), Summary="Learn momentum jumps, hurdle runs, ghost platforms, and slalom walls.", Patterns={"Jumps","Hurdles","Slalom","Phase","Crumble","Ferry","Balance","Spinners"}},
         {Title="Ember Ruins", Difficulty="MEDIUM", Sections=12, X=4096, Color=Color3.fromRGB(255,173,82), Summary="Chain crumbling steps, crosswinds, spring jumps, and sliding gates.", Patterns={"Crumble","Slalom","Conveyor","Slide","Jumps","Spring","Phase","Crusher","Ferry","Hurdles","Balance","Spinners"}},

@@ -1,7 +1,7 @@
 -- An enclosing capsule-shaped sky shell with real 3D scenery inside it.
 -- The shell has rounded end caps, so a player never looks into a square corner.
 local Environments={}
-local colors={Color3.fromRGB(108,185,231),Color3.fromRGB(104,69,112),Color3.fromRGB(48,65,92),Color3.fromRGB(8,9,26)}
+local colors={Color3.fromRGB(98,184,247),Color3.fromRGB(151,104,149),Color3.fromRGB(91,127,184),Color3.fromRGB(27,24,62)}
 local function part(parent,name,size,cf,color,material)
  local p=Instance.new("Part");p.Name=name;p.Size=size;p.CFrame=cf;p.Color=color;p.Material=material or Enum.Material.SmoothPlastic
  p.Anchored=true;p.CanCollide=false;p.CanTouch=false;p.CanQuery=false;p.CastShadow=false;p.TopSurface=Enum.SurfaceType.Smooth;p.BottomSurface=Enum.SurfaceType.Smooth;p.Parent=parent;return p
@@ -13,8 +13,8 @@ local function beam(parent,name,a,b,width,color,material)
  return part(parent,name,Vector3.new(width,width,(b-a).Magnitude+1),CFrame.lookAt((a+b)/2,b),color,material)
 end
 local function ring(parent,name,cf,radius,color,width)
- for i=1,32 do
-  local a=(i-1)*math.pi/16;local b=i*math.pi/16
+ for i=1,16 do
+  local a=(i-1)*math.pi/8;local b=i*math.pi/8
   beam(parent,name,cf:PointToWorldSpace(Vector3.new(math.cos(a)*radius,0,math.sin(a)*radius)),cf:PointToWorldSpace(Vector3.new(math.cos(b)*radius,0,math.sin(b)*radius)),width or 5,color,Enum.Material.Neon)
  end
 end
@@ -26,7 +26,7 @@ local function shellPanel(parent,a,b,width,normalHint,color)
  if normal:Dot(normalHint)<0 then normal=-normal end
  local up=normal:Cross(right).Unit
  -- Neon is unlit on every face; overlapping panels cannot reveal shaded seams.
- part(parent,"CurvedSky",Vector3.new(width+14,(b-a).Magnitude+14,6),CFrame.fromMatrix((a+b)/2,right,up,normal),color:Lerp(Color3.new(0,0,0),.55),Enum.Material.Neon)
+ part(parent,"CurvedSky",Vector3.new(width+32,(b-a).Magnitude+32,6),CFrame.fromMatrix((a+b)/2,right,up,normal),color:Lerp(Color3.new(0,0,0),.55),Enum.Material.Neon)
 end
 local function buildShell(parent,x,length,color)
  local rx,ry,rz,cy=1250,1000,1250,100
@@ -57,15 +57,16 @@ local function buildShell(parent,x,length,color)
 end
 local function cloud(parent,center,size,color,seed)
  local r=Random.new(seed)
- for i=1,5 do
-  local offset=Vector3.new((i-3)*size*.36,r:NextNumber(-.1,.1)*size,r:NextNumber(-.2,.2)*size)
-  ball(parent,"CloudVolume",Vector3.new(size,size*.42,size*.85),center+offset,color,Enum.Material.SmoothPlastic,.13)
+ for i=1,3 do
+  local offset=Vector3.new((i-2)*size*.50,r:NextNumber(-.1,.1)*size,r:NextNumber(-.2,.2)*size)
+  ball(parent,"CloudVolume",Vector3.new(size,size*.42,size*.85),center+offset,color,Enum.Material.SmoothPlastic,0)
  end
 end
 local function garden(parent,center,seed)
  local random=Random.new(seed)
- part(parent,"DistantIsland",Vector3.new(220,80,200),CFrame.new(center)*CFrame.Angles(.1,random:NextNumber(0,3),.05),Color3.fromRGB(65,91,96),Enum.Material.Slate)
- part(parent,"DistantMeadow",Vector3.new(224,10,204),CFrame.new(center+Vector3.new(0,44,0)),Color3.fromRGB(74,151,119),Enum.Material.Grass)
+ local rotation=CFrame.Angles(0,random:NextNumber(0,3),0)
+ part(parent,"DistantIsland",Vector3.new(220,80,200),CFrame.new(center)*rotation,Color3.fromRGB(65,91,96),Enum.Material.Slate)
+ part(parent,"DistantMeadow",Vector3.new(224,10,204),CFrame.new(center+Vector3.new(0,44,0))*rotation,Color3.fromRGB(74,171,119),Enum.Material.Grass)
  for i=1,3 do
   local p=center+Vector3.new((i-2)*60,78,random:NextNumber(-55,55))
   part(parent,"DistantTree",Vector3.new(10,70,10),CFrame.new(p),Color3.fromRGB(73,104,91),Enum.Material.Wood)
@@ -74,9 +75,9 @@ local function garden(parent,center,seed)
 end
 local function foundry(parent,center,seed)
  local random=Random.new(seed)
- for i=1,5 do
-  local h=random:NextNumber(100,260);local p=center+Vector3.new((i-3)*35,h/2-80,random:NextNumber(-50,50))
-  part(parent,"ObsidianButte",Vector3.new(65,h,85),CFrame.new(p)*CFrame.Angles(.1,random:NextNumber(0,3),.15),Color3.fromRGB(73,48,61),Enum.Material.Slate)
+ for i=1,3 do
+  local h=random:NextNumber(100,200);local p=center+Vector3.new((i-2)*120,h/2-80,130)
+  part(parent,"ObsidianButte",Vector3.new(65,h,65),CFrame.new(p)*CFrame.Angles(0,random:NextNumber(0,3),.08),Color3.fromRGB(112,66,79),Enum.Material.Slate)
   beam(parent,"EmberFissure",p-Vector3.new(0,h*.4,0),p+Vector3.new(0,h*.4,0),3,Color3.fromRGB(255,133,71),Enum.Material.Neon)
  end
  for _,side in {-1,1} do part(parent,"AncientPillar",Vector3.new(18,210,18),CFrame.new(center+Vector3.new(side*90,80,0)),Color3.fromRGB(125,81,66),Enum.Material.Slate) end
@@ -132,7 +133,7 @@ local function buildScenery(room,index,x,length)
   planet(parent,Vector3.new(x+890,260,-length*.55),100,Color3.fromRGB(106,151,192),false)
   ball(parent,"DistantStar",Vector3.one*240,Vector3.new(x,340,-length-1000),Color3.fromRGB(255,184,143),Enum.Material.Neon)
   local r=Random.new(2401)
-  for i=1,180 do
+  for i=1,64 do
    local a=r:NextNumber(0,math.pi*2);local z=r:NextNumber(-length-180,180)
    local p=Vector3.new(x+math.cos(a)*1130,100+math.sin(a)*880,z)
    local size=r:NextNumber(1.6,5)
@@ -142,6 +143,7 @@ local function buildScenery(room,index,x,length)
 end
 function Environments.Apply(world)
  world=world or workspace:WaitForChild("SkyfallSprint")
+ if world:GetAttribute("EnvironmentVersion")=="ImmersiveWorlds_3" then return "Current environments retained." end
  local result={}
  for index=1,4 do
   local map=world.Levels:FindFirstChild("Level"..index)
@@ -159,7 +161,7 @@ function Environments.Apply(world)
    local catcher=map.Hazards:FindFirstChild("Hurdle_Bottem") or map.Hazards:FindFirstChild("FallCatcher")
    if not catcher then catcher=part(map.Hazards,"FallCatcher",Vector3.new(400,1.3,math.min(2048,length+100)),CFrame.new(x,-10.35,-length/2),Color3.fromRGB(255,88,91));catcher:SetAttribute("Kind","Static") end
    catcher.Transparency=1;catcher.CastShadow=false;catcher:SetAttribute("InvisibleFallCatcher",true)
-   local room=Instance.new("Model");room.Name="CourseSky";room.ModelStreamingMode=Enum.ModelStreamingMode.Persistent;room:SetAttribute("VisualOnly",true);room:SetAttribute("Theme",({"Cloud Garden Realm","Ember Canyon","Tempest Citadel","Orbital Expanse"})[index]);room.Parent=map
+   local room=Instance.new("Model");room.Name="CourseSky";room.ModelStreamingMode=Enum.ModelStreamingMode.PersistentPerPlayer;room:SetAttribute("VisualOnly",true);room:SetAttribute("Theme",({"Cloud Garden Realm","Ember Canyon","Tempest Citadel","Orbital Expanse"})[index]);room.Parent=map
    local shell=Instance.new("Folder");shell.Name="EnclosingSky";shell.Parent=room
    buildShell(shell,x,length,colors[index]);task.wait()
    buildScenery(room,index,x,length);task.wait()
@@ -168,7 +170,7 @@ function Environments.Apply(world)
   end
  end
  game.StarterPlayer.CameraMaxZoomDistance=512
- world:SetAttribute("EnvironmentVersion","ImmersiveWorlds_2")
+ world:SetAttribute("EnvironmentVersion","ImmersiveWorlds_3")
  return result
 end
 return Environments

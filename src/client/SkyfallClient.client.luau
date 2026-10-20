@@ -42,7 +42,7 @@ local function updateMovement(enabled)
  if touch then touch.Enabled=enabled end
 end
 p.PlayerGui.ChildAdded:Connect(function(child)
- if child.Name=="TouchGui" then task.defer(function() updateMovement(p:GetAttribute("State")=="Racing" and not (gui:FindFirstChild("PanelOverlay") and gui.PanelOverlay.Visible)) end) end
+ if child.Name=="TouchGui" then task.defer(function() updateMovement((p:GetAttribute("State")=="Racing" or p:GetAttribute("State")=="Armed") and not (gui:FindFirstChild("PanelOverlay") and gui.PanelOverlay.Visible)) end) end
 end)
 task.spawn(function()
  local module=p:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule",10)
@@ -64,6 +64,24 @@ local restartButton=button(toolbar,"RestartButton","RESTART",UDim2.new(.25,-6,1,
 local skipButton=button(toolbar,"SkipButton","SKIP →",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
 local raceMenuOpen=false
 local raceMenu=button(gui,"RaceMenu","MENU",UDim2.fromOffset(78,30),UDim2.new(.97,0,0,83),navy); raceMenu.AnchorPoint=Vector2.new(1,0); raceMenu.TextColor3=white; raceMenu.Visible=false
+local graphics=button(gui,"Graphics","VISUALS: AUTO",UDim2.fromOffset(132,28),UDim2.new(.97,0,0,154),navy);graphics.AnchorPoint=Vector2.new(1,0);graphics.TextColor3=muted;stroke(graphics,cyan,.75)
+local graphicsMode="Auto";local autoLow=false
+local function applyGraphics()
+ p:SetAttribute("LowGraphics",graphicsMode=="Low" or graphicsMode=="Auto" and autoLow)
+ graphics.Text="VISUALS: "..string.upper(graphicsMode)..(graphicsMode=="Auto" and autoLow and " / LOW" or "")
+end
+graphics.Activated:Connect(function() graphicsMode=graphicsMode=="Auto" and "Low" or graphicsMode=="Low" and "High" or "Auto";applyGraphics() end)
+applyGraphics()
+-- Ignore startup/menu spikes. Auto reduces cosmetic work after sustained slow frames.
+local sampleTime,sampleFrames,slowWindows=0,0,0
+RunService.Heartbeat:Connect(function(dt)
+ if graphicsMode~="Auto" or autoLow or p:GetAttribute("State")~="Racing" or dt>.25 then sampleTime=0;sampleFrames=0;slowWindows=0;return end
+ sampleTime+=dt;sampleFrames+=1
+ if sampleTime>=5 then
+  slowWindows=sampleTime/sampleFrames>1/38 and slowWindows+1 or 0;sampleTime=0;sampleFrames=0
+  if slowWindows>=3 then autoLow=true;applyGraphics() end
+ end
+end)
 raceMenu.Activated:Connect(function() raceMenuOpen=not raceMenuOpen; if refresh then refresh() end end)
 local objective=frame(gui,"Objective",UDim2.new(.9,0,0,40),UDim2.new(.5,0,1,-15),navy,.15); objective.AnchorPoint=Vector2.new(.5,1); corner(objective,12); limit(objective,950,40)
 local objectiveText=label(objective,"Text","56 obstacle sections / 4 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
@@ -279,20 +297,21 @@ end
 gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitCard); fitCard()
 refresh=function()
  local level=p:GetAttribute("CurrentLevel") or 1; local spec=Config.Levels[level]; local state=p:GetAttribute("State") or "Loading"; local accent=spec.Color
+ local playing=state=="Racing" or state=="Armed"
  levelText.Text="LEVEL "..level.." / "..string.upper(spec.Title)
- rankStatus.Text=p:GetAttribute("RankStatus") or "RANKED SPEEDRUN"; rankStatus.TextColor3=p:GetAttribute("RankEligible") and accent or red
+ rankStatus.Text=state=="Armed" and "CROSS BLUE GATE TO START" or p:GetAttribute("RankStatus") or "RANKED SPEEDRUN"; rankStatus.TextColor3=p:GetAttribute("RankEligible") and accent or red
  wallet.Text=(p:GetAttribute("Coins") or 0).." COINS"
  pickupText.Text=(p:GetAttribute("Orbs") or 0).." / "..(spec.Sections*3).." PICKUPS"
  fill.Size=UDim2.fromScale(p:GetAttribute("Progress") or 0,1); fill.BackgroundColor3=accent
- modal.Visible=state~="Racing" and not overlay.Visible
- updateMovement(state=="Racing" and not overlay.Visible)
- top.Visible=state=="Racing"
- raceMenu.Visible=state=="Racing"; raceMenu.Text=raceMenuOpen and "CLOSE" or "MENU"; raceMenu.Position=UDim2.new(.97,0,0,compact and 83 or 96)
- toolbar.Visible=state~="Racing" or raceMenuOpen
- toolbar.Position=state=="Racing" and UDim2.new(.5,0,0,compact and 123 or 136) or UDim2.new(.5,0,1,-45)
- objective.Visible=state=="Racing"; objective.AnchorPoint=Vector2.new(0,0); objective.Position=UDim2.new(.03,0,0,compact and 83 or 96); objective.Size=UDim2.new(.70,-5,0,30)
+ modal.Visible=not playing and not overlay.Visible
+ updateMovement(playing and not overlay.Visible)
+ top.Visible=playing
+ raceMenu.Visible=playing; raceMenu.Text=raceMenuOpen and "CLOSE" or "MENU"; raceMenu.Position=UDim2.new(.97,0,0,compact and 83 or 96)
+ toolbar.Visible=not playing or raceMenuOpen
+ toolbar.Position=playing and UDim2.new(.5,0,0,compact and 123 or 136) or UDim2.new(.5,0,1,-45)
+ objective.Visible=playing; objective.AnchorPoint=Vector2.new(0,0); objective.Position=UDim2.new(.03,0,0,compact and 83 or 96); objective.Size=UDim2.new(.70,-5,0,30)
  kicker.TextColor3=accent; startButton.BackgroundColor3=accent
- veil.Visible=state~="Racing" and not overlay.Visible
+ veil.Visible=not playing and not overlay.Visible
  heroNumber.Text=string.format("%02d",level); heroCaption.Text=courseThemes[level]; halo.BackgroundColor3=accent
  heroGradient.Color=ColorSequence.new(accent:Lerp(navy,.65),navy)
  for _,tile in ipairs(islandPieces) do tile.BackgroundColor3=accent end
@@ -310,21 +329,23 @@ refresh=function()
   kicker.Text="SKYFALL RUSH / "..spec.Difficulty
   heading.Text=string.upper(spec.Title)
   body.Text=courseSubtitles[level].."\n"..spec.Summary
-  startButton.Text="START SPEEDRUN  →"
+  startButton.Text="ENTER COURSE  →"
  end
  local best=p:GetAttribute("BestTime") or 0
  bestText.Text=best>0 and "PERSONAL BEST / "..timeString(best) or "Finish clean to set a personal best."
  rulesText.Text=UIS.TouchEnabled and "STICK + JUMP   •   CYAN SOLID / PINK GHOST / RED DANGER" or "WASD + SPACE   •   CYAN SOLID / PINK GHOST / RED DANGER"
- if state=="Racing" then
+ if state=="Armed" then objectiveText.Text="TIMER READY / Walk through the blue gate to begin"
+ elseif playing then
   local section=p:GetAttribute("Section") or 1; local pattern=spec.Patterns[section]
   objectiveText.Text=string.format("%s / Section %d of %d / Checkpoint %d of %d",string.upper(pattern or "FINISH"),section,spec.Sections,p:GetAttribute("Stage") or 0,spec.Sections/4-1)
  elseif state=="Finished" then objectiveText.Text=p:GetAttribute("UsedSkip") and "USED SKIP / UNRANKED / Your previous records are unchanged." or "Course complete. Continue the campaign or replay an unlocked level."
  else objectiveText.Text="Gold coins buy cosmetics / Red is dangerous / Skips remove the current ranked time" end
- refreshShop()
 end
 for _,attr in {"State","Coins","CurrentLevel","UnlockedLevel","Orbs","Stage","Section","Progress","RankStatus","RankEligible","UsedSkip","BestTime","FinishTime","OwnedItems","EquippedTrail","EquippedAura","DataStatus"} do p:GetAttributeChangedSignal(attr):Connect(refresh) end
+for _,attr in {"Coins","OwnedItems","EquippedTrail","EquippedAura","DataStatus"} do p:GetAttributeChangedSignal(attr):Connect(refreshShop) end
+refreshShop()
 p:GetAttributeChangedSignal("MessageId"):Connect(function() showToast(p:GetAttribute("Message") or "") end)
-local initial={}; local moving={}; local collectedCoins={}
+local initial=setmetatable({},{__mode="k"}); local collectedCoins={}
 local function registerCoin(obj)
  if not obj:IsA("BasePart") or not obj.Parent or obj.Parent.Name~="Orbs" then return end
  local map=obj.Parent.Parent
@@ -338,7 +359,6 @@ maps.DescendantAdded:Connect(function(obj)
 end)
 for _,map in maps:GetChildren() do
  for _,orb in map.Orbs:GetChildren() do registerCoin(orb) end
- for _,platform in map.Platforms:GetChildren() do if platform:GetAttribute("Moving") then moving[platform]=platform.Position end end
 end
 action.OnClientEvent:Connect(function(kind,level,id)
  if kind=="Reset" then
@@ -370,17 +390,22 @@ RunService.RenderStepped:Connect(function()
  previousFloor=floor and floor:GetAttribute("Moving") and floor or nil
  previousFloorPosition=previousFloor and previousFloor.Position or nil
 end)
-RunService.RenderStepped:Connect(function()
+local coinTick=0
+RunService.RenderStepped:Connect(function(dt)
  local state=p:GetAttribute("State")
  if p:GetAttribute("UsedSkip") then timer.Text="USED SKIP"; timer.TextColor3=red
  else
   local seconds=p:GetAttribute("RunTime") or 0; local started=p:GetAttribute("RunStartedAt") or 0
   if state=="Racing" and started>0 then seconds=workspace:GetServerTimeNow()-started+(p:GetAttribute("PenaltySeconds") or 0) end
-  timer.Text=timeString(seconds); timer.TextColor3=white
+  timer.Text=state=="Armed" and "READY" or timeString(seconds); timer.TextColor3=state=="Armed" and cyan or white
  end
  local map=maps:FindFirstChild("Level"..(p:GetAttribute("CurrentLevel") or 1)); if not map then return end
+ coinTick+=dt;local low=p:GetAttribute("LowGraphics")==true
+ if coinTick<(low and 1/15 or 1/30) then return end;coinTick=0
+ local root=p.Character and p.Character:FindFirstChild("HumanoidRootPart");if not root then return end
  local t=workspace:GetServerTimeNow()
  for _,orb in map.Orbs:GetChildren() do
+  if orb.LocalTransparencyModifier==1 or (orb.Position-root.Position).Magnitude>160 then continue end
   local base=initial[orb]; local following=orb:GetAttribute("FollowPlatform")
   if following then local platform=map.Platforms:FindFirstChild(following); if platform then base=platform.Position+orb:GetAttribute("FollowOffset") end end
   if base then orb.Position=base+Vector3.new(0,math.sin(t*2+orb:GetAttribute("OrbId"))*.16,0) end
@@ -417,13 +442,22 @@ for _,model in maps:GetDescendants() do registerRotor(model) end
 maps.DescendantAdded:Connect(function(obj)
  if obj:IsA("Model") then task.defer(function() if obj.Parent then registerRotor(obj) end end) end
 end)
+maps.DescendantRemoving:Connect(function(obj)
+ initial[obj]=nil
+ if registeredRotors[obj] then
+  registeredRotors[obj]=nil
+  for i=#visualRotors,1,-1 do if visualRotors[i].model==obj then table.remove(visualRotors,i) end end
+ end
+end)
 local rotorTick=0
 RunService.Heartbeat:Connect(function(dt)
- rotorTick+=dt; if rotorTick<1/30 then return end
+ rotorTick+=dt; if rotorTick<1/20 then return end
  local step=rotorTick; rotorTick=0
+ if p:GetAttribute("LowGraphics") then rotorTick=0;return end
+ local root=p.Character and p.Character:FindFirstChild("HumanoidRootPart");if not root then return end
  local current="Level"..(p:GetAttribute("CurrentLevel") or 1)
  for _,rotor in ipairs(visualRotors) do
-  if rotor.model.Parent and rotor.level==current then rotor.angle+=step*.25; rotor.model:PivotTo(rotor.base*CFrame.Angles(0,0,rotor.angle)) end
+  if rotor.model.Parent and rotor.level==current and (rotor.base.Position-root.Position).Magnitude<220 then rotor.angle+=step*.25; rotor.model:PivotTo(rotor.base*CFrame.Angles(0,0,rotor.angle)) end
  end
 end)
 

@@ -72,3 +72,12 @@ The shell contains real 3D themed scenery: cloud volumes and floating islands, c
 ## Phase rest balance patch
 
 `PhaseRestPlatforms.Apply` groups phase pads by section, computes the midpoint of the middle pair, and installs an anchored solid rest platform. It is idempotent and runs before the race runtime enumerates hazards and phase pads. The rest platform has no phase/crumble/movement attributes and is not a checkpoint. `RecordVersion` now scopes personal bests to `Config.Version`; global record stores use the new v4 prefix while the wallet/profile namespace is retained.
+
+
+## Start gates and performance pass (v0.4.0)
+
+State flow is Loading → Ready (selector) → Armed (movement enabled, no elapsed time) → Racing (server-observed forward gate crossing) → Finished. The Start remote only arms a run and returns the player behind the gate. A server-only crossing path starts/restarts timing without teleporting. The server sweeps between consecutive 10 Hz root samples, checks gate width/height, rejects large steps and uses a per-player cooldown. Returning behind the line does not reset until a forward recross. Skips still disqualify the active run and campaign; a fresh gate start clears the previous run. Gate timing uses Rush_v6 records; profile currency/cosmetics/unlocks remain v3.
+
+CourseSky models use PersistentPerPlayer. ChooseLevel removes the previous environment's persistence membership and adds the selected environment before moving the player. Other players keep their own membership; platforms are never hidden or deleted. The saved current environments are reused instead of regenerated at every server startup. PolishWorld updates only owned scene additions and specifically named cosmetic defects, preserving tree models and permanent rest sizes.
+
+Motion updates run at at most 30 Hz and only in occupied course regions. Phase visuals replicate only when SOLID/WARNING/GHOST changes. Decorative rotors update at 20 Hz within 220 studs; Low stops them. Coin bobbing runs at 30 Hz within 160 studs (15 Hz in Low), skipping collected coins. Streamed-out instances leave animation registries. Shop UI refreshes only when wallet/cosmetics change. Auto watches three consecutive five-second racing windows below approximately 38 FPS, ignoring large stalls and menu/startup time, then switches cosmetics to Low for that session. The explicit High selection overrides Auto. No graphics choice alters route collision or ranked eligibility.

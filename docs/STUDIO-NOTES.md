@@ -185,3 +185,10 @@ All six rests now use Size (3.5, 0.5, 4), matching the requested reference. They
 Removed the client whole-course hiding/cache logic responsible for invisible return visits. Geometry is never masked based on CurrentLevel. The client clears stale local masking on non-coin geometry while leaving server phase/crumble transparency and authored invisible triggers untouched. Course lighting stays local; coin collection presentation is tracked per player across streaming, and reset clears that collection set. The enclosing 3D scenery, manual tree edits and compact permanent rests are preserved.
 
 This repair does not change race geometry or invalidate existing records. A multi-client Studio session has not been run for this patch.
+
+
+## Vibrant world and gate update (v0.4.0)
+
+The four screenshot issues were addressed with aligned garden/slate layers, attached ember accents and a supported crucible, arch rock formations placed behind the opening, and passable translucent blue start gates. Lighting now uses colorful ambient fill with moderate saturation and low bloom. Labels are more compact and leaderboard faces turn toward the lobby.
+
+All 12 project script sources compiled without Luau syntax errors during this pass. The edit world now contains 4,487 descendants (previously 4,770); playable phase pads and all six 3.5 × 0.5 × 4 permanent rests are retained. Each environment uses PersistentPerPlayer rather than always persistent for every player. The count reduction alone is not an FPS benchmark. Multi-client races, complete course traversal and physical low-end hardware profiling remain unmeasured for this update.

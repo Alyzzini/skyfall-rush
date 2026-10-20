@@ -21,7 +21,17 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.3/SkyfallRush.rbxlx) from the [v0.3.3 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.3), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.0/SkyfallRush.rbxlx) from the [v0.4.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Latest update: vibrant worlds, start gates and lighter rendering
+
+- **Walk-through start gates on all four courses.** Enter Course gives control while the timer waits. Cross the blue gate toward the route to start; return behind it and cross forward again to reset. Each player has a separate server-owned timer.
+- **Bright, colorful lighting:** warmer daylight, readable violet storm/space palettes, moderate saturation and restrained bloom.
+- **Scene cleanup:** aligned garden layers, attached ember strips, clear distant arch openings, smaller course labels and boards facing the lobby.
+- **Visuals: Auto / Low / High.** Auto reduces cosmetic effects after sustained slow frames. Low disables bloom, global shadows and decorative rotor animation, reduces coin animation frequency and removes dynamic clouds. Gameplay hazards remain identical.
+- **Less background work:** only the selected sky model is pinned per player; opaque clouds reduce overdraw; fewer distant stars/ring segments; distant cosmetics sleep; empty courses stop sending motion updates. Streaming registries release removed instances.
+
+Timing rules changed, so rankings use a fresh **Rush_v6** namespace. Coins, owned cosmetics, unlocks and wins stay in the existing profile. FPS improvement varies by device; no measured low-end FPS claim is made. See [performance notes and research](docs/PERFORMANCE.md).
 
 ### Visibility fix (v0.3.3)
 
