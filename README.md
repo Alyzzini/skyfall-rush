@@ -21,11 +21,11 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.1/SkyfallRush.rbxlx) from the [v0.3.1 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.1), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.2/SkyfallRush.rbxlx) from the [v0.3.2 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.2), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
 
 ### Latest balance fix: permanent phase rests
 
-All six Phase Steps sections now have a centered, anchored **14 × 16 stud resting platform** with green edges and an **ALWAYS SOLID** sign. It never phases, crumbles or moves. The remaining phase pads retain their timing. The installer detects every phase chain and runs for saved worlds and generated worlds alike. This is a resting spot, not an extra checkpoint.
+All six Phase Steps sections now have a centered, anchored **3.5 × 0.5 × 4 stud resting platform** with green edges and an **ALWAYS SOLID** sign. It never phases, crumbles or moves. The remaining phase pads retain their timing. The installer detects every phase chain and runs for saved worlds and generated worlds alike. This is a resting spot, not an extra checkpoint. The installer now migrates the old oversized platforms once, then preserves later manual Size edits instead of resetting them every startup.
 
 ### Latest update: enclosed 3D worlds
 

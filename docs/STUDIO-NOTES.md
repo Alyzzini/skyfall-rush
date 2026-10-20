@@ -173,3 +173,8 @@ Space and garden scenes were visually inspected in Studio. The Play preview repo
 Added six permanent, centered resting platforms: Ascent section 4, Ember section 7, Stormworks sections 1 and 10, and Solar sections 2 and 11. Each is centered between the two middle phase pads, measures 14 by 16 studs, and sits slightly above those pads to avoid surface flicker. No PhasePlatform, Crumble or Moving flag is attached. The route gates, checkpoints and rewards are unchanged.
 
 The saved world and fallback startup installer both include this change. Course version/record namespace advances to Rush_v4 because the ranked route is easier. Coins, owned cosmetics, unlocks, wins and clear progress remain in the same profile store; personal bests are scoped to the current record version. Old global records are retained in their old namespace.
+
+
+## Compact phase rests (v0.3.2)
+
+All six rests now use Size (3.5, 0.5, 4), matching the requested reference. They remain centered between the middle pair of pads, with their top surface aligned just above the step tops. Guides scale to the actual platform dimensions. RestSizeVersion=2 performs the one-time resize; subsequent startup calls preserve manual Size changes. Future size edits must be made while Studio is stopped to persist in the saved place. The current record namespace is Rush_v5; the generic RecordVersion profile logic handles personal-best compatibility.
