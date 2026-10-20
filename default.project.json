@@ -119,7 +119,8 @@
         "CharacterWalkSpeed": 20,
         "CharacterUseJumpPower": true,
         "CharacterJumpPower": 50,
-        "CharacterJumpHeight": 6.37
+        "CharacterJumpHeight": 6.37,
+        "EnableMouseLockOption": false
       }
     },
     "StarterGui": {

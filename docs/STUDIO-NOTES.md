@@ -254,3 +254,7 @@ Added separate HUDControls module. Its persistent HIDE UI / SHOW UI capsule foll
 ## v0.8.2 — mobile shift lock
 Added a separate MobileShiftLock client module for touch devices. A lock capsule above the jump area toggles shoulder camera offset, a center aim dot and avatar yaw following the camera. Roblox touch camera gestures and zoom remain available. Menu/panel/sitting/death states suspend the effect; release restores the previous Humanoid.CameraOffset and AutoRotate. Character replacement is supported and the control persists when the game HUD is hidden. Desktop behavior is unchanged. Saved full place and source build succeeded. No Play session or touch-device test was started.
 
+
+## v0.8.3 — visible shift lock on every device
+Removed the TouchEnabled-only creation guard and race-only visibility rule that hid the control in normal PC Studio sessions and on the course menu. Shift lock now has a larger SHIFT LOCK / ON-OFF label, remains visible before entering a course, and sits above the jump area. Desktop users can toggle with Left Shift; mouse lock releases during panels/menus and restores its prior mode. The native mouse-lock option is disabled to prevent two Shift handlers fighting over the camera. Mobile uses the touch button. Saved source/full place and built without starting Play.
+
