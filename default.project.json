@@ -105,6 +105,9 @@
         },
         "CourseBrowser": {
           "$path": "src/client/CourseBrowser.luau"
+        },
+        "HUDControls": {
+          "$path": "src/client/HUDControls.luau"
         }
       },
       "$properties": {

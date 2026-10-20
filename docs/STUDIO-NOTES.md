@@ -246,3 +246,7 @@ Rebuilt 32 section arrival volumes and 96 sequential route checks using actual l
 ## v0.8.0 — custom cosmetics and Maps browser
 Added six trails and six auras (18 total cosmetics), configurable gradient/twin/tapered trails, glow/halo/crown/orbital aura styles and shop category filters. Added a separate CourseBrowser client module with inexpensive theme previews, completed/unlocked status, best times and server-validated Enter/Replay actions. Completion state persists separately from ranked first-clear rewards, preserving existing profile contents. Switching maps explicitly ends the current run. No Play-mode test was started. See COSMETICS-MAPS.md.
 
+
+## v0.8.1 — top-bar HUD toggle and R shortcut
+Added separate HUDControls module. Its persistent HIDE UI / SHOW UI capsule follows GuiService.TopbarInset beside Roblox controls, with a fallback below the bar when space is limited. It hides only SkyfallHUD, leaving its restore button and Roblox controls available. Panels close before hiding so race controls are restored. R uses the same server Start action as RESET, restarting the current course with an armed timer; processed inputs and focused text boxes are ignored, with a one-second debounce. The existing user play session was stopped for editing; no new Play session was started. Source packaging built. API reference: https://create.roblox.com/docs/reference/engine/classes/GuiService#TopbarInset
+

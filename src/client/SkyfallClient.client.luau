@@ -528,6 +528,7 @@ RunService.Heartbeat:Connect(function(dt)
  end
 end)
 
+require(script.Parent:WaitForChild("HUDControls")).Init(gui,closePanels,function() action:FireServer("Start") end)
 for _,b in {mapsButton,shopButton,boardButton,restartButton,skipButton,audioButton} do b.BackgroundColor3=Color3.fromRGB(23,37,55); b.TextColor3=white; stroke(b,muted,.82) end
 shopButton.TextColor3=gold; skipButton.TextColor3=Color3.fromRGB(205,160,255)
 -- Menu camera establishes the selected world; gameplay immediately restores avatar control.
