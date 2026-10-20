@@ -22,6 +22,8 @@ optionalVisual("PlatformOutlines",workspace.SkyfallSprint)
 end
 require(tools.ExpansionCourses).Apply()
 require(script.Parent.ExpansionMechanics).Init()
+require(tools.AdvancedCourses).Apply()
+require(script.Parent.AdvancedMechanics).Init()
 require(script.Parent.SkyfallRuntime)
 local ready=game.ReplicatedStorage:FindFirstChild("SkyfallReady") or Instance.new("Folder")
 ready.Name="SkyfallReady";ready.Parent=game.ReplicatedStorage

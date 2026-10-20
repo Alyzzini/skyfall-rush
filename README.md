@@ -1,6 +1,6 @@
 # Skyfall Rush
 
-**An eight-course Roblox speedrun obby with server-owned timing, checkpoint progression, competitive records, and a cosmetic economy.**
+**A twelve-course Roblox speedrun obby with server-owned timing, checkpoint progression, competitive records, and a cosmetic economy.**
 
 Built in **Luau** for **Roblox Studio**, with a **Rojo + VS Code** source workflow.
 
@@ -17,7 +17,13 @@ Race across floating courses that introduce different movement and timing ideas.
 | Stormworks | Hard | 8 | 768 studs | Moving relays, elevators and wind walks |
 | Solar Collapse | Expert | 8 | 768 studs | Phase timing, orbit turns and reactor escape |
 
-**64 sections · 8 course identities · 18 cosmetics**
+**96 sections · 12 course identities · 18 cosmetics**
+
+## Levels 9–12 advanced chapter
+
+Levels 1–8 are locked and preserved. The Great Engine, Cloudspire, Chrono Nexus and Skyfall Apex add rotating machinery, a 128-stud tower climb, traveling wall openings, signal floors, and combined encounters. Each new course has checkpoints after sections 2, 4 and 6, plus permanent breathing areas between challenges. Optional blue/gold branches offer risk/reward choices.
+
+**The owner will playtest this chapter. No Play session was started for Levels 9–12.** See [advanced chapter notes](docs/ADVANCED-9-12.md).
 
 ## Levels 5–8 expansion
 
@@ -27,9 +33,9 @@ Levels 1–4 are locked and preserved. Clockwork Docks, Prism Archive, Pulse Cit
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.9.0/SkyfallRush.rbxlx) from the [v0.9.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.9.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.10.0/SkyfallRush.rbxlx) from the [v0.10.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.10.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
 
-### Route revisions (v0.9.0)
+### Route revisions (v0.10.0)
 
 Movement uses **20 WalkSpeed / 50 JumpPower** consistently in configuration and StarterPlayer. Each course has eight focused sections, with checkpoints every two sections. Selected repeated sections become boulder hops, rounded switchbacks, a compact maze, a curved sweeper crossing, climbing terraces, vertical lifts and moving relays. Existing scenery, progression, cosmetics, timers, skips, UI and audio remain.
 

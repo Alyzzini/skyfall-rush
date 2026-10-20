@@ -1,13 +1,8 @@
-# Saved session
+# Current handoff — v0.10.0
 
-Project: Skyfall Rush
+Project: C:/Users/Ameer/OneDrive/Documents/RobloxProjects/SkyfallRush
+Open SkyfallRush.code-workspace for source or SkyfallRush.rbxlx for the complete Studio game.
 
-Open `SkyfallRush.code-workspace` in VS Code, or `SkyfallRush.rbxlx` in Roblox Studio.
-Both live in this project folder. `src/` contains the saved script sources and edited world snapshot.
+Levels 1–8 are locked by the owner. Do not rebuild, rebalance, move or modify them. Levels 9–12 form the new advanced chapter; see ADVANCED-9-12.md. The owner explicitly handles gameplay testing. Do not start Play without new authorization.
 
-This save includes the current Studio Edit scene, complete platform outlines, editable obstacle Models,
-leaderboard Model startup repair, and continuously rotating Ember crossing sweeper.
-The active user play session was stopped to save the Edit project. No new gameplay test was started.
-
-Local recovery copies are stored in `.backups/` as dated ZIP files containing the full Studio place,
-source, documents and editor workspace. GitHub stores the source and a downloadable Studio release.
+Full Studio asset is published with the corresponding GitHub release. Source includes the preserved world model, client, shared config and server scripts. The latest shift-lock fix remains included. Gameplay validation for the new chapter is pending.

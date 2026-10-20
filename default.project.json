@@ -47,6 +47,9 @@
       },
       "ExpansionMechanics": {
         "$path": "src/server/ExpansionMechanics.luau"
+      },
+      "AdvancedMechanics": {
+        "$path": "src/server/AdvancedMechanics.luau"
       }
     },
     "ServerStorage": {
@@ -92,6 +95,9 @@
         },
         "ExpansionCourses": {
           "$path": "src/build/ExpansionCourses.luau"
+        },
+        "AdvancedCourses": {
+          "$path": "src/build/AdvancedCourses.luau"
         }
       }
     },
@@ -117,6 +123,9 @@
         },
         "MobileShiftLock": {
           "$path": "src/client/MobileShiftLock.luau"
+        },
+        "AdvancedMovement": {
+          "$path": "src/client/AdvancedMovement.client.luau"
         }
       },
       "$properties": {

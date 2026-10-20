@@ -210,7 +210,8 @@ action.OnServerEvent:Connect(function(p,request,arg)
 end)
 local lastQuery={}
 query.OnServerInvoke=function(p,key)
- if key~="Campaign" and (typeof(key)~="string" or not key:match("^Level[1-8]$")) then return {Rows={},Mode="Choose a leaderboard"} end
+ local boardLevel=typeof(key)=="string" and tonumber(key:match("^Level(%d+)$"))
+ if key~="Campaign" and (not boardLevel or boardLevel<1 or boardLevel>#Config.Levels) then return {Rows={},Mode="Choose a leaderboard"} end
  if now()-(lastQuery[p] or 0)<.8 then return Services.GetBoard(key) end
  lastQuery[p]=now(); return Services.GetBoard(key)
 end
@@ -270,7 +271,7 @@ RunService.Heartbeat:Connect(function(dt)
  for p,r in pairs(runs) do
   local root=rootOf(p)
   if root then
-   if root.Position.Y<0 then fallReturn(p,"Fell from the course") end
+   if root.Position.Y<0 or r.level==10 and r.cpStage>0 and root.Position.Y<checkpointPosition(r).Y-18 then fallReturn(p,"Fell from the course") end
    -- Server-observed forward crossing, swept between samples, with per-player cooldown.
    local gate=mapOf(r):FindFirstChild("StartGate")
    if gate and (r.state=="Armed" or r.state=="Racing") then
@@ -323,7 +324,7 @@ RunService.Heartbeat:Connect(function(dt)
     if math.abs((p:GetAttribute("Progress") or 0)-progress)>.003 then p:SetAttribute("Progress",progress) end
     p:SetAttribute("RunTime",elapsed(r))
     for _,entry in ipairs(hazards) do if entry.Level==r.level and not entry.Part:GetAttribute("ExpansionInactive") then
-     local hpart=entry.Part; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,.65,0))
+     local hpart=entry.Part; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,hpart:GetAttribute("AdvancedFloor") and 3 or .65,0))
      if math.abs(q.X)<hpart.Size.X/2+.5 and math.abs(q.Y)<hpart.Size.Y/2+1.6 and math.abs(q.Z)<hpart.Size.Z/2+.5 then fallReturn(p,"Caught by a red hazard"); break end
     end end
     local portal=map.PortalTrigger; local q=portal.CFrame:PointToObjectSpace(root.Position)
@@ -337,12 +338,12 @@ RunService.Heartbeat:Connect(function(dt)
 end)
 task.spawn(function()
  while true do
-  for _,key in {"Level1","Level2","Level3","Level4","Level5","Level6","Level7","Level8","Campaign"} do Services.RefreshBoard(key); task.wait(.1) end
+  for _,key in {"Level1","Level2","Level3","Level4","Level5","Level6","Level7","Level8","Level9","Level10","Level11","Level12","Campaign"} do Services.RefreshBoard(key); task.wait(.1) end
   Services.UpdateWorldBoards(); task.wait(60)
  end
 end)
 task.spawn(function() while true do task.wait(45); for p in pairs(Services.Profiles) do task.spawn(Services.Save,p,false) end end end)
 game:BindToClose(Services.Close)
-print("Skyfall Rush ready: 64 obstacle sections, ranked timers, skips, coins, shop and global records.")
+print("Skyfall Rush ready: 96 obstacle sections, ranked timers, skips, coins, shop and global records.")
 return Runtime
 
