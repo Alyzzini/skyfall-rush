@@ -40,6 +40,7 @@ function Runtime.Start(p,crossedGate)
  syncRank(p,r); setState(p,r,crossedGate and "Racing" or "Armed")
  if not crossedGate then teleport(p,checkpointPosition(r));r.gatePrevious=nil end
  action:FireClient(p,"Reset",r.level)
+ action:FireClient(p,"Feedback",crossedGate and "Start" or "Ready",rootOf(p) and rootOf(p).Position)
  tell(p,crossedGate and "GO! Timer started at the blue gate." or "Walk through the blue gate to start. Your timer is waiting.")
  return true
 end
@@ -74,10 +75,12 @@ function Runtime.Skip(p)
  else r.completedSections=r.totalSections; teleport(p,map.PortalTrigger.Position) end
  p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1)); p:SetAttribute("Progress",r.completedSections/r.totalSections)
  tell(p,"USED SKIP: time removed. This run and campaign cannot enter leaderboards.")
+ action:FireClient(p,"Feedback","Skip",rootOf(p) and rootOf(p).Position)
  return true
 end
 local function fallReturn(p,reason)
  local r=runs[p]; if not r or now()-(r.lastReturn or 0)<.8 then return end
+ if r.state=="Racing" then action:FireClient(p,"Feedback","Fail",rootOf(p) and rootOf(p).Position) end
  if r.state=="Racing" then
   if not r.usedSkip then r.penalty+=Config.FallPenalty; p:SetAttribute("PenaltySeconds",r.penalty) end
   tell(p,reason..(r.usedSkip and " / unranked run" or " / +3 seconds"))
@@ -94,6 +97,8 @@ function Runtime.Finish(p)
  local r=runs[p]; if not r or r.state~="Racing" or r.completedSections~=r.totalSections then return false end
  r.elapsed=elapsed(r)
  local ranked,reason=Rules.CanRank(r)
+ local oldBest=Services.Profiles[p] and Services.Profiles[p].Best["Level"..r.level]
+ local personalBest=ranked and (not oldBest or r.elapsed*1000<oldBest)
  if ranked then
   Services.Submit(p,"Level"..r.level,r)
   local d=Services.Profiles[p]
@@ -112,6 +117,7 @@ function Runtime.Finish(p)
  end
  p:SetAttribute("FinishTime",r.usedSkip and 0 or r.elapsed); p:SetAttribute("RunTime",r.usedSkip and 0 or r.elapsed); p:SetAttribute("Progress",1); p:SetAttribute("CampaignTime",r.campaignFinishedEligible and r.campaignTotal or 0)
  setState(p,r,"Finished"); task.defer(Services.UpdateWorldBoards)
+ action:FireClient(p,"Feedback","Finish",mapOf(r).PortalTrigger.Position,{PersonalBest=personalBest==true})
  if d.CanSave then task.spawn(Services.Save,p,false) end
  return true
 end
@@ -167,7 +173,7 @@ action.OnServerEvent:Connect(function(p,request,arg)
  elseif request=="Skip" then
   if Config.PrototypeSkipEnabled then local ok,message=Runtime.Skip(p); if not ok then tell(p,message) end
   else tell(p,"Skip purchases have not been enabled yet.") end
- elseif request=="BuyItem" or request=="EquipItem" or request=="Unequip" then local _,message=Services.Shop(p,request,arg); tell(p,message)
+ elseif request=="BuyItem" or request=="EquipItem" or request=="Unequip" then local ok,message=Services.Shop(p,request,arg); tell(p,message);action:FireClient(p,"Feedback",ok and "Shop" or "Denied")
  end
 end)
 local lastQuery={}
@@ -252,6 +258,7 @@ RunService.Heartbeat:Connect(function(dt)
     local cp=map.Checkpoints:FindFirstChild("Checkpoint_"..(r.cpStage+1))
     if cp and r.completedSections>=cp:GetAttribute("Section") and (root.Position-(cp.Position+Vector3.new(0,2.5,0))).Magnitude<6 then
      r.cpStage+=1; p:SetAttribute("Stage",r.cpStage); Services.Award(p,20); tell(p,"Checkpoint "..r.cpStage.." saved / +20 coins")
+     action:FireClient(p,"Feedback","Checkpoint",cp.Position)
     end
     for _,orb in map.Orbs:GetChildren() do collect(p,r,orb) end
     local progress=math.clamp(-root.Position.Z/map:GetAttribute("CourseLength"),0,1)

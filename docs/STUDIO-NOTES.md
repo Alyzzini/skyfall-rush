@@ -202,3 +202,8 @@ Replaced all six distant arch/butte/fissure groups with cohesive 20-part monumen
 ## HUD alignment (v0.4.2)
 
 Replaced independent viewport-edge positioning with a shared RaceHUD container and StatusRow. Header, section instructions, Menu and Visuals align to the same bounded width; under 600 pixels, status text uses its own row. Expanded toolbar is positioned below the status group. The main menu retains its bottom toolbar and top-right visuals control inside the same width bounds. Client source compiles; no gameplay or ranking changes.
+
+
+## Arcade audio and VFX (v0.5.0)
+
+Installed four course-specific APMOfficial chiptune tracks and Roblox/bundled SFX. All five cloud audio assets returned AssetFetchStatus.Success in the current Studio context. Changed client/server/config sources compiled. Added bounded local sparkles, pulses, finish confetti, button scale feedback and short celebration labels, plus a scrollable Audio / FX panel. Low/reduced mode lowers particles and removes pulses. Server-confirmed feedback is separate from timing/currency validation. No gameplay playback or auditory balance review was run for this patch.

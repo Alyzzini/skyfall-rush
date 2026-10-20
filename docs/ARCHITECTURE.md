@@ -84,3 +84,8 @@ Motion updates run at at most 30 Hz and only in occupied course regions. Phase v
 
 
 `EmberMonuments` owns the distant Ember ruin design. New environment generation calls Build, while existing saved worlds call Apply after CourseEnvironments. Apply migrates only the legacy named butte/fissure/arch parts, preserving each existing arch center, and retains completed monument models on later startup. Its 20 decorative parts per monument are anchored, opaque, noncolliding and excluded from touches, queries and shadows; ember color comes from static neon inlays.
+
+
+## Audio and VFX (v0.5.0)
+
+SkyfallClient initializes the sibling SkyfallFeedback module once and provides the Audio / FX panel. SkyfallAudioConfig contains four Creator Store track IDs, bundled SFX references and mix defaults. The feedback module owns local SoundGroups, a twelve-voice pool, two crossfading music players, bounded transient bursts, GUI-button feedback and streaming-aware obstacle subscriptions. Server Feedback events identify accepted actions; existing Collected and Spring events drive coin/launch presentation. No client feedback request changes server progress. All volume/effect preferences are session-local. Timing and Rush_v6 records are unchanged. See AUDIO-VFX.md for credits, budgets and evidence limits.

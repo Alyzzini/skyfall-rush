@@ -10,6 +10,8 @@ local maps=workspace:WaitForChild("SkyfallSprint"):WaitForChild("Levels")
 local action=game.ReplicatedStorage:WaitForChild("SkyfallAction")
 local query=game.ReplicatedStorage:WaitForChild("SkyfallQuery")
 local gui=Instance.new("ScreenGui"); gui.Name="SkyfallHUD"; gui.ResetOnSpawn=false; gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling; gui.Parent=p:WaitForChild("PlayerGui")
+local Feedback=require(script.Parent:WaitForChild("SkyfallFeedback"))
+Feedback.Init(gui)
 local navy=Color3.fromRGB(10,17,30); local white=Color3.fromRGB(240,247,255); local muted=Color3.fromRGB(162,181,202); local cyan=Color3.fromRGB(70,235,220); local gold=Color3.fromRGB(255,214,90); local red=Color3.fromRGB(255,108,127)
 local function corner(obj,n) local c=Instance.new("UICorner"); c.CornerRadius=UDim.new(0,n); c.Parent=obj end
 local function frame(parent,name,size,pos,color,alpha)
@@ -65,6 +67,8 @@ local shopButton=button(toolbar,"ShopButton","SHOP",UDim2.new(.25,-6,1,0),UDim2.
 local boardButton=button(toolbar,"BoardButton","RANKINGS",UDim2.new(.25,-6,1,0),UDim2.fromScale(.25,0),Color3.fromRGB(174,190,226))
 local restartButton=button(toolbar,"RestartButton","RESTART",UDim2.new(.25,-6,1,0),UDim2.fromScale(.5,0),Color3.fromRGB(160,184,202))
 local skipButton=button(toolbar,"SkipButton","SKIP →",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
+local audioButton=button(toolbar,"AudioButton","AUDIO / FX",UDim2.new(.2,-6,1,0),UDim2.fromScale(.8,0),Color3.fromRGB(140,210,235))
+for i,b in ipairs({shopButton,boardButton,restartButton,skipButton,audioButton}) do b.Size=UDim2.new(.2,-6,1,0);b.Position=UDim2.fromScale((i-1)*.2,0) end
 local raceMenuOpen=false
 local raceMenu=button(statusRow,"RaceMenu","MENU",UDim2.fromOffset(78,30),UDim2.new(.97,0,0,83),navy); raceMenu.AnchorPoint=Vector2.new(1,0); raceMenu.TextColor3=white; raceMenu.Visible=false
 local graphics=button(statusRow,"Graphics","VISUALS: AUTO",UDim2.fromOffset(132,28),UDim2.new(.97,0,0,154),navy);graphics.AnchorPoint=Vector2.new(1,0);graphics.TextColor3=muted;stroke(graphics,cyan,.75)
@@ -221,6 +225,30 @@ end)
 startButton.Activated:Connect(function()
  if p:GetAttribute("State")=="Finished" then action:FireServer((p:GetAttribute("CurrentLevel") or 1)<4 and "Next" or "Campaign") else action:FireServer("Start") end
 end)
+local audioPanel=panel("AudioPanel","SOUND & EFFECTS",540,390)
+local audioContent=Instance.new("ScrollingFrame");audioContent.Name="AudioControls";audioContent.BackgroundTransparency=1;audioContent.BorderSizePixel=0;audioContent.Position=UDim2.fromOffset(12,64);audioContent.Size=UDim2.new(1,-24,1,-78);audioContent.CanvasSize=UDim2.fromOffset(0,280);audioContent.ScrollBarThickness=4;audioContent.Parent=audioPanel
+local nowPlaying=label(audioContent,"NowPlaying","ARCADE SOUNDTRACK",UDim2.new(1,-24,0,35),UDim2.fromOffset(12,0),cyan,12)
+local function updateTrack() nowPlaying.Text="NOW PLAYING / "..(p:GetAttribute("NowPlaying") or "Loading soundtrack") end
+p:GetAttributeChangedSignal("NowPlaying"):Connect(updateTrack);updateTrack()
+local function volumeRow(attribute,title,y)
+ label(audioContent,attribute.."Label",title,UDim2.new(.45,-22,0,34),UDim2.fromOffset(12,y),white,14).TextXAlignment=Enum.TextXAlignment.Left
+ local minus=button(audioContent,attribute.."Down","−",UDim2.new(.12,0,0,34),UDim2.new(.47,0,0,y),Color3.fromRGB(64,88,115))
+ local value=button(audioContent,attribute.."Mute","",UDim2.new(.22,-12,0,34),UDim2.new(.60,0,0,y),Color3.fromRGB(101,179,190))
+ local plus=button(audioContent,attribute.."Up","+",UDim2.new(.12,0,0,34),UDim2.new(.83,0,0,y),Color3.fromRGB(64,88,115))
+ local previous=p:GetAttribute(attribute) or .3
+ local function refreshVolume() local v=p:GetAttribute(attribute) or 0;value.Text=v==0 and "MUTED" or string.format("%d%%",math.floor(v*100+.5)) end
+ minus.Activated:Connect(function() p:SetAttribute(attribute,math.max(0,math.floor(((p:GetAttribute(attribute) or 0)-.1)*100+.5)/100)) end)
+ plus.Activated:Connect(function() p:SetAttribute(attribute,math.min(1,math.floor(((p:GetAttribute(attribute) or 0)+.1)*100+.5)/100)) end)
+ value.Activated:Connect(function() local v=p:GetAttribute(attribute) or 0;if v>0 then previous=v;p:SetAttribute(attribute,0) else p:SetAttribute(attribute,previous) end end)
+ p:GetAttributeChangedSignal(attribute):Connect(refreshVolume);refreshVolume()
+end
+volumeRow("MusicVolume","MUSIC",50)
+volumeRow("EffectsVolume","SOUND EFFECTS",100)
+local reduced=button(audioContent,"ReducedEffects","",UDim2.new(1,-24,0,38),UDim2.fromOffset(12,161),Color3.fromRGB(153,188,220))
+local function refreshReduced() reduced.Text=p:GetAttribute("ReducedEffects") and "VISUAL EFFECTS: REDUCED" or "VISUAL EFFECTS: FULL" end
+reduced.Activated:Connect(function() p:SetAttribute("ReducedEffects",not p:GetAttribute("ReducedEffects")) end);refreshReduced()
+label(audioContent,"AudioNote","Tap a percentage to mute. Preferences apply to this session.\nLow graphics also reduces particles. Race timing is unchanged.",UDim2.new(1,-24,0,56),UDim2.fromOffset(12,212),muted,11)
+audioButton.Activated:Connect(function() openPanel("AudioPanel") end)
 -- Expedition design system: quiet surfaces, one bright action, illustrated course identity.
 local function gradient(obj,a,b,rotation)
  obj.BackgroundColor3=Color3.new(1,1,1)
@@ -484,7 +512,7 @@ RunService.Heartbeat:Connect(function(dt)
  end
 end)
 
-for _,b in {shopButton,boardButton,restartButton,skipButton} do b.BackgroundColor3=Color3.fromRGB(23,37,55); b.TextColor3=white; stroke(b,muted,.82) end
+for _,b in {shopButton,boardButton,restartButton,skipButton,audioButton} do b.BackgroundColor3=Color3.fromRGB(23,37,55); b.TextColor3=white; stroke(b,muted,.82) end
 shopButton.TextColor3=gold; skipButton.TextColor3=Color3.fromRGB(205,160,255)
 -- Menu camera establishes the selected world; gameplay immediately restores avatar control.
 local menuCamera=false

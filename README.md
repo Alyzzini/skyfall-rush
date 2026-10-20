@@ -21,7 +21,13 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.2/SkyfallRush.rbxlx) from the [v0.4.2 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.2), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.5.0/SkyfallRush.rbxlx) from the [v0.5.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.5.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Arcade audio and effects (v0.5.0)
+
+Four course-specific chiptune tracks, rising coin chimes, jump/landing cues, gate starts, checkpoint melodies, spring launches, hazard returns, skip cues, shop feedback and finish/personal-best celebrations. Nearby phase/crumble/machinery cues help explain obstacles. Music fades between courses and ducks during important cues.
+
+**Menu → Audio / FX** gives separate music/effects volumes, mute and reduced effects. Short sparkles, pulse discs and finish confetti are local and budgeted; Low mode reduces particles. [Track credits, research and implementation notes](docs/AUDIO-VFX.md).
 
 ### HUD alignment fix (v0.4.2)
 

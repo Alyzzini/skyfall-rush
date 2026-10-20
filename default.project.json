@@ -25,6 +25,9 @@
       },
       "SkyfallQuery": {
         "$className": "RemoteFunction"
+      },
+      "SkyfallAudioConfig": {
+        "$path": "src/shared/SkyfallAudioConfig.luau"
       }
     },
     "ServerScriptService": {
@@ -78,6 +81,9 @@
         },
         "CourseSky": {
           "$path": "src/client/CourseSky.client.luau"
+        },
+        "SkyfallFeedback": {
+          "$path": "src/client/SkyfallFeedback.luau"
         }
       },
       "$properties": {
