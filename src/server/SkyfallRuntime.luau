@@ -225,7 +225,7 @@ RunService.Heartbeat:Connect(function(dt)
  if motionAccumulator>=1/30 then
  motionAccumulator=0
  for _,entry in ipairs(hazards) do
-  if not active[entry.Level] then continue end
+  if not active[entry.Level] and not entry.Part:GetAttribute("AlwaysAnimate") then continue end
   local h=entry.Part; local phase=t*(h:GetAttribute("Speed") or 1)+(h:GetAttribute("Phase") or 0)
   if entry.Kind=="Spin" then h.CFrame=entry.Base*CFrame.Angles(0,phase,0)
   elseif entry.Kind=="Slide" then h.CFrame=entry.Base+Vector3.new(math.sin(phase)*(h:GetAttribute("Amplitude") or 7),0,0)

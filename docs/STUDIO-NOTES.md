@@ -226,3 +226,7 @@ Completed outlines around hubs, runways, ramps, rounded beams, rest platforms an
 ## v0.6.3 — leaderboard Model startup repair
 Studio output identified a fatal startup error in PolishWorld: Size is not a valid member of Model Level1.Decor.LeaderboardBoard. Resolve the physical board inside its Model, reuse its crown, and find its SurfaceGui recursively. Services.UpdateWorldBoards also resolves nested UI safely so edited boards cannot terminate the refresh loop. Optional visual passes report errors without aborting core initialization; SkyfallReady is published after the runtime initializes. The previously failing polish pass completed on the actual Edit scene. Saved and built source packaging. No Play-mode test was started.
 
+
+## v0.6.4 — crossing sweeper
+The Ember ArchCrossingSweeper rotates continuously around its center at 1.1 radians/second (about 5.7 seconds per revolution). Its AlwaysAnimate attribute keeps it moving during gameplay even before a player selects Ember. The platform remains stationary, and existing red-hazard behavior is retained. Saved and built without entering Play mode.
+

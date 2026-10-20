@@ -168,7 +168,10 @@ function Refinement.Apply(world)
    if p:GetAttribute("Conveyor") then p.AssemblyLinearVelocity=Vector3.new(7,0,0) end
   end
   for _,h in map.Hazards:GetChildren() do
-   if h:GetAttribute("Kind")=="Spin" then h:SetAttribute("Speed",level==1 and .65 or .85) end
+   if h:GetAttribute("Kind")=="Spin" then
+    h:SetAttribute("Speed",h.Name=="ArchCrossingSweeper" and 1.1 or level==1 and .65 or .85)
+    if h.Name=="ArchCrossingSweeper" then h:SetAttribute("AlwaysAnimate",true) end
+   end
   end
   table.insert(report,{Level=level,Sections=spec.Sections,Checkpoints=#map.Checkpoints:GetChildren()})
   task.wait()
