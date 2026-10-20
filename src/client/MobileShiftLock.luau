@@ -4,23 +4,22 @@ function ShiftLock.Init(hud)
  local player=Players.LocalPlayer;local playerGui=player:WaitForChild("PlayerGui")
  local old=playerGui:FindFirstChild("SkyfallMobileCamera");if old then old:Destroy() end
  local gui=Instance.new("ScreenGui");gui.Name="SkyfallMobileCamera";gui.ResetOnSpawn=false;gui.IgnoreGuiInset=true;gui.DisplayOrder=90;gui.Parent=playerGui
- local b=Instance.new("TextButton");b.Name="ShiftLock";b.Size=UDim2.fromOffset(136,52);b.AnchorPoint=Vector2.new(.5,.5);b.BackgroundColor3=Color3.fromRGB(16,25,39)
+ local b=Instance.new("TextButton");b.Name="ShiftLock";b.Size=UDim2.fromOffset(44,44);b.AnchorPoint=Vector2.new(.5,.5);b.BackgroundColor3=Color3.fromRGB(16,25,39)
  b.BackgroundTransparency=.1;b.BorderSizePixel=0;b.Text="";b.AutoButtonColor=true;b.Parent=gui
  local round=Instance.new("UICorner");round.CornerRadius=UDim.new(1,0);round.Parent=b
  local stroke=Instance.new("UIStroke");stroke.Color=Color3.fromRGB(173,194,216);stroke.Transparency=.4;stroke.Parent=b
- local shackle=Instance.new("Frame");shackle.Size=UDim2.fromOffset(14,13);shackle.Position=UDim2.fromOffset(21,8);shackle.BackgroundTransparency=1;shackle.Parent=b
+ local shackle=Instance.new("Frame");shackle.Size=UDim2.fromOffset(12,12);shackle.Position=UDim2.fromOffset(16,9);shackle.BackgroundTransparency=1;shackle.Parent=b
  local radius=Instance.new("UICorner");radius.CornerRadius=UDim.new(1,0);radius.Parent=shackle
  local shackleStroke=Instance.new("UIStroke");shackleStroke.Thickness=2;shackleStroke.Color=Color3.fromRGB(234,244,255);shackleStroke.Parent=shackle
- local body=Instance.new("Frame");body.Size=UDim2.fromOffset(20,15);body.Position=UDim2.fromOffset(18,17);body.BackgroundColor3=Color3.fromRGB(234,244,255);body.BorderSizePixel=0;body.Parent=b
+ local body=Instance.new("Frame");body.Size=UDim2.fromOffset(18,14);body.Position=UDim2.fromOffset(13,18);body.BackgroundColor3=Color3.fromRGB(234,244,255);body.BorderSizePixel=0;body.Parent=b
  local bodyRadius=Instance.new("UICorner");bodyRadius.CornerRadius=UDim.new(0,3);bodyRadius.Parent=body
- local key=Instance.new("Frame");key.Size=UDim2.fromOffset(3,7);key.Position=UDim2.fromOffset(9,4);key.BackgroundColor3=b.BackgroundColor3;key.BorderSizePixel=0;key.Parent=body
- local text=Instance.new("TextLabel");text.Name="Status";text.Size=UDim2.new(1,-50,1,0);text.Position=UDim2.fromOffset(43,0);text.BackgroundTransparency=1;text.TextColor3=Color3.fromRGB(234,244,255);text.Font=Enum.Font.GothamBold;text.TextSize=12;text.Text="SHIFT LOCK\nOFF";text.Parent=b
+ local key=Instance.new("Frame");key.Size=UDim2.fromOffset(3,7);key.Position=UDim2.fromOffset(8,4);key.BackgroundColor3=b.BackgroundColor3;key.BorderSizePixel=0;key.Parent=body
  local aim=Instance.new("Frame");aim.Name="AimDot";aim.Size=UDim2.fromOffset(5,5);aim.AnchorPoint=Vector2.new(.5,.5);aim.Position=UDim2.fromScale(.5,.5);aim.BackgroundColor3=Color3.fromRGB(235,255,253);aim.BorderSizePixel=0;aim.Visible=false;aim.Parent=gui
  local aimRound=Instance.new("UICorner");aimRound.CornerRadius=UDim.new(1,0);aimRound.Parent=aim
  local aimStroke=Instance.new("UIStroke");aimStroke.Color=Color3.fromRGB(16,25,39);aimStroke.Parent=aim
  local function place()
   local _,bottom=GuiService:GetGuiInset()
-  b.Position=UDim2.new(1,-88-bottom.X,1,-210-bottom.Y)
+  b.Position=UDim2.new(1,-36-bottom.X,1,-36-bottom.Y)
  end
  gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(place);place()
  local wanted=false;local menuOpen=false;local controlled;local originalOffset;local originalRotate;local originalMouse
@@ -30,7 +29,7 @@ function ShiftLock.Init(hud)
   controlled=nil;aim.Visible=false
  end
  local function toggle()
-  wanted=not wanted;text.Text="SHIFT LOCK\n"..(wanted and "ON" or "OFF");b.BackgroundColor3=wanted and Color3.fromRGB(29,111,112) or Color3.fromRGB(16,25,39)
+  wanted=not wanted;b.BackgroundColor3=wanted and Color3.fromRGB(29,111,112) or Color3.fromRGB(16,25,39)
   stroke.Color=wanted and Color3.fromRGB(70,235,220) or Color3.fromRGB(173,194,216)
   if not wanted then release() end
  end

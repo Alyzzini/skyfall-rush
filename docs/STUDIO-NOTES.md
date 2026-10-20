@@ -258,3 +258,7 @@ Added a separate MobileShiftLock client module for touch devices. A lock capsule
 ## v0.8.3 — visible shift lock on every device
 Removed the TouchEnabled-only creation guard and race-only visibility rule that hid the control in normal PC Studio sessions and on the course menu. Shift lock now has a larger SHIFT LOCK / ON-OFF label, remains visible before entering a course, and sits above the jump area. Desktop users can toggle with Left Shift; mouse lock releases during panels/menus and restores its prior mode. The native mouse-lock option is disabled to prevent two Shift handlers fighting over the camera. Mobile uses the touch button. Saved source/full place and built without starting Play.
 
+
+## v0.8.4 — compact shift-lock icon
+Replaced the labeled shift-lock capsule with a 44-pixel circle containing only a centered padlock. It sits 14 pixels inside the bottom-right safe edge, with color indicating enabled state. Text labels are removed. Shift-lock functionality and the keyboard shortcut remain. Saved and built without starting Play.
+
