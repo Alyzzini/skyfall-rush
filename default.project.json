@@ -80,6 +80,9 @@
         },
         "DifficultyProgression": {
           "$path": "src/build/DifficultyProgression.luau"
+        },
+        "RestoreRouteCoins": {
+          "$path": "src/build/RestoreRouteCoins.luau"
         }
       }
     },

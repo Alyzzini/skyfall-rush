@@ -227,7 +227,7 @@ RunService.Heartbeat:Connect(function(dt)
  for _,entry in ipairs(hazards) do
   if not active[entry.Level] and not entry.Part:GetAttribute("AlwaysAnimate") then continue end
   local h=entry.Part; local phase=t*(h:GetAttribute("Speed") or 1)+(h:GetAttribute("Phase") or 0)
-  if entry.Kind=="Spin" then h.CFrame=entry.Base*CFrame.Angles(0,phase,0)
+  if entry.Kind=="Spin" then h.CFrame=entry.Base*CFrame.Angles(0,phase%(2*math.pi),0)
   elseif entry.Kind=="Slide" then h.CFrame=entry.Base+Vector3.new(math.sin(phase)*(h:GetAttribute("Amplitude") or 7),0,0)
   elseif entry.Kind=="Lift" then h.CFrame=entry.Base+Vector3.new(0,(math.sin(phase)+1)*.5*(h:GetAttribute("Amplitude") or 8),0) end
  end

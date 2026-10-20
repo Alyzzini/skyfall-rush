@@ -234,3 +234,7 @@ The Ember ArchCrossingSweeper rotates continuously around its center at 1.1 radi
 ## v0.7.0 — escalating difficulty
 Square jump pads shrink by two studs per level: 10 / 8 / 6 / 4; Stormworks uses six-stud moving platform widths instead of square chains. Curved routes and balance decks narrow across courses. Bend sweepers added to Levels 2–4 (8 / 3 / 15), with increasing speeds, alternating directions and offset phases. Original twelve-stud jump-pad spacing is retained. Five-part pad trim and full exposed-edge outlines fit the revised surfaces. Changed ranked routes use Rush_v8; profiles remain v3. Saved and built without Play-mode testing. See DIFFICULTY.md.
 
+
+## v0.7.1 — spin angle precision and restored coins
+Fixed sweeper rotation precision: CFrame.Angles now receives an angle modulo one revolution rather than the enormous Unix-time-based phase. Restored three gold orbs per section, 24 per course, 96 overall. Coins are 1.2-stud balls centered 2.6 studs above actual route surfaces; moving-platform coins retain follow offsets. Curve and maze placements follow route control points and avoid sweeper centers. Edit-mode downward ray checks found a platform beneath all 96 coins. The existing user play session was stopped for editing; no new Play session was started. Source packaging built successfully.
+
