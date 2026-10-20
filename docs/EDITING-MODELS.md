@@ -9,3 +9,7 @@ Open `Workspace > SkyfallSprint > Levels > Level1` (or another course).
 - Playable surfaces and their outlines are unlocked. `CourseSky`, background scenery, route triggers, spawn reference and fall catcher are locked to prevent accidental selection. Locked objects can still be edited deliberately through Explorer.
 
 The runtime and phase-rest builder use recursive platform lookup. Phase and crumble outlines follow their platform transparency; their outlines do not collide. The scene migration is one-time and preserves later manual edits. No Play-mode testing was performed for this revision at the user's request.
+
+## Complete platform borders (v0.6.2)
+PlatformOutlines adds theme-colored neon trim around exposed deck edges across all four courses. Edges shared by adjoining surfaces are clipped so curved routes do not become grids of seams. Borders are noncolliding, shadow-free and nested inside the owning surface in its obstacle Model. Existing five-part pads remain unchanged. Ball platforms use a silhouette outline. Moving platform borders follow the platform at runtime. The migration preserves the generated borders on later starts. No Play-mode testing was performed.
+

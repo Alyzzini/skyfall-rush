@@ -74,6 +74,9 @@
         },
         "ObstacleModels": {
           "$path": "src/build/ObstacleModels.luau"
+        },
+        "PlatformOutlines": {
+          "$path": "src/build/PlatformOutlines.luau"
         }
       }
     },

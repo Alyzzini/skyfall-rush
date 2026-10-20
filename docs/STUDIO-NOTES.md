@@ -218,3 +218,7 @@ Screenshot corrections: six 7.5-stud spheres replace Ascent stairs; rounded brid
 ## v0.6.1 — editable obstacle assemblies
 Rounded the remaining original balance beams; replaced thin manual patch slivers. Organized each jump/phase/crumble pad as a five-part Model with separate coins, grouped other surfaces, repeated arches, hazards and loose details. Unlocked playable geometry and protected background/hidden infrastructure. Updated recursive runtime references and outline state synchronization. Saved the Studio place, exported the world and built the source project. No Play-mode test was started. See EDITING-MODELS.md.
 
+
+## v0.6.2 — complete platform borders
+Completed outlines around hubs, runways, ramps, rounded beams, rest platforms and moving surfaces in every course. Removed superseded HubEdge and LandingGuide fragments, clipped internal joins, and retained separate five-part pad Models. Added moving-outline transforms. Saved the full place and built source packaging without starting Play.
+

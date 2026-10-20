@@ -20,6 +20,12 @@ local function updateTrim(pad)
   if pad:GetAttribute("PhasePlatform") or pad:GetAttribute("Crumble") then trim.Color=pad.Color end
  end end
 end
+local function moveSurface(part,target)
+ local delta=target*part.CFrame:Inverse()
+ local details=part:FindFirstChild("OutlineDetails")
+ if details then for _,edge in details:GetDescendants() do if edge:IsA("BasePart") then edge.CFrame=delta*edge.CFrame end end end
+ part.CFrame=target
+end
 local function rootOf(p) return p.Character and p.Character:FindFirstChild("HumanoidRootPart") end
 local function mapOf(r) return maps["Level"..r.level] end
 local function tell(p,message) p:SetAttribute("Message",message); p:SetAttribute("MessageId",(p:GetAttribute("MessageId") or 0)+1) end
@@ -225,7 +231,7 @@ RunService.Heartbeat:Connect(function(dt)
   elseif entry.Kind=="Slide" then h.CFrame=entry.Base+Vector3.new(math.sin(phase)*(h:GetAttribute("Amplitude") or 7),0,0)
   elseif entry.Kind=="Lift" then h.CFrame=entry.Base+Vector3.new(0,(math.sin(phase)+1)*.5*(h:GetAttribute("Amplitude") or 8),0) end
  end
- for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; p.CFrame=entry.Base+(p:GetAttribute("MotionAxis") or Vector3.xAxis)*(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude")) end end
+ for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; moveSurface(p,entry.Base+(p:GetAttribute("MotionAxis") or Vector3.xAxis)*(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude"))) end end
  for _,entry in ipairs(following) do if active[entry.Level] then entry.Orb.Position=entry.Platform.Position+entry.Offset end end
  end
  if accumulator<.1 then return end; accumulator=0
