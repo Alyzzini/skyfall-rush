@@ -34,6 +34,15 @@ function Browser.Init(ui)
    elseif index==3 then
     block(Vector3.new(2,19,2),Vector3.new(side*17,3,-27),spec.Color:Lerp(Color3.new(0,0,0),.6))
     block(Vector3.new(13,.5,.5),Vector3.new(side*17,10,-27),spec.Color)
+   elseif index==9 then
+    block(Vector3.new(8,2,14),Vector3.new(side*17,3,-27),spec.Color);block(Vector3.new(2,18,2),Vector3.new(side*17,0,-27),ui.Gold)
+   elseif index==10 then
+    block(Vector3.new(10,42,10),Vector3.new(side*17,10,-27),spec.Color:Lerp(Color3.new(0,0,0),.55))
+    for tier=1,4 do block(Vector3.new(17,1,10),Vector3.new(side*17,tier*8-6,-27),spec.Color) end
+   elseif index==11 then
+    for row=1,4 do block(Vector3.new(9,.4,5),Vector3.new(side*17,0,-row*12),row%2==0 and ui.Gold or spec.Color) end
+   elseif index==12 then
+    block(Vector3.new(3,28,3),Vector3.new(side*17,5,-27),spec.Color);block(Vector3.new(15,2,8),Vector3.new(side*17,12,-27),ui.Gold)
    else
     block(Vector3.one*(side==1 and 12 or 6),Vector3.new(side*19,8,-30),spec.Color,Enum.PartType.Ball)
    end

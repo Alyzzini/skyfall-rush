@@ -23,6 +23,7 @@ local function sanitize(old)
   if typeof(old.Cleared)=="table" then for i=1,#Config.Levels do data.Cleared[tostring(i)]=old.Cleared[tostring(i)]==true end end
   for i=1,#Config.Levels do data.Completed[tostring(i)]=data.Cleared[tostring(i)]==true or i<data.Unlocked or typeof(old.Completed)=="table" and old.Completed[tostring(i)]==true end
   if data.Completed["4"] then data.Unlocked=math.max(data.Unlocked,5) end
+  if data.Completed["8"] then data.Unlocked=math.max(data.Unlocked,9) end
  end
  return data
 end
