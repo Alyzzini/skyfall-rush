@@ -105,4 +105,4 @@ This is a playable development prototype, not a released live service. Desktop i
 
 ## Development
 
-Created by **Ameer (@Alyzzini)**, with AI-assisted implementation and iteration. The source is published for portfolio review; no open-source license has been selected. Roblox and third-party tools retain their respective rights.
+Created by **Ameer (@Alyzzini)**. The source is published for portfolio review; no open-source license has been selected. Roblox and third-party tools retain their respective rights.

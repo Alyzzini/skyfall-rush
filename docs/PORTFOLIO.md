@@ -12,7 +12,7 @@ A procedural speedrun platformer spanning four themed courses and 56 obstacle se
 - Implemented server-owned race timing, sequential route checks, skip-based run disqualification, cosmetic purchase validation and DataStore-backed profile/leaderboard logic.
 - Built responsive course selection, racing HUD, cosmetic shop and ranking interfaces, with procedural world generation and a Rojo workflow for VS Code.
 
-Adjust these bullets to describe the work you personally understand and can explain. This project was developed with AI assistance; be ready to discuss design decisions, review the generated implementation, and describe how you would improve it. Do not claim live player counts, revenue, production reliability or performance gains that have not been measured.
+Use these bullets to describe the project, and be ready to discuss its design decisions and future improvements. Add player counts, revenue or performance results only when they have been measured.
 
 ## Short project entry
 
