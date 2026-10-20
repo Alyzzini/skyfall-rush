@@ -19,6 +19,10 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 **56 sections · 12 obstacle patterns · 5,376 studs · 6 cosmetics**
 
+## Try the Studio prototype
+
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.1.0/SkyfallRush.rbxlx) from the [v0.1.0 portfolio release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.1.0), open it in Roblox Studio, and press **Play → Start Speedrun**. The file includes the source and builders; all four courses generate when Play starts. You do not need Rojo to open this download. This release has been built successfully; fresh-file runtime startup still needs a separate end-to-end check.
+
 ## Features
 
 - **Speedrun integrity:** server-owned elapsed time, sequential route gates, fall penalties, individual course records and a full-campaign board.
