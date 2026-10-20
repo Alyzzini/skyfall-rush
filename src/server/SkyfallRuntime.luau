@@ -224,7 +224,7 @@ for level=1,#Config.Levels do
   if not p:IsA("BasePart") then continue end
   if p:GetAttribute("PhasePlatform") then p:SetAttribute("CourseLevel",level);table.insert(phasePads,p) end
   if p:GetAttribute("Moving") then table.insert(ferries,{Part=p,Base=p.CFrame,Level=level}) end
-  if p:GetAttribute("Crumble") then
+  if p:GetAttribute("Crumble") and not p:GetAttribute("PersonalCrumble") then
    p:SetAttribute("CrumbleState","Solid"); p:SetAttribute("OriginalColor",p.Color)
    p.Touched:Connect(function(hit) local player=touchedPlayer(hit); if player then armCrumble(player,p,level) end end)
   end
@@ -324,8 +324,15 @@ RunService.Heartbeat:Connect(function(dt)
     if math.abs((p:GetAttribute("Progress") or 0)-progress)>.003 then p:SetAttribute("Progress",progress) end
     p:SetAttribute("RunTime",elapsed(r))
     for _,entry in ipairs(hazards) do if entry.Level==r.level and not entry.Part:GetAttribute("ExpansionInactive") then
-     local hpart=entry.Part; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,hpart:GetAttribute("AdvancedFloor") and 3 or .65,0))
-     if math.abs(q.X)<hpart.Size.X/2+.5 and math.abs(q.Y)<hpart.Size.Y/2+1.6 and math.abs(q.Z)<hpart.Size.Z/2+.5 then fallReturn(p,"Caught by a red hazard"); break end
+     local hpart=entry.Part;local footOffset=h and (h.RigType==Enum.HumanoidRigType.R6 and root.Size.Y/2+2 or root.Size.Y/2+h.HipHeight) or 3; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,hpart:GetAttribute("AdvancedFloor") and footOffset or .65,0))
+     local caught
+     if hpart:IsA("Part") and hpart.Shape==Enum.PartType.Ball and math.abs(hpart.Size.X-hpart.Size.Y)<.01 and math.abs(hpart.Size.X-hpart.Size.Z)<.01 then
+      local dy=math.max(0,math.abs(q.Y)-1.1);caught=Vector3.new(q.X,dy,q.Z).Magnitude<hpart.Size.X/2+.55
+     else
+      local verticalMargin=hpart:GetAttribute("AdvancedFloor") and .18 or 1.6
+      caught=math.abs(q.X)<hpart.Size.X/2+.5 and math.abs(q.Y)<hpart.Size.Y/2+verticalMargin and math.abs(q.Z)<hpart.Size.Z/2+.5
+     end
+     if caught then fallReturn(p,"Caught by a red hazard");break end
     end end
     local portal=map.PortalTrigger; local q=portal.CFrame:PointToObjectSpace(root.Position)
     if math.abs(q.X)<5.5 and math.abs(q.Y)<6 and math.abs(q.Z)<2 then
