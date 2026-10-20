@@ -19,7 +19,7 @@ Race across floating courses that introduce different movement and timing ideas.
 
 **96 sections · 12 course identities · 18 cosmetics**
 
-## Full-game visual and static QC — v0.11.0
+## Full-game visual and static QC — v0.11.1
 
 Reviewed all 12 courses and inventoried 854 playable/collidable parts plus 203 hazard parts. The pass adds route chevrons, start/finish frames, wall seams and themed dressing while preserving the original gameplay geometry. Collapsing floors are now personal to each player, spherical hammer collision follows the sphere, and floor hazards use foot position. Other courses’ sky shells no longer show through as distant floating ceilings.
 
@@ -39,9 +39,9 @@ Levels 1–4 are locked and preserved. Clockwork Docks, Prism Archive, Pulse Cit
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.11.0/SkyfallRush.rbxlx) from the [v0.11.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.11.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.11.1/SkyfallRush.rbxlx) from the [v0.11.1 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.11.1), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
 
-### Route revisions (v0.11.0)
+### Route revisions (v0.11.1)
 
 Movement uses **20 WalkSpeed / 50 JumpPower** consistently in configuration and StarterPlayer. Each course has eight focused sections, with checkpoints every two sections. Selected repeated sections become boulder hops, rounded switchbacks, a compact maze, a curved sweeper crossing, climbing terraces, vertical lifts and moving relays. Existing scenery, progression, cosmetics, timers, skips, UI and audio remain.
 
