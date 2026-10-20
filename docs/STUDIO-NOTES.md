@@ -178,3 +178,10 @@ The saved world and fallback startup installer both include this change. Course 
 ## Compact phase rests (v0.3.2)
 
 All six rests now use Size (3.5, 0.5, 4), matching the requested reference. They remain centered between the middle pair of pads, with their top surface aligned just above the step tops. Guides scale to the actual platform dimensions. RestSizeVersion=2 performs the one-time resize; subsequent startup calls preserve manual Size changes. Future size edits must be made while Studio is stopped to persist in the saved place. The current record namespace is Rush_v5; the generic RecordVersion profile logic handles personal-best compatibility.
+
+
+## Course visibility repair (v0.3.3)
+
+Removed the client whole-course hiding/cache logic responsible for invisible return visits. Geometry is never masked based on CurrentLevel. The client clears stale local masking on non-coin geometry while leaving server phase/crumble transparency and authored invisible triggers untouched. Course lighting stays local; coin collection presentation is tracked per player across streaming, and reset clears that collection set. The enclosing 3D scenery, manual tree edits and compact permanent rests are preserved.
+
+This repair does not change race geometry or invalidate existing records. A multi-client Studio session has not been run for this patch.

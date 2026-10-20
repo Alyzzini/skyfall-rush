@@ -56,7 +56,7 @@ The default project imports `src/world/SkyfallSprint.rbxm`, preserving manual is
 
 `CourseEnvironments.Apply` translates each whole course to its configured region without rebuilding obstacles, creates spacious persistent backdrop models, and keeps the fall catchers invisible. Relative obstacle spacing and the Z-based route gates are unchanged. The server retains control of fall returns and race eligibility.
 
-`CourseSky` applies lighting and cloud settings locally for each player's current course. It hides other course instances and the enclosing backdrop from the local camera, preserving an unbroken real sky at all supported zoom distances. Visibility is reapplied to streamed instances and reset events. This is presentation only; server geometry and race validation remain authoritative.
+`CourseSky` applies lighting and cloud settings locally for each player's current course. The earlier local course masking has been removed in v0.3.3; all streamed courses stay visible. Server geometry and race validation remain authoritative.
 
 Coin visual registration and rotor registration respond to incoming streamed instances. Decorative rotor models use atomic streaming. The zoom limit is 512 studs; the environment half-width is 1,100 studs. Broad physical-device streaming and performance coverage remain follow-up work.
 
@@ -66,7 +66,7 @@ This replaces the v0.2.0 approach of hiding the active enclosure. `CourseEnviron
 
 The shell contains real 3D themed scenery: cloud volumes and floating islands, cliff/ruin clusters, lightning/spires, or planets/rings/asteroids/stars. Those models provide depth as the camera moves. The existing hand-edited course decorations are not regenerated.
 
-`CourseSky` hides only inactive courses. It keeps the current enclosure and scenery visible and applies matching local lighting. The saved-world source contains the new environments, and the installer recreates only its own `CourseSky` model at startup. Physical-device performance of the expanded scenery still needs profiling.
+`CourseSky` keeps all streamed courses, enclosures and scenery visible and applies matching local lighting. It clears stale local transparency on non-coin parts at startup, transitions, resets, respawns and streaming additions, without changing authored/server Transparency or Enabled values. `SkyfallClient` alone owns coin visibility, with a per-player collection set retained across streaming and cleared on race reset. The saved-world source contains the new environments, and the installer recreates only its own `CourseSky` model at startup. Physical-device performance of the expanded scenery still needs profiling.
 
 
 ## Phase rest balance patch

@@ -324,18 +324,28 @@ refresh=function()
 end
 for _,attr in {"State","Coins","CurrentLevel","UnlockedLevel","Orbs","Stage","Section","Progress","RankStatus","RankEligible","UsedSkip","BestTime","FinishTime","OwnedItems","EquippedTrail","EquippedAura","DataStatus"} do p:GetAttributeChangedSignal(attr):Connect(refresh) end
 p:GetAttributeChangedSignal("MessageId"):Connect(function() showToast(p:GetAttribute("Message") or "") end)
-local initial={}; local moving={}
+local initial={}; local moving={}; local collectedCoins={}
+local function registerCoin(obj)
+ if not obj:IsA("BasePart") or not obj.Parent or obj.Parent.Name~="Orbs" then return end
+ local map=obj.Parent.Parent
+ if not map then return end
+ initial[obj]=obj.Position
+ local key=map.Name..":"..tostring(obj:GetAttribute("OrbId"))
+ obj.LocalTransparencyModifier=collectedCoins[key] and 1 or 0
+end
 maps.DescendantAdded:Connect(function(obj)
- if obj:IsA("BasePart") and obj.Parent and obj.Parent.Name=="Orbs" then initial[obj]=obj.Position end
+ registerCoin(obj)
 end)
 for _,map in maps:GetChildren() do
- for _,orb in map.Orbs:GetChildren() do initial[orb]=orb.Position end
+ for _,orb in map.Orbs:GetChildren() do registerCoin(orb) end
  for _,platform in map.Platforms:GetChildren() do if platform:GetAttribute("Moving") then moving[platform]=platform.Position end end
 end
 action.OnClientEvent:Connect(function(kind,level,id)
  if kind=="Reset" then
+  table.clear(collectedCoins)
   for _,map in maps:GetChildren() do for _,orb in map.Orbs:GetChildren() do orb.LocalTransparencyModifier=0 end end
  elseif kind=="Collected" then
+  collectedCoins["Level"..level..":"..id]=true
   local map=maps:FindFirstChild("Level"..level); local orb=map and map.Orbs:FindFirstChild("Orb_"..id); if orb then orb.LocalTransparencyModifier=1 end
  elseif kind=="OpenShop" then refreshShop(); openPanel("ShopPanel")
  elseif kind=="OpenBoard" then openPanel("BoardPanel"); loadBoard("Level"..level)

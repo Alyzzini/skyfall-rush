@@ -21,7 +21,11 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.2/SkyfallRush.rbxlx) from the [v0.3.2 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.2), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.3.3/SkyfallRush.rbxlx) from the [v0.3.3 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.3.3), open it in Roblox Studio, and press **Play → Start Speedrun**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Visibility fix (v0.3.3)
+
+Removed whole-course transparency masking that could leave platforms invisible after switching courses or restarting. Shared obstacles remain available to all players. Lighting and collected coin visuals remain local to each player; collected coins also retain their state when streamed back in. Phase timing, transparent hazards, the hand-edited world and compact rest sizes are preserved.
 
 ### Latest balance fix: permanent phase rests
 
@@ -29,7 +33,7 @@ All six Phase Steps sections now have a centered, anchored **3.5 × 0.5 × 4 stu
 
 ### Latest update: enclosed 3D worlds
 
-Each course is enclosed by a **visible, rounded sky shell**, with 3D scenery inside. The distant shell uses the same unlit color on every surface to disguise panel joins and avoids square wall/ceiling corners. The active course environment stays visible during gameplay; other course regions are hidden locally.
+Each course is enclosed by a **visible, rounded sky shell**, with 3D scenery inside. The distant shell uses the same unlit color on every surface to disguise panel joins and avoids square wall/ceiling corners. Every course and its enclosure remain visible whenever streamed in. The enclosing scenery and course separation conceal neighboring levels without hiding their obstacles.
 
 | Course | Surrounding 3D world |
 | --- | --- |
