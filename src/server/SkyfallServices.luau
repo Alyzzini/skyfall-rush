@@ -12,7 +12,7 @@ local profileStore=live and DataStoreService:GetDataStore(Config.ProfileStore) o
 local catalog={}; for _,item in ipairs(Config.Catalog) do catalog[item.Id]=item end
 local boards={}; local stores={}; local memory={}; local nameCache={}
 local function sanitize(old)
- local data={Coins=Config.StartingCoins,Unlocked=1,Wins=0,Owned={},EquippedTrail="None",EquippedAura="None",Best={},Cleared={},RecordVersion=Config.Version}
+ local data={Coins=Config.StartingCoins,Unlocked=1,Wins=0,Owned={},EquippedTrail="None",EquippedAura="None",Best={},Cleared={},Completed={},RecordVersion=Config.Version}
  if typeof(old)=="table" then
   data.Coins=math.clamp(math.floor(tonumber(old.Coins) or Config.StartingCoins),0,2147483647)
   data.Unlocked=math.clamp(math.floor(tonumber(old.Unlocked) or 1),1,4)
@@ -21,6 +21,7 @@ local function sanitize(old)
   for _,kind in {"Trail","Aura"} do local id=old["Equipped"..kind]; if catalog[id] and catalog[id].Kind==kind and data.Owned[id] then data["Equipped"..kind]=id end end
   if old.RecordVersion==Config.Version and typeof(old.Best)=="table" then for key,v in pairs(old.Best) do if typeof(v)=="number" and v>0 and v<86400000 then data.Best[tostring(key)]=math.floor(v) end end end
   if typeof(old.Cleared)=="table" then for i=1,4 do data.Cleared[tostring(i)]=old.Cleared[tostring(i)]==true end end
+  for i=1,4 do data.Completed[tostring(i)]=data.Cleared[tostring(i)]==true or i<data.Unlocked or typeof(old.Completed)=="table" and old.Completed[tostring(i)]==true end
  end
  return data
 end
@@ -29,6 +30,7 @@ function Services.Sync(p)
  p:SetAttribute("Coins",d.Coins); p:SetAttribute("UnlockedLevel",d.Unlocked)
  p:SetAttribute("OwnedItems",HttpService:JSONEncode(d.Owned))
  p:SetAttribute("EquippedTrail",d.EquippedTrail); p:SetAttribute("EquippedAura",d.EquippedAura)
+ p:SetAttribute("CompletedMaps",HttpService:JSONEncode(d.Completed));p:SetAttribute("MapBestTimes",HttpService:JSONEncode(d.Best))
  p:SetAttribute("SavingAvailable",d.CanSave==true)
  if p:FindFirstChild("leaderstats") then p.leaderstats.Coins.Value=d.Coins; p.leaderstats.Wins.Value=d.Wins or 0 end
 end
@@ -90,19 +92,44 @@ function Services.ApplyCosmetics(p)
  for _,obj in root:GetChildren() do if obj.Name:match("^SkyfallCosmetic") then obj:Destroy() end end
  local item=catalog[d.EquippedTrail]
  if item then
-  local a=Instance.new("Attachment"); a.Name="SkyfallCosmeticA"; a.Position=Vector3.new(-.65,.1,.2); a.Parent=root
-  local b=Instance.new("Attachment"); b.Name="SkyfallCosmeticB"; b.Position=Vector3.new(.65,.1,.2); b.Parent=root
-  local trail=Instance.new("Trail"); trail.Name="SkyfallCosmeticTrail"; trail.Attachment0=a; trail.Attachment1=b; trail.Color=ColorSequence.new(item.Color,Color3.new(1,1,1)); trail.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,.1),NumberSequenceKeypoint.new(1,1)}); trail.Lifetime=.55; trail.MinLength=.05; trail.LightEmission=.8; trail.FaceCamera=true; trail.Parent=root
+  local colors=item.Middle and ColorSequence.new({ColorSequenceKeypoint.new(0,item.Color),ColorSequenceKeypoint.new(.5,item.Middle),ColorSequenceKeypoint.new(1,item.Secondary)}) or ColorSequence.new(item.Color,item.Secondary or Color3.new(1,1,1))
+  for index=1,(item.Style=="Twin" and 2 or 1) do
+   local center=item.Style=="Twin" and (index==1 and -.65 or .65) or 0;local width=item.Width or 1.3
+   local a=Instance.new("Attachment");a.Name="SkyfallCosmeticA"..index;a.Position=Vector3.new(center-width/2,.1,.2);a.Parent=root
+   local b=Instance.new("Attachment");b.Name="SkyfallCosmeticB"..index;b.Position=Vector3.new(center+width/2,.1,.2);b.Parent=root
+   local trail=Instance.new("Trail");trail.Name="SkyfallCosmeticTrail"..index;trail.Attachment0=a;trail.Attachment1=b;trail.Color=colors
+   trail.Transparency=NumberSequence.new({NumberSequenceKeypoint.new(0,.1),NumberSequenceKeypoint.new(1,1)});trail.WidthScale=NumberSequence.new({NumberSequenceKeypoint.new(0,1),NumberSequenceKeypoint.new(1,.05)})
+   trail.Lifetime=item.Lifetime or .55;trail.MinLength=.08;trail.LightEmission=.7;trail.FaceCamera=true;trail.Parent=root
+  end
  end
  local aura=catalog[d.EquippedAura]
  if aura then
-  if aura.Id=="SolarHalo" and head then
-   local folder=Instance.new("Folder"); folder.Name="SkyfallHalo"; folder.Parent=char
-   for i=1,12 do
-    local angle=i*math.pi/6; local part=Instance.new("Part"); part.Name="HaloSegment"; part.Size=Vector3.new(.65,.12,.18); part.Material=Enum.Material.Neon; part.Color=aura.Color; part.CanCollide=false; part.CanTouch=false; part.CanQuery=false; part.Massless=true; part.CFrame=head.CFrame*CFrame.new(math.cos(angle)*1.2,1.1,math.sin(angle)*1.2)*CFrame.Angles(0,-angle,0); part.Parent=folder
-    local weld=Instance.new("WeldConstraint"); weld.Part0=head; weld.Part1=part; weld.Parent=part
+  local style=aura.Style or (aura.Id=="SolarHalo" and "Halo" or "Glow")
+  if style=="Glow" then
+   local h=Instance.new("Highlight");h.Name="SkyfallAura";h.Adornee=char;h.FillTransparency=.9;h.OutlineTransparency=.15
+   h.FillColor=aura.Secondary or aura.Color;h.OutlineColor=aura.Color;h.DepthMode=Enum.HighlightDepthMode.Occluded;h.Parent=char
+  elseif head then
+   local folder=Instance.new("Folder");folder.Name="SkyfallHalo";folder.Parent=char
+   local function segment(anchor,size,cf,color)
+    local part=Instance.new("Part");part.Name="AuraSegment";part.Size=size;part.Material=Enum.Material.Neon;part.Color=color
+    part.CanCollide=false;part.CanTouch=false;part.CanQuery=false;part.CastShadow=false;part.Massless=true;part.CFrame=anchor.CFrame*cf;part.Parent=folder
+    local weld=Instance.new("WeldConstraint");weld.Part0=anchor;weld.Part1=part;weld.Parent=part
    end
-  else local h=Instance.new("Highlight"); h.Name="SkyfallAura"; h.Adornee=char; h.FillTransparency=.9; h.OutlineTransparency=.15; h.FillColor=aura.Color; h.OutlineColor=aura.Color; h.DepthMode=Enum.HighlightDepthMode.Occluded; h.Parent=char end
+   if style=="Crown" then
+    for i=1,8 do local angle=i*math.pi/4
+     segment(head,Vector3.new(.2,i%2==0 and .7 or .45,.22),CFrame.new(math.cos(angle)*.75,1.05,math.sin(angle)*.75)*CFrame.Angles(0,-angle,0),i%2==0 and aura.Color or aura.Secondary or aura.Color)
+    end
+   elseif style=="Orbit" then
+    for ring=1,2 do for i=1,8 do local angle=i*math.pi/4
+     local cf=CFrame.Angles(ring==1 and .55 or -.55,0,0)*CFrame.Angles(0,angle,0)*CFrame.new(2,0,0)
+     segment(root,Vector3.new(.13,.13,1.65),cf,ring==1 and aura.Color or aura.Secondary or aura.Color)
+    end end
+   else
+    for i=1,12 do local angle=i*math.pi/6
+     segment(head,Vector3.new(.65,.12,.18),CFrame.new(math.cos(angle)*1.2,1.1,math.sin(angle)*1.2)*CFrame.Angles(0,-angle,0),aura.Color)
+    end
+   end
+  end
  end
 end
 function Services.Shop(p,request,id)

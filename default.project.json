@@ -102,6 +102,9 @@
         },
         "SkyfallFeedback": {
           "$path": "src/client/SkyfallFeedback.luau"
+        },
+        "CourseBrowser": {
+          "$path": "src/client/CourseBrowser.luau"
         }
       },
       "$properties": {

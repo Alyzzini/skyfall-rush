@@ -242,3 +242,7 @@ Fixed sweeper rotation precision: CFrame.Angles now receives an angle modulo one
 ## v0.7.2 — all-course route and checkpoint repair
 Rebuilt 32 section arrival volumes and 96 sequential route checks using actual landing hubs and restored coin locations. Moving route checks now follow their platforms. Recentered all 12 checkpoints and added full-deck arrival zones. Server progression uses swept segment/box intersections to catch jumps and fast frames. Missed route checks make a run unranked rather than blocking casual section and checkpoint progress. Partial checks clear on skips, respawns and resets. Rush_v9 separates revised validation records. Physical obstacle geometry remains preserved. Saved and built without a new Play session. See ROUTE-REGISTRATION.md.
 
+
+## v0.8.0 — custom cosmetics and Maps browser
+Added six trails and six auras (18 total cosmetics), configurable gradient/twin/tapered trails, glow/halo/crown/orbital aura styles and shop category filters. Added a separate CourseBrowser client module with inexpensive theme previews, completed/unlocked status, best times and server-validated Enter/Replay actions. Completion state persists separately from ranked first-clear rewards, preserving existing profile contents. Switching maps explicitly ends the current run. No Play-mode test was started. See COSMETICS-MAPS.md.
+

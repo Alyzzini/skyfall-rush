@@ -140,7 +140,7 @@ function Runtime.Finish(p)
   p:SetAttribute("BestTime",(d.Best["Level"..r.level] or 0)/1000)
   tell(p,"LEVEL CLEAR! +"..reward.." coins. Clean time: "..Rules.FormatTime(r.elapsed))
  else tell(p,r.usedSkip and "LEVEL CLEAR / USED SKIP / NO LEADERBOARD TIME" or "LEVEL CLEAR / "..reason) end
- local d=Services.Profiles[p]; d.Unlocked=math.max(d.Unlocked,math.min(4,r.level+1)); Services.Sync(p)
+ local d=Services.Profiles[p];d.Completed=d.Completed or {};d.Completed[tostring(r.level)]=true; d.Unlocked=math.max(d.Unlocked,math.min(4,r.level+1)); Services.Sync(p)
  r.campaignTotal=(r.campaignBaseTime or 0)+(ranked and r.elapsed or 0)
  r.campaignFinishedEligible=r.campaignBaseEligible==true and ranked
  if r.level==4 and r.campaignFinishedEligible then

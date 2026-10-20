@@ -66,9 +66,11 @@ local toolbar=frame(gui,"Toolbar",UDim2.new(.94,0,0,36),UDim2.new(.5,0,0,111),na
 local shopButton=button(toolbar,"ShopButton","SHOP",UDim2.new(.25,-6,1,0),UDim2.fromScale(0,0),gold)
 local boardButton=button(toolbar,"BoardButton","RANKINGS",UDim2.new(.25,-6,1,0),UDim2.fromScale(.25,0),Color3.fromRGB(174,190,226))
 local restartButton=button(toolbar,"RestartButton","RESTART",UDim2.new(.25,-6,1,0),UDim2.fromScale(.5,0),Color3.fromRGB(160,184,202))
-local skipButton=button(toolbar,"SkipButton","SKIP â†’",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
+local skipButton=button(toolbar,"SkipButton","SKIP >",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
 local audioButton=button(toolbar,"AudioButton","AUDIO / FX",UDim2.new(.2,-6,1,0),UDim2.fromScale(.8,0),Color3.fromRGB(140,210,235))
-for i,b in ipairs({shopButton,boardButton,restartButton,skipButton,audioButton}) do b.Size=UDim2.new(.2,-6,1,0);b.Position=UDim2.fromScale((i-1)*.2,0) end
+local mapsButton=button(toolbar,"MapsButton","MAPS",UDim2.new(),UDim2.new(),cyan)
+boardButton.Text="RANKS";restartButton.Text="RESET";audioButton.Text="AUDIO"
+for i,b in ipairs({mapsButton,shopButton,boardButton,restartButton,skipButton,audioButton}) do b.Size=UDim2.new(1/6,-5,1,0);b.Position=UDim2.fromScale((i-1)/6,0) end
 local raceMenuOpen=false
 local raceMenu=button(statusRow,"RaceMenu","MENU",UDim2.fromOffset(78,30),UDim2.new(.97,0,0,83),navy); raceMenu.AnchorPoint=Vector2.new(1,0); raceMenu.TextColor3=white; raceMenu.Visible=false
 local graphics=button(statusRow,"Graphics","VISUALS: AUTO",UDim2.fromOffset(132,28),UDim2.new(.97,0,0,154),navy);graphics.AnchorPoint=Vector2.new(1,0);graphics.TextColor3=muted;stroke(graphics,cyan,.75)
@@ -134,6 +136,8 @@ local function openPanel(name)
  overlay.Visible=true; modal.Visible=false
  if refresh then refresh() end
 end
+local openMaps=require(script.Parent:WaitForChild("CourseBrowser")).Init({Player=p,Config=Config,Panel=panel,Label=label,Frame=frame,Button=button,White=white,Muted=muted,Gold=gold,Cyan=cyan,Action=action,Close=closePanels,Open=openPanel,FormatTime=timeString})
+mapsButton.Activated:Connect(openMaps)
 local shop=panel("ShopPanel","TRAILS & AURAS",650,510)
 local shopStatus=label(shop,"Status","125 COINS",UDim2.new(1,-44,0,26),UDim2.fromOffset(22,58),gold,14); shopStatus.TextXAlignment=Enum.TextXAlignment.Left; fitText(shopStatus,14,8)
 local scroll=Instance.new("ScrollingFrame"); scroll.Name="Items"; scroll.Position=UDim2.fromOffset(22,97); scroll.Size=UDim2.new(1,-44,1,-180); scroll.BackgroundTransparency=1; scroll.BorderSizePixel=0; scroll.ScrollBarThickness=4; scroll.AutomaticCanvasSize=Enum.AutomaticSize.Y; scroll.CanvasSize=UDim2.new(); scroll.Parent=shop
@@ -150,6 +154,18 @@ for itemIndex,item in ipairs(Config.Catalog) do
   action:FireServer(owned[item.Id] and "EquipItem" or "BuyItem",item.Id)
  end)
 end
+local filters=frame(shop,"Filters",UDim2.new(1,-44,0,28),UDim2.fromOffset(22,90),navy,1)
+scroll.Position=UDim2.fromOffset(22,128);scroll.Size=UDim2.new(1,-44,1,-211)
+local filterButtons={}
+local function filterShop(kind)
+ for _,item in ipairs(Config.Catalog) do scroll[item.Id].Visible=kind=="All" or item.Kind==kind end
+ for key,b in pairs(filterButtons) do b.BackgroundColor3=key==kind and cyan or Color3.fromRGB(65,85,110) end
+end
+for index,kind in {"All","Trail","Aura"} do
+ local b=button(filters,kind,kind=="All" and "ALL ITEMS" or kind=="Trail" and "TRAILS" or "AURAS",UDim2.new(1/3,-6,1,0),UDim2.fromScale((index-1)/3,0),Color3.fromRGB(65,85,110))
+ filterButtons[kind]=b;b.Activated:Connect(function() filterShop(kind) end)
+end
+filterShop("All")
 local unequipTrail=button(shop,"UnequipTrail","NO TRAIL",UDim2.new(.5,-26,0,32),UDim2.new(0,22,1,-75),Color3.fromRGB(81,101,128)); unequipTrail.TextColor3=white; unequipTrail.Activated:Connect(function() action:FireServer("Unequip","Trail") end)
 local unequipAura=button(shop,"UnequipAura","NO AURA",UDim2.new(.5,-26,0,32),UDim2.new(.5,4,1,-75),Color3.fromRGB(81,101,128)); unequipAura.TextColor3=white; unequipAura.Activated:Connect(function() action:FireServer("Unequip","Aura") end)
 label(shop,"ShopRules","Cosmetics only / movement stays fair / race timer keeps running",UDim2.new(1,-44,0,20),UDim2.new(0,22,1,-30),muted,10)
@@ -232,7 +248,7 @@ local function updateTrack() nowPlaying.Text="NOW PLAYING / "..(p:GetAttribute("
 p:GetAttributeChangedSignal("NowPlaying"):Connect(updateTrack);updateTrack()
 local function volumeRow(attribute,title,y)
  label(audioContent,attribute.."Label",title,UDim2.new(.45,-22,0,34),UDim2.fromOffset(12,y),white,14).TextXAlignment=Enum.TextXAlignment.Left
- local minus=button(audioContent,attribute.."Down","âˆ’",UDim2.new(.12,0,0,34),UDim2.new(.47,0,0,y),Color3.fromRGB(64,88,115))
+ local minus=button(audioContent,attribute.."Down","-",UDim2.new(.12,0,0,34),UDim2.new(.47,0,0,y),Color3.fromRGB(64,88,115))
  local value=button(audioContent,attribute.."Mute","",UDim2.new(.22,-12,0,34),UDim2.new(.60,0,0,y),Color3.fromRGB(101,179,190))
  local plus=button(audioContent,attribute.."Up","+",UDim2.new(.12,0,0,34),UDim2.new(.83,0,0,y),Color3.fromRGB(64,88,115))
  local previous=p:GetAttribute(attribute) or .3
@@ -287,7 +303,7 @@ for _,item in ipairs(Config.Catalog) do
  row.Swatch:Destroy()
  local preview=frame(row,"Preview",UDim2.fromOffset(50,58),UDim2.fromOffset(9,15),Color3.fromRGB(16,28,43)); corner(preview,8)
  if item.Kind=="Trail" then
-  for j=1,4 do local ribbon=frame(preview,"Ribbon",UDim2.fromOffset(31-j*3,4),UDim2.fromOffset(7+j*2,10+j*7),item.Color,(j-1)*.18); ribbon.Rotation=-25; corner(ribbon,3) end
+  for j=1,4 do local ribbon=frame(preview,"Ribbon",UDim2.fromOffset(31-j*3,4),UDim2.fromOffset(7+j*2,10+j*7),(j>2 and item.Secondary or item.Color) or item.Color,(j-1)*.18); ribbon.Rotation=-25; corner(ribbon,3) end
  else
   local ring=frame(preview,"Aura",UDim2.fromOffset(29,29),UDim2.fromOffset(10,14),item.Color,.9); corner(ring,100); stroke(ring,item.Color,.1)
   local core=frame(preview,"Core",UDim2.fromOffset(9,18),UDim2.fromOffset(20,20),item.Color,.25); corner(core,5)
@@ -342,7 +358,7 @@ local function fitCard()
  wallet.Position=UDim2.new(.73,0,0,compact and 0 or 4)
  pickupText.Position=UDim2.new(.73,0,0,compact and 32 or 39)
  toolbar.Size=UDim2.new(.88,0,0,32)
- toolbar:FindFirstChildOfClass("UISizeConstraint").MaxSize=Vector2.new(550,32)
+ toolbar:FindFirstChildOfClass("UISizeConstraint").MaxSize=Vector2.new(750,32)
  if refresh then refresh() end
 end
 gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(fitCard); fitCard()
@@ -375,16 +391,16 @@ refresh=function()
   kicker.Text=level==4 and "FOUR COURSES COMPLETE" or "LEVEL "..(level+1).." UNLOCKED"
   heading.Text=skipped and "ASSISTED CLEAR" or "COURSE COMPLETE!"
   body.Text=skipped and "USED SKIP / No time recorded.\nYou can keep exploring or restart for a ranked run." or (timeString(p:GetAttribute("FinishTime") or 0)..(ranked and " / CLEAN RUN" or " / UNRANKED").."\n"..spec.Title)
-  startButton.Text=level<4 and "NEXT LEVEL  â†’" or "RESTART FULL CAMPAIGN  â†’"
+  startButton.Text=level<4 and "NEXT LEVEL  >" or "RESTART FULL CAMPAIGN  >"
  else
   kicker.Text="SKYFALL RUSH / "..spec.Difficulty
   heading.Text=string.upper(spec.Title)
   body.Text=courseSubtitles[level].."\n"..spec.Summary
-  startButton.Text="ENTER COURSE  â†’"
+  startButton.Text="ENTER COURSE  >"
  end
  local best=p:GetAttribute("BestTime") or 0
  bestText.Text=best>0 and "PERSONAL BEST / "..timeString(best) or "Finish clean to set a personal best."
- rulesText.Text=UIS.TouchEnabled and "STICK + JUMP   â€¢   CYAN SOLID / PINK GHOST / RED DANGER" or "WASD + SPACE   â€¢   CYAN SOLID / PINK GHOST / RED DANGER"
+ rulesText.Text=UIS.TouchEnabled and "STICK + JUMP   /   CYAN SOLID / PINK GHOST / RED DANGER" or "WASD + SPACE   /   CYAN SOLID / PINK GHOST / RED DANGER"
  if state=="Armed" then objectiveText.Text="TIMER READY / Walk through the blue gate to begin"
  elseif playing then
   local section=p:GetAttribute("Section") or 1; local pattern=spec.Patterns[section]
@@ -512,7 +528,7 @@ RunService.Heartbeat:Connect(function(dt)
  end
 end)
 
-for _,b in {shopButton,boardButton,restartButton,skipButton,audioButton} do b.BackgroundColor3=Color3.fromRGB(23,37,55); b.TextColor3=white; stroke(b,muted,.82) end
+for _,b in {mapsButton,shopButton,boardButton,restartButton,skipButton,audioButton} do b.BackgroundColor3=Color3.fromRGB(23,37,55); b.TextColor3=white; stroke(b,muted,.82) end
 shopButton.TextColor3=gold; skipButton.TextColor3=Color3.fromRGB(205,160,255)
 -- Menu camera establishes the selected world; gameplay immediately restores avatar control.
 local menuCamera=false

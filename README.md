@@ -21,9 +21,9 @@ Race across floating courses that introduce different movement and timing ideas.
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.7.2/SkyfallRush.rbxlx) from the [v0.7.2 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.7.2), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.8.0/SkyfallRush.rbxlx) from the [v0.8.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.8.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
 
-### Route revisions (v0.7.2)
+### Route revisions (v0.8.0)
 
 Movement uses **20 WalkSpeed / 50 JumpPower** consistently in configuration and StarterPlayer. Each course has eight focused sections, with checkpoints every two sections. Selected repeated sections become boulder hops, rounded switchbacks, a compact maze, a curved sweeper crossing, climbing terraces, vertical lifts and moving relays. Existing scenery, progression, cosmetics, timers, skips, UI and audio remain.
 
@@ -175,6 +175,7 @@ This is a playable development prototype, not a released live service. Desktop i
 ## Development
 
 Created by **Ameer (@Alyzzini)**. The source is published for portfolio review; no open-source license has been selected. Roblox and third-party tools retain their respective rights.
+
 
 
 
