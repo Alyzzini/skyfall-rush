@@ -230,3 +230,7 @@ Studio output identified a fatal startup error in PolishWorld: Size is not a val
 ## v0.6.4 — crossing sweeper
 The Ember ArchCrossingSweeper rotates continuously around its center at 1.1 radians/second (about 5.7 seconds per revolution). Its AlwaysAnimate attribute keeps it moving during gameplay even before a player selects Ember. The platform remains stationary, and existing red-hazard behavior is retained. Saved and built without entering Play mode.
 
+
+## v0.7.0 — escalating difficulty
+Square jump pads shrink by two studs per level: 10 / 8 / 6 / 4; Stormworks uses six-stud moving platform widths instead of square chains. Curved routes and balance decks narrow across courses. Bend sweepers added to Levels 2–4 (8 / 3 / 15), with increasing speeds, alternating directions and offset phases. Original twelve-stud jump-pad spacing is retained. Five-part pad trim and full exposed-edge outlines fit the revised surfaces. Changed ranked routes use Rush_v8; profiles remain v3. Saved and built without Play-mode testing. See DIFFICULTY.md.
+

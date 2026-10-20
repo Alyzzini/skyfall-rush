@@ -77,6 +77,9 @@
         },
         "PlatformOutlines": {
           "$path": "src/build/PlatformOutlines.luau"
+        },
+        "DifficultyProgression": {
+          "$path": "src/build/DifficultyProgression.luau"
         }
       }
     },
