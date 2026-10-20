@@ -8,20 +8,28 @@ Built in **Luau** for **Roblox Studio**, with a **Rojo + VS Code** source workfl
 
 ## The game
 
-Race across floating courses that become longer and harder. Chain jumps, read solid/ghost platforms, ride moving ferries, dodge machinery, and collect optional coins for trails and auras. Every checkpoint separates four obstacle sections.
+Race across floating courses that introduce different movement and timing ideas. Chain jumps, read solid/ghost platforms, ride moving ferries, dodge machinery, and collect optional coins for trails and auras. Checkpoints now follow two obstacle sections.
 
 | Course | Difficulty | Sections | Length | Visual identity |
 | --- | --- | ---: | ---: | --- |
 | The Ascent | Easy | 8 | 768 studs | Hanging sky gardens |
-| Ember Ruins | Medium | 12 | 1,152 studs | Broken foundry arches |
-| Stormworks | Hard | 16 | 1,536 studs | Storm-harvesting turbines |
-| Solar Collapse | Expert | 20 | 1,920 studs | Orbital reactor fragments |
+| Ember Ruins | Medium | 8 | 768 studs | Maze, curved crossing and climbing terraces |
+| Stormworks | Hard | 8 | 768 studs | Moving relays, elevators and wind walks |
+| Solar Collapse | Expert | 8 | 768 studs | Phase timing, orbit turns and reactor escape |
 
-**56 sections · 12 obstacle patterns · 5,376 studs · 6 cosmetics**
+**32 sections · 4 distinct course identities · 3,072 route studs · 6 cosmetics**
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.5.0/SkyfallRush.rbxlx) from the [v0.5.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.5.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.6.0/SkyfallRush.rbxlx) from the [v0.6.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.6.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Route revisions (v0.6.0)
+
+Movement uses **20 WalkSpeed / 50 JumpPower** consistently in configuration and StarterPlayer. Each course has eight focused sections, with checkpoints every two sections. Selected repeated sections become boulder hops, rounded switchbacks, a compact maze, a curved sweeper crossing, climbing terraces, vertical lifts and moving relays. Existing scenery, progression, cosmetics, timers, skips, UI and audio remain.
+
+Following screenshot feedback, the old overlapping stair decks became six **7.5-stud balls**; sharp joins became rounded, matching-width curves; the forked rail bridge and overlapping spirals became clear single routes. Sequential route nodes enforce their intended turns. Decorative debris beyond the shortened finishes was removed. New geometry/timing uses **Rush_v7** records while currency, cosmetics, unlocks and wins retain their profile store.
+
+The user handles gameplay testing for this revision. No Play-mode tests were run after that instruction. Earlier automated traversal attempts were incomplete and do not certify this release. [Revision details](docs/LEVEL-DESIGN.md).
 
 ### Arcade audio and effects (v0.5.0)
 
@@ -152,7 +160,7 @@ This updates `src/world/SkyfallSprint.rbxm`, which future Rojo builds and GitHub
 
 ## Current status and limitations
 
-This is a playable development prototype, not a released live service. Desktop interactions and simulated phone layouts have been inspected. The latest visual pass did not include a full manual completion of all 56 sections or profiling on low-end physical devices.
+This is a playable development prototype, not a released live service. Desktop interactions and simulated phone layouts have been inspected. The current route revision awaits user gameplay testing. Full manual completion, physical touch input and low-end device profiling are not certified.
 
 - **Global data:** the original Studio place is unpublished. Live cross-server persistence, session recovery under real outages and production leaderboard operations still need published-environment validation.
 - **Purchases:** skip is explicitly free. `SkipProductId = 0` is a placeholder; a real Robux product requires server receipt handling before it can charge users.

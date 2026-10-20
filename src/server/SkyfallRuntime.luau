@@ -34,7 +34,7 @@ end
 function Runtime.Start(p,crossedGate)
  local r=runs[p]; if not r or not Services.Profiles[p] then return false end
  if r.level==1 then r.campaignBaseTime=0; r.campaignBaseEligible=true end
- r.usedSkip=false; r.eligible=true; r.invalidReason=nil; r.startedAt=crossedGate and now() or nil; r.penalty=0; r.elapsed=0; r.cpStage=0; r.completedSections=0; r.totalSections=Config.Levels[r.level].Sections; r.lastSplit=now(); r.collected={}; r.orbs=0; r.lastSpring=0
+ r.usedSkip=false; r.eligible=true; r.invalidReason=nil; r.startedAt=crossedGate and now() or nil; r.penalty=0; r.elapsed=0; r.cpStage=0; r.completedSections=0;r.routeNode=0; r.totalSections=Config.Levels[r.level].Sections; r.lastSplit=now(); r.collected={}; r.orbs=0; r.lastSpring=0
  r.portalDebounce=0
  p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("FinishTime",0); p:SetAttribute("RunStartedAt",r.startedAt or 0); p:SetAttribute("PenaltySeconds",0)
  syncRank(p,r); setState(p,r,crossedGate and "Racing" or "Armed")
@@ -49,7 +49,7 @@ function Runtime.ChooseLevel(p,index,fromNext,autoStart)
  if not r or not profile or typeof(index)~="number" or index%1~=0 or index<1 or index>profile.Unlocked or index>4 then return false end
  if fromNext then r.campaignBaseTime=r.campaignTotal or 0; r.campaignBaseEligible=r.campaignFinishedEligible==true
  else r.campaignBaseTime=0; r.campaignBaseEligible=index==1 end
- r.level=index; r.cpStage=0; r.completedSections=0; r.orbs=0; r.collected={}; r.usedSkip=false; r.eligible=true; r.totalSections=Config.Levels[index].Sections
+ r.level=index; r.cpStage=0; r.completedSections=0;r.routeNode=0; r.orbs=0; r.collected={}; r.usedSkip=false; r.eligible=true; r.totalSections=Config.Levels[index].Sections
  r.gatePrevious=nil;r.startedAt=nil
  -- Keep only this player's selected sky environment persistent. Never hide platforms.
  local selectedRoom=mapOf(r):FindFirstChild("CourseSky")
@@ -58,7 +58,7 @@ function Runtime.ChooseLevel(p,index,fromNext,autoStart)
   r.room=selectedRoom;if selectedRoom then selectedRoom:AddPersistentPlayer(p) end
  end
  local spec=Config.Levels[index]
- p:SetAttribute("CurrentLevel",index); p:SetAttribute("LevelTitle",spec.Title); p:SetAttribute("LevelDifficulty",spec.Difficulty); p:SetAttribute("LevelSummary",spec.Summary); p:SetAttribute("LevelSections",spec.Sections); p:SetAttribute("LevelCheckpointCount",spec.Sections/4-1); p:SetAttribute("LevelTotalOrbs",spec.Sections*3)
+ p:SetAttribute("CurrentLevel",index); p:SetAttribute("LevelTitle",spec.Title); p:SetAttribute("LevelDifficulty",spec.Difficulty); p:SetAttribute("LevelSummary",spec.Summary); p:SetAttribute("LevelSections",spec.Sections); p:SetAttribute("LevelCheckpointCount",spec.Sections/Config.CheckpointEvery-1); p:SetAttribute("LevelTotalOrbs",spec.Sections*3)
  p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("RunStartedAt",0); p:SetAttribute("FinishTime",0); p:SetAttribute("PenaltySeconds",0); p:SetAttribute("BestTime",(profile.Best["Level"..index] or 0)/1000)
  syncRank(p,r); setState(p,r,"Ready"); teleport(p,checkpointPosition(r)); action:FireClient(p,"Reset",index)
  if autoStart then Runtime.Start(p) end
@@ -84,6 +84,8 @@ local function fallReturn(p,reason)
  if r.state=="Racing" then
   if not r.usedSkip then r.penalty+=Config.FallPenalty; p:SetAttribute("PenaltySeconds",r.penalty) end
   tell(p,reason..(r.usedSkip and " / unranked run" or " / +3 seconds"))
+  r.completedSections=r.cpStage*Config.CheckpointEvery;r.routeNode=0;r.lastSplit=now()
+  p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1))
  end
  if r.state=="Finished" then teleport(p,mapOf(r).PortalTrigger.Position+Vector3.new(0,1,5)) else teleport(p,checkpointPosition(r)) end
 end
@@ -135,7 +137,7 @@ end
 local function spring(p,pad,level)
  local r=runs[p]; local root=rootOf(p); local h=p.Character and p.Character:FindFirstChildOfClass("Humanoid")
  if not r or r.level~=level or r.state~="Racing" or not root or not h or now()-(r.lastSpring or 0)<1.2 then return end
- r.lastSpring=now(); r.boostUntil=now()+1.15; h.WalkSpeed=34; h:ChangeState(Enum.HumanoidStateType.Jumping); root.AssemblyLinearVelocity=Vector3.new(0,90,-34); action:FireClient(p,"Spring",Vector3.new(0,90,-34))
+ r.lastSpring=now(); r.boostUntil=now()+1.15; h.WalkSpeed=30; h:ChangeState(Enum.HumanoidStateType.Jumping); root.AssemblyLinearVelocity=Vector3.new(0,84,-30); action:FireClient(p,"Spring",Vector3.new(0,84,-30))
 end
 pcall(function() PhysicsService:RegisterCollisionGroup("SkyfallPlayers") end)
 PhysicsService:CollisionGroupSetCollidable("SkyfallPlayers","SkyfallPlayers",false)
@@ -159,7 +161,7 @@ local function init(p)
  Runtime.ChooseLevel(p,1,false,false); Services.ApplyCosmetics(p)
 end
 Players.PlayerAdded:Connect(init)
-Players.PlayerRemoving:Connect(function(p) local r=runs[p];if r and r.room then r.room:RemovePersistentPlayer(p) end;Services.Save(p,true); runs[p]=nil end)
+Players.PlayerRemoving:Connect(function(p) local r=runs[p];if r then r.room=nil end;Services.Save(p,true); runs[p]=nil end)
 for _,p in Players:GetPlayers() do task.spawn(init,p) end
 local cooldown={Start=1,Next=.6,SelectLevel=.4,Campaign=.8,Skip=1,BuyItem=.35,EquipItem=.35,Unequip=.35}
 action.OnServerEvent:Connect(function(p,request,arg)
@@ -214,7 +216,7 @@ RunService.Heartbeat:Connect(function(dt)
   elseif entry.Kind=="Slide" then h.CFrame=entry.Base+Vector3.new(math.sin(phase)*(h:GetAttribute("Amplitude") or 7),0,0)
   elseif entry.Kind=="Lift" then h.CFrame=entry.Base+Vector3.new(0,(math.sin(phase)+1)*.5*(h:GetAttribute("Amplitude") or 8),0) end
  end
- for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; p.CFrame=entry.Base+Vector3.new(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude"),0,0) end end
+ for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; p.CFrame=entry.Base+(p:GetAttribute("MotionAxis") or Vector3.xAxis)*(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude")) end end
  for _,entry in ipairs(following) do if active[entry.Level] then entry.Orb.Position=entry.Platform.Position+entry.Offset end end
  end
  if accumulator<.1 then return end; accumulator=0
@@ -249,10 +251,12 @@ RunService.Heartbeat:Connect(function(dt)
     r.lastPosition=root.Position; r.lastObserved=t
     local nextGate=map.RouteGates:FindFirstChild("Gate_"..(r.completedSections+1))
     if nextGate then
+     local node=nextGate:FindFirstChild("Node_"..((r.routeNode or 0)+1))
+     if node then local q=node.CFrame:PointToObjectSpace(root.Position);if math.abs(q.X)<6 and math.abs(q.Y)<6 and math.abs(q.Z)<4 then r.routeNode=(r.routeNode or 0)+1 end end
      local q=nextGate.CFrame:PointToObjectSpace(root.Position)
-     if math.abs(q.X)<13 and math.abs(q.Y)<7 and math.abs(q.Z)<4 then
+     if math.abs(q.X)<13 and math.abs(q.Y)<7 and math.abs(q.Z)<4 and not nextGate:FindFirstChild("Node_"..((r.routeNode or 0)+1)) then
       if t-(r.lastSplit or r.startedAt)<1.25 then r.eligible=false; r.invalidReason="UNRANKED / ROUTE CHECK"; syncRank(p,r) end
-      r.completedSections+=1; r.lastSplit=t; p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1))
+      r.completedSections+=1;r.routeNode=0; r.lastSplit=t; p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1))
      end
     end
     local cp=map.Checkpoints:FindFirstChild("Checkpoint_"..(r.cpStage+1))
@@ -266,7 +270,7 @@ RunService.Heartbeat:Connect(function(dt)
     p:SetAttribute("RunTime",elapsed(r))
     for _,entry in ipairs(hazards) do if entry.Level==r.level then
      local hpart=entry.Part; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,.65,0))
-     if math.abs(q.X)<hpart.Size.X/2+.65 and math.abs(q.Y)<hpart.Size.Y/2+2.2 and math.abs(q.Z)<hpart.Size.Z/2+.65 then fallReturn(p,"Caught by a red hazard"); break end
+     if math.abs(q.X)<hpart.Size.X/2+.5 and math.abs(q.Y)<hpart.Size.Y/2+1.6 and math.abs(q.Z)<hpart.Size.Z/2+.5 then fallReturn(p,"Caught by a red hazard"); break end
     end end
     local portal=map.PortalTrigger; local q=portal.CFrame:PointToObjectSpace(root.Position)
     if math.abs(q.X)<5.5 and math.abs(q.Y)<6 and math.abs(q.Z)<2 then
@@ -285,6 +289,6 @@ task.spawn(function()
 end)
 task.spawn(function() while true do task.wait(45); for p in pairs(Services.Profiles) do task.spawn(Services.Save,p,false) end end end)
 game:BindToClose(Services.Close)
-print("Skyfall Rush ready: 56 obstacle sections, ranked timers, skips, coins, shop and global records.")
+print("Skyfall Rush ready: 32 obstacle sections, ranked timers, skips, coins, shop and global records.")
 return Runtime
 

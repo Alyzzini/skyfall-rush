@@ -207,3 +207,10 @@ Replaced independent viewport-edge positioning with a shared RaceHUD container a
 ## Arcade audio and VFX (v0.5.0)
 
 Installed four course-specific APMOfficial chiptune tracks and Roblox/bundled SFX. All five cloud audio assets returned AssetFetchStatus.Success in the current Studio context. Changed client/server/config sources compiled. Added bounded local sparkles, pulses, finish confetti, button scale feedback and short celebration labels, plus a scrollable Audio / FX panel. Low/reduced mode lowers particles and removes pulses. Server-confirmed feedback is separate from timing/currency validation. No gameplay playback or auditory balance review was run for this patch.
+
+
+## Route geometry corrections (v0.6.0)
+
+The current pass retains existing systems and scenery while revising selected route sections. Movement is 20/50, four courses contain eight sections each, and checkpoints follow two sections. Earlier automated keyboard traversal progressed into Ember; the user then stopped automated testing. That partial run is not evidence for completing all courses or for mobile readiness. No further Play-mode tests were performed after the user asked to handle testing.
+
+Screenshot corrections: six 7.5-stud spheres replace Ascent stairs; rounded bridges use quadratic corner transitions, matching circular joins and slope-aligned contact surfaces; the forked bridge becomes a single curved crossing; overlapping spirals become non-crossing climbing terraces. Route nodes remain mandatory for ranked progression. Old decorative route structures beyond the shortened finish are removed. Runtime now resets partial route-node progress on checkpoint returns and avoids calling persistence cleanup on an already-removed player. Rush_v7 isolates the changed movement/routes.

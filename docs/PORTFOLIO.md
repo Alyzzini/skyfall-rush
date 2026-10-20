@@ -4,11 +4,11 @@
 
 **Skyfall Rush — Roblox / Luau game development project**
 
-A procedural speedrun platformer spanning four themed courses and 56 obstacle sections. The project combines race progression, skip-aware leaderboard eligibility, cosmetic purchases, persistent profile logic and a responsive player interface. Source is organized for VS Code and Roblox Studio with Rojo.
+A procedural speedrun platformer spanning four themed courses and 32 obstacle sections. The project combines race progression, skip-aware leaderboard eligibility, cosmetic purchases, persistent profile logic and a responsive player interface. Source is organized for VS Code and Roblox Studio with Rojo.
 
 ## Suggested résumé bullets
 
-- Developed a Roblox speedrun obby in Luau with four progressively harder courses, 56 obstacle sections and 12 reusable obstacle patterns.
+- Developed a Roblox speedrun obby in Luau with four progressively harder courses, 32 obstacle sections and reusable movement/timing mechanics.
 - Implemented server-owned race timing, sequential route checks, skip-based run disqualification, cosmetic purchase validation and DataStore-backed profile/leaderboard logic.
 - Built responsive course selection, racing HUD, cosmetic shop and ranking interfaces, with procedural world generation and a Rojo workflow for VS Code.
 
@@ -24,7 +24,7 @@ Source: https://github.com/Alyzzini/skyfall-rush
 
 ## Walkthrough for an interview
 
-1. Show the course selector and explain how Config defines increasingly long courses.
+1. Show the course selector and explain how Config defines distinct course mechanics.
 2. Start a run and show the compact HUD and checkpoint progression.
 3. Use the free skip prototype and explain why assisted runs cannot enter rankings.
 4. Buy/equip a trail and explain why balance, ownership and prices are checked on the server.
@@ -33,4 +33,4 @@ Source: https://github.com/Alyzzini/skyfall-rush
 
 ## Honest status
 
-Playable prototype; source and visual assets are included. The original place is unpublished. Live cross-server persistence, real Robux purchases, exhaustive course completion and low-end device performance are not yet validated. Repository publication is separate from publishing a playable Roblox experience.
+Playable prototype; source and visual assets are included. The original place is unpublished. Live cross-server persistence, real Robux purchases, the latest course revision and low-end device performance are not yet validated. Repository publication is separate from publishing a playable Roblox experience.

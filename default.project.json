@@ -68,6 +68,9 @@
         },
         "EmberMonuments": {
           "$path": "src/build/EmberMonuments.luau"
+        },
+        "CourseRefinement": {
+          "$path": "src/build/CourseRefinement.luau"
         }
       }
     },
@@ -88,7 +91,11 @@
       },
       "$properties": {
         "CameraMaxZoomDistance": 512,
-        "CameraMinZoomDistance": 0.5
+        "CameraMinZoomDistance": 0.5,
+        "CharacterWalkSpeed": 20,
+        "CharacterUseJumpPower": true,
+        "CharacterJumpPower": 50,
+        "CharacterJumpHeight": 6.37
       }
     },
     "StarterGui": {

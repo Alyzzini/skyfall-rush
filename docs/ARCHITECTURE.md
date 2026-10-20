@@ -89,3 +89,8 @@ Motion updates run at at most 30 Hz and only in occupied course regions. Phase v
 ## Audio and VFX (v0.5.0)
 
 SkyfallClient initializes the sibling SkyfallFeedback module once and provides the Audio / FX panel. SkyfallAudioConfig contains four Creator Store track IDs, bundled SFX references and mix defaults. The feedback module owns local SoundGroups, a twelve-voice pool, two crossfading music players, bounded transient bursts, GUI-button feedback and streaming-aware obstacle subscriptions. Server Feedback events identify accepted actions; existing Collected and Spring events drive coin/launch presentation. No client feedback request changes server progress. All volume/effect preferences are session-local. Timing and Rush_v6 records are unchanged. See AUDIO-VFX.md for credits, budgets and evidence limits.
+
+
+## Focused courses and geometry repair (v0.6.0)
+
+CourseRefinement migrates the saved scene once to Routes_3 and retains subsequent manual edits. It trims redundant route tails, updates map metadata and checkpoint instances, and replaces selected named sections while preserving the existing hubs and environment models. Rounded routes use sampled quadratic bends with slope-aligned circular joins. Required Node_1..N children under each section gate prevent a ranked run from bypassing the intended turns. Moving platforms accept MotionAxis for vertical lifts; existing client carry handles their displacement. Normal movement is 20/50 in both runtime configuration and StarterPlayer. Checkpoint spacing comes from Config.CheckpointEvery=2. Current records use Rush_v7.

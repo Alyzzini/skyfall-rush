@@ -91,7 +91,7 @@ RunService.Heartbeat:Connect(function(dt)
 end)
 raceMenu.Activated:Connect(function() raceMenuOpen=not raceMenuOpen; if refresh then refresh() end end)
 local objective=frame(statusRow,"Objective",UDim2.new(.9,0,0,40),UDim2.new(.5,0,1,-15),navy,.15); objective.AnchorPoint=Vector2.new(.5,1); corner(objective,12); limit(objective,950,40)
-local objectiveText=label(objective,"Text","56 obstacle sections / 4 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
+local objectiveText=label(objective,"Text","32 obstacle sections / 4 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
 local toast=frame(gui,"Toast",UDim2.new(.9,0,0,43),UDim2.new(.5,0,1,-66),navy,.04); toast.AnchorPoint=Vector2.new(.5,1); corner(toast,12); stroke(toast,cyan,.6); limit(toast,900,43); toast.Visible=false
 local toastText=label(toast,"Text","",UDim2.new(1,-24,1,-8),UDim2.fromOffset(12,4),cyan,15); fitText(toastText,15,8)
 local toastId=0
@@ -388,7 +388,7 @@ refresh=function()
  if state=="Armed" then objectiveText.Text="TIMER READY / Walk through the blue gate to begin"
  elseif playing then
   local section=p:GetAttribute("Section") or 1; local pattern=spec.Patterns[section]
-  objectiveText.Text=string.format("%s / Section %d of %d / Checkpoint %d of %d",string.upper(pattern or "FINISH"),section,spec.Sections,p:GetAttribute("Stage") or 0,spec.Sections/4-1)
+  objectiveText.Text=string.format("%s / Section %d of %d / Checkpoint %d of %d",string.upper(pattern or "FINISH"),section,spec.Sections,p:GetAttribute("Stage") or 0,spec.Sections/Config.CheckpointEvery-1)
  elseif state=="Finished" then objectiveText.Text=p:GetAttribute("UsedSkip") and "USED SKIP / UNRANKED / Your previous records are unchanged." or "Course complete. Continue the campaign or replay an unlocked level."
  else objectiveText.Text="Gold coins buy cosmetics / Red is dangerous / Skips remove the current ranked time" end
 end
