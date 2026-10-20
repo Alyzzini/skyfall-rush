@@ -7,7 +7,7 @@ This is a **visual, structural and script review**. No Play session was started 
 
 ## Completed changes
 - Added 571 noncolliding, nonquerying, shadow-free details near the courses: safe-hub chevrons, framed start/finish gates, panel seams and theme-specific milestone details.
-- Finished distant spires with 152 caps/bands plus 60 signal lamps; archive crowns, reactor crowns and timing signals differ by theme. All 783 new decoration parts omit collision, touch, query and shadows.
+- Finished distant spires with 144 caps/bands plus 60 signal lamps; archive crowns, reactor crowns and timing signals differ by theme. All 775 new decoration parts omit collision, touch, query and shadows.
 - Optional new dressing disappears in Low graphics; navigational chevrons and portal frames remain. Live FPS has not been measured.
 - Limited explanatory sign visibility to avoid multiple room captions crowding the view.
 - Fixed other maps’ CourseSky shells appearing as floating ceilings. This masking is limited to background shells, never shared platforms; streamed playable geometry is still restored visible.
