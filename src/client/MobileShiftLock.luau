@@ -18,9 +18,12 @@ function ShiftLock.Init(hud)
  local aimRound=Instance.new("UICorner");aimRound.CornerRadius=UDim.new(1,0);aimRound.Parent=aim
  local aimStroke=Instance.new("UIStroke");aimStroke.Color=Color3.fromRGB(16,25,39);aimStroke.Parent=aim
  local hudToggle=playerGui:WaitForChild("SkyfallHUDToggle"):WaitForChild("ToggleHUD")
+ local previousButton=hudToggle:FindFirstChild("ShiftLock");if previousButton then previousButton:Destroy() end
+ hudToggle.ClipsDescendants=false
+ -- Share the toggle's UI layer and local coordinates, including emulator scaling.
+ b.Parent=hudToggle;b.ZIndex=hudToggle.ZIndex+1
  local function place()
-  local position,size=hudToggle.AbsolutePosition,hudToggle.AbsoluteSize
-  b.Position=UDim2.fromOffset(position.X+size.X+8+22,position.Y+size.Y/2)
+  b.Position=UDim2.new(1,30,.5,0)
  end
  hudToggle:GetPropertyChangedSignal("AbsolutePosition"):Connect(place)
  hudToggle:GetPropertyChangedSignal("AbsoluteSize"):Connect(place)
@@ -59,6 +62,6 @@ function ShiftLock.Init(hud)
   local direction=Vector3.new(camera.CFrame.LookVector.X,0,camera.CFrame.LookVector.Z)
   if direction.Magnitude>.01 then root.CFrame=CFrame.lookAt(root.Position,root.Position+direction.Unit) end
  end)
- gui.Destroying:Connect(function() RunService:UnbindFromRenderStep("SkyfallMobileShiftLock");release() end)
+ gui.Destroying:Connect(function() RunService:UnbindFromRenderStep("SkyfallMobileShiftLock");release();b:Destroy() end)
 end
 return ShiftLock

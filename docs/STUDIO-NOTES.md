@@ -266,3 +266,7 @@ Replaced the labeled shift-lock capsule with a 44-pixel circle containing only a
 ## v0.8.5 — lock beside the HUD toggle
 Moved the small text-free lock circle beside HIDE UI / SHOW UI, with an eight-pixel gap and vertical alignment. Its position follows the actual toggle layout, including screen resizing and safe-area changes. The top bar reserves space for both controls; limited space moves the pair below Roblox controls. Both remain accessible with the game HUD hidden. Saved and built without starting Play.
 
+
+## v0.8.6 — direct-parent lock placement
+Removed cross-ScreenGui absolute-coordinate positioning for the lock. It now lives directly under the HIDE UI button, using local scale/offset coordinates eight pixels beyond its right edge, sharing its layer and emulator transform. Parent clipping is disabled, duplicate controls are cleaned up, and teardown removes the externally parented button. The user screenshot showed the previous control absent; no new Play session was started to visually certify the revised layout. Saved and source-built.
+
