@@ -29,7 +29,12 @@ clouds.Name="CourseClouds";clouds.Parent=workspace.Terrain
 -- Coins have separate per-player visibility owned by SkyfallClient.
 local function restoreGeometry(obj)
  if obj:IsA("BasePart") and obj:GetAttribute("OrbId")==nil then
-  obj.LocalTransparencyModifier=0
+  local room=obj:FindFirstAncestor("CourseSky")
+  local selected="Level"..(player:GetAttribute("CurrentLevel") or 1)
+  local detail=obj:FindFirstAncestor("QualityDetails")
+  local low=player:GetAttribute("LowGraphics")==true
+  local optional=detail and obj.Name~="RouteChevron" and not obj.Name:match("^Portal") or obj.Name=="SpireBand" or obj.Name=="SpireSignal"
+  obj.LocalTransparencyModifier=(room and room.Parent.Name~=selected or low and optional) and 1 or 0
  end
 end
 local function restoreCourseGeometry()

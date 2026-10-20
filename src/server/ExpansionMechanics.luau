@@ -15,7 +15,7 @@ function M.Init()
   for _,p in map.Platforms:GetDescendants() do
    if p:IsA("BasePart") and p:GetAttribute("ExpansionBridge") then
     local key=level..":"..p:GetAttribute("Section");bridges[key]={Part=p,Until=0,Color=p.Color};paint(p,p.Color,.8,false)
-   elseif p:IsA("BasePart") and p:GetAttribute("ExpansionCollapse") then
+   elseif p:IsA("BasePart") and p:GetAttribute("ExpansionCollapse") and not p:GetAttribute("PersonalCrumble") then
     local busy=false;local original=p.Color
     p.Touched:Connect(function(hit)
      local char=hit:FindFirstAncestorOfClass("Model");local player=char and Players:GetPlayerFromCharacter(char)

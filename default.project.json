@@ -98,6 +98,9 @@
         },
         "AdvancedCourses": {
           "$path": "src/build/AdvancedCourses.luau"
+        },
+        "QualityPolish": {
+          "$path": "src/build/QualityPolish.luau"
         }
       }
     },
