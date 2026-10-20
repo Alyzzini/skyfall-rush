@@ -12,6 +12,14 @@ local action=game.ReplicatedStorage.SkyfallAction
 local query=game.ReplicatedStorage.SkyfallQuery
 local hazards={}; local phasePads={}; local ferries={}; local following={}
 local now=function() return workspace:GetServerTimeNow() end
+local function updateTrim(pad)
+ local assembly=pad.Parent
+ if not assembly or not assembly:GetAttribute("ObstacleAssembly") then return end
+ for _,trim in assembly:GetChildren() do if trim:IsA("BasePart") and trim:GetAttribute("PadTrim") then
+  trim.Transparency=pad.Transparency
+  if pad:GetAttribute("PhasePlatform") or pad:GetAttribute("Crumble") then trim.Color=pad.Color end
+ end end
+end
 local function rootOf(p) return p.Character and p.Character:FindFirstChild("HumanoidRootPart") end
 local function mapOf(r) return maps["Level"..r.level] end
 local function tell(p,message) p:SetAttribute("Message",message); p:SetAttribute("MessageId",(p:GetAttribute("MessageId") or 0)+1) end
@@ -127,11 +135,11 @@ local function touchedPlayer(hit) local model=hit:FindFirstAncestorOfClass("Mode
 local function armCrumble(p,pad,level)
  local r=runs[p]; if not r or r.level~=level or r.state~="Racing" or pad:GetAttribute("CrumbleState")~="Solid" then return end
  local original=pad:GetAttribute("OriginalColor")
- pad:SetAttribute("CrumbleState","Warning"); pad.Color=Color3.fromRGB(255,219,90)
+ pad:SetAttribute("CrumbleState","Warning"); pad.Color=Color3.fromRGB(255,219,90);updateTrim(pad)
  task.delay(pad:GetAttribute("FallDelay"),function()
   if not pad.Parent then return end
-  pad.CanCollide=false; pad.Transparency=.92; pad:SetAttribute("CrumbleState","Gone")
-  task.delay(2.4,function() if pad.Parent then pad.Color=original; pad.Transparency=0; pad.CanCollide=true; pad:SetAttribute("CrumbleState","Solid") end end)
+  pad.CanCollide=false; pad.Transparency=.92; pad:SetAttribute("CrumbleState","Gone");updateTrim(pad)
+  task.delay(2.4,function() if pad.Parent then pad.Color=original; pad.Transparency=0; pad.CanCollide=true; pad:SetAttribute("CrumbleState","Solid");updateTrim(pad) end end)
  end)
 end
 local function spring(p,pad,level)
@@ -188,8 +196,9 @@ Players.PlayerRemoving:Connect(function(p) lastQuery[p]=nil end)
 local grant=Instance.new("BindableFunction"); grant.Name="SkyfallGrantSkip"; grant.Parent=script.Parent; grant.OnInvoke=Runtime.Skip
 for level=1,4 do
  local map=maps["Level"..level]
- for _,h in map.Hazards:GetChildren() do table.insert(hazards,{Part=h,Base=h.CFrame,Kind=h:GetAttribute("Kind"),Level=level}) end
- for _,p in map.Platforms:GetChildren() do
+ for _,h in map.Hazards:GetDescendants() do if h:IsA("BasePart") then table.insert(hazards,{Part=h,Base=h.CFrame,Kind=h:GetAttribute("Kind"),Level=level}) end end
+ for _,p in map.Platforms:GetDescendants() do
+  if not p:IsA("BasePart") then continue end
   if p:GetAttribute("PhasePlatform") then p:SetAttribute("CourseLevel",level);table.insert(phasePads,p) end
   if p:GetAttribute("Moving") then table.insert(ferries,{Part=p,Base=p.CFrame,Level=level}) end
   if p:GetAttribute("Crumble") then
@@ -198,7 +207,7 @@ for level=1,4 do
   end
   if p:GetAttribute("Spring") then p.Touched:Connect(function(hit) local player=touchedPlayer(hit); if player then spring(player,p,level) end end) end
  end
- for _,orb in map.Orbs:GetChildren() do if orb:GetAttribute("FollowPlatform") then table.insert(following,{Orb=orb,Platform=map.Platforms[orb:GetAttribute("FollowPlatform")],Offset=orb:GetAttribute("FollowOffset"),Level=level}) end end
+ for _,orb in map.Orbs:GetChildren() do if orb:GetAttribute("FollowPlatform") then table.insert(following,{Orb=orb,Platform=map.Platforms:FindFirstChild(orb:GetAttribute("FollowPlatform"),true),Offset=orb:GetAttribute("FollowOffset"),Level=level}) end end
  for _,obj in map.Decor:GetDescendants() do
   if obj:IsA("ProximityPrompt") then obj.Triggered:Connect(function(p) action:FireClient(p,obj.Parent.Name=="ShopKiosk" and "OpenShop" or "OpenBoard",level) end) end
  end
@@ -226,7 +235,7 @@ RunService.Heartbeat:Connect(function(dt)
   local phaseState=not solid and "GHOST" or remaining<.45 and "WARNING" or "SOLID"
   if pad:GetAttribute("PhaseState")~=phaseState then
    pad.CanCollide=solid;pad.Transparency=solid and .1 or .78;pad.Color=not solid and Color3.fromRGB(223,95,235) or remaining<.45 and Color3.fromRGB(255,217,90) or Color3.fromRGB(65,239,215)
-   pad:SetAttribute("PhaseState",phaseState)
+   pad:SetAttribute("PhaseState",phaseState);updateTrim(pad)
   end
  end
  for p,r in pairs(runs) do

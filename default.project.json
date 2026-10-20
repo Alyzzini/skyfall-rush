@@ -71,6 +71,9 @@
         },
         "CourseRefinement": {
           "$path": "src/build/CourseRefinement.luau"
+        },
+        "ObstacleModels": {
+          "$path": "src/build/ObstacleModels.luau"
         }
       }
     },

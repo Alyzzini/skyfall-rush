@@ -458,7 +458,7 @@ RunService.RenderStepped:Connect(function(dt)
  for _,orb in map.Orbs:GetChildren() do
   if orb.LocalTransparencyModifier==1 or (orb.Position-root.Position).Magnitude>160 then continue end
   local base=initial[orb]; local following=orb:GetAttribute("FollowPlatform")
-  if following then local platform=map.Platforms:FindFirstChild(following); if platform then base=platform.Position+orb:GetAttribute("FollowOffset") end end
+  if following then local platform=map.Platforms:FindFirstChild(following,true); if platform then base=platform.Position+orb:GetAttribute("FollowOffset") end end
   if base then orb.Position=base+Vector3.new(0,math.sin(t*2+orb:GetAttribute("OrbId"))*.16,0) end
  end
 end)

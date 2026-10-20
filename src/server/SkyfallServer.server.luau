@@ -9,6 +9,7 @@ require(tools.EmberMonuments).Apply(workspace.SkyfallSprint.Levels.Level2)
 require(tools.CourseRefinement).Apply(workspace.SkyfallSprint)
 require(tools.PhaseRestPlatforms).Apply(workspace.SkyfallSprint)
 require(tools.PolishWorld).Apply(workspace.SkyfallSprint)
+require(tools.ObstacleModels).Apply(workspace.SkyfallSprint)
 local ready=game.ReplicatedStorage:FindFirstChild("SkyfallReady") or Instance.new("Folder")
 ready.Name="SkyfallReady";ready.Parent=game.ReplicatedStorage
 require(script.Parent.SkyfallRuntime)

@@ -5,7 +5,7 @@ function PhaseRests.Apply(world)
  local changes={}
  for _,map in world.Levels:GetChildren() do
   local groups={}
-  for _,p in map.Platforms:GetChildren() do
+  for _,p in map.Platforms:GetDescendants() do
    if p:IsA("BasePart") and p:GetAttribute("PhasePlatform")==true then
     local section=p.Name:match("^Step_(%d+)_")
     if section then groups[section]=groups[section] or {};table.insert(groups[section],p) end
@@ -17,7 +17,7 @@ function PhaseRests.Apply(world)
    local right=pads[math.min(#pads,math.floor(#pads/2)+1)]
    local middle=(left.Position+right.Position)/2
    local name="PhaseRest_"..section
-   local rest=map.Platforms:FindFirstChild(name) or Instance.new("Part")
+   local rest=map.Platforms:FindFirstChild(name,true) or Instance.new("Part")
    rest.Name=name
    -- Migrate the oversized platforms once, then preserve future manual size edits.
    if rest:GetAttribute("RestSizeVersion")~=2 then rest.Size=Vector3.new(3.5,.5,4);rest:SetAttribute("RestSizeVersion",2) end
@@ -27,7 +27,7 @@ function PhaseRests.Apply(world)
    rest.Color=Color3.fromRGB(42,83,93);rest.Material=Enum.Material.DiamondPlate
    rest.TopSurface=Enum.SurfaceType.Smooth;rest.BottomSurface=Enum.SurfaceType.Smooth
    rest:SetAttribute("PhasePlatform",nil);rest:SetAttribute("Crumble",nil);rest:SetAttribute("Moving",nil)
-   rest:SetAttribute("PermanentRest",true);rest:SetAttribute("PhaseSection",tonumber(section));rest.Parent=map.Platforms
+   rest:SetAttribute("PermanentRest",true);rest:SetAttribute("PhaseSection",tonumber(section));if not rest.Parent then rest.Parent=map.Platforms end
    local old=rest:FindFirstChild("RestDetails");if old then old:Destroy() end
    local details=Instance.new("Folder");details.Name="RestDetails";details.Parent=rest
    for _,side in {-1,1} do

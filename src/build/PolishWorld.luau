@@ -30,7 +30,7 @@ function Polish.Apply(world)
   local gui=Instance.new("BillboardGui");gui.Size=UDim2.fromScale(20,1.2);gui.MaxDistance=70;gui.Parent=anchor
   local text=Instance.new("TextLabel");text.BackgroundTransparency=1;text.Size=UDim2.fromScale(1,1);text.Font=Enum.Font.GothamBold;text.TextScaled=true;text.Text="CROSS TO START / CROSS AGAIN TO RESET";text.TextColor3=Color3.fromRGB(140,233,255);text.Parent=gui
   -- Consistent deck colors; phase, crumble, conveyor and permanent rests keep their cues.
-  for _,p in map.Platforms:GetChildren() do
+  for _,p in map.Platforms:GetDescendants() do
    if p:IsA("BasePart") then
     p.CastShadow=false
     if p.Name:match("^Hub_") or p.Name:match("^Runway_") and not p:GetAttribute("Conveyor") then p.Color=palettes[i];p.Material=Enum.Material.SmoothPlastic end
@@ -68,8 +68,8 @@ function Polish.Apply(world)
    if p:IsA("BasePart") then p.CastShadow=false;p.CanTouch=false;p.CanQuery=false end
    if p:IsA("BillboardGui") then p.AlwaysOnTop=false;p.MaxDistance=math.min(p.MaxDistance>0 and p.MaxDistance or 60,70) end
   end
-  for _,anchor in map.Decor:GetChildren() do
-   local caption=anchor:FindFirstChildOfClass("BillboardGui")
+  for _,anchor in map.Decor:GetDescendants() do
+   local caption=anchor:IsA("BasePart") and anchor:FindFirstChildOfClass("BillboardGui")
    if caption and anchor.Name=="SectionLabel" then
     caption.Size=UDim2.fromScale(17,1.2);caption.MaxDistance=42
     local text=caption:FindFirstChildOfClass("TextLabel");if text then text.TextStrokeTransparency=.9 end
