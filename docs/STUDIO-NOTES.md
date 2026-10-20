@@ -192,3 +192,8 @@ This repair does not change race geometry or invalidate existing records. A mult
 The four screenshot issues were addressed with aligned garden/slate layers, attached ember accents and a supported crucible, arch rock formations placed behind the opening, and passable translucent blue start gates. Lighting now uses colorful ambient fill with moderate saturation and low bloom. Labels are more compact and leaderboard faces turn toward the lobby.
 
 All 12 project script sources compiled without Luau syntax errors during this pass. The edit world now contains 4,487 descendants (previously 4,770); playable phase pads and all six 3.5 × 0.5 × 4 permanent rests are retained. Each environment uses PersistentPerPlayer rather than always persistent for every player. The count reduction alone is not an FPS benchmark. Multi-client races, complete course traversal and physical low-end hardware profiling remain unmeasured for this update.
+
+
+## Fitted Ember monuments (v0.4.1)
+
+Replaced all six distant arch/butte/fissure groups with cohesive 20-part monuments. AncientArch positions from the current user-edited Studio scene determine the new locations. The silhouette has fitted feet/capitals, a connected terrace and tapered underside; glow strips are flush to the pillar/lintel/foundation faces, and the central ember sits in a supported brazier. Monuments face inward toward the route. No gameplay surfaces, start gates, timing or ranking namespace changed. The edit-time scene was visually inspected; the two changed builder modules compiled. No gameplay tests were run for this cosmetic update.

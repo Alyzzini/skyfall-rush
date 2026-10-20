@@ -5,6 +5,7 @@ if not workspace:FindFirstChild("SkyfallSprint") then
  require(tools.ArtDirection)
 end
 require(tools.CourseEnvironments).Apply(workspace.SkyfallSprint)
+require(tools.EmberMonuments).Apply(workspace.SkyfallSprint.Levels.Level2)
 require(tools.PhaseRestPlatforms).Apply(workspace.SkyfallSprint)
 require(tools.PolishWorld).Apply(workspace.SkyfallSprint)
 local ready=game.ReplicatedStorage:FindFirstChild("SkyfallReady") or Instance.new("Folder")

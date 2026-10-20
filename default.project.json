@@ -62,6 +62,9 @@
         },
         "PolishWorld": {
           "$path": "src/build/PolishWorld.luau"
+        },
+        "EmberMonuments": {
+          "$path": "src/build/EmberMonuments.luau"
         }
       }
     },

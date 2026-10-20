@@ -73,15 +73,9 @@ local function garden(parent,center,seed)
   ball(parent,"DistantCanopy",Vector3.new(75,43,65),p+Vector3.new(0,42,0),Color3.fromRGB(99,187,148))
  end
 end
-local function foundry(parent,center,seed)
- local random=Random.new(seed)
- for i=1,3 do
-  local h=random:NextNumber(100,200);local p=center+Vector3.new((i-2)*120,h/2-80,130)
-  part(parent,"ObsidianButte",Vector3.new(65,h,65),CFrame.new(p)*CFrame.Angles(0,random:NextNumber(0,3),.08),Color3.fromRGB(112,66,79),Enum.Material.Slate)
-  beam(parent,"EmberFissure",p-Vector3.new(0,h*.4,0),p+Vector3.new(0,h*.4,0),3,Color3.fromRGB(255,133,71),Enum.Material.Neon)
- end
- for _,side in {-1,1} do part(parent,"AncientPillar",Vector3.new(18,210,18),CFrame.new(center+Vector3.new(side*90,80,0)),Color3.fromRGB(125,81,66),Enum.Material.Slate) end
- part(parent,"AncientArch",Vector3.new(210,22,24),CFrame.new(center+Vector3.new(0,185,0))*CFrame.Angles(0,0,.08),Color3.fromRGB(155,100,70),Enum.Material.Slate)
+local function foundry(parent,center,seed,courseX)
+ local origin=center+Vector3.new(0,-35,0)
+ require(script.Parent.EmberMonuments).Build(parent,CFrame.lookAt(origin,Vector3.new(courseX,origin.Y,origin.Z)))
 end
 local function storm(parent,center,seed)
  cloud(parent,center+Vector3.new(0,340,0),190,Color3.fromRGB(102,120,152),seed)
@@ -113,7 +107,7 @@ local function buildScenery(room,index,x,length)
    if index==1 then
     garden(parent,center,index*100+i*7+side)
     cloud(parent,center+Vector3.new(0,400,80),150,Color3.fromRGB(231,244,250),i*9+side)
-   elseif index==2 then foundry(parent,center,index*100+i*7+side)
+   elseif index==2 then foundry(parent,center,index*100+i*7+side,x)
    elseif index==3 then storm(parent,center,index*100+i*7+side)
    else
     local r=Random.new(i*47+side)

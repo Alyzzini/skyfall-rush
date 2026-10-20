@@ -21,7 +21,11 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.0/SkyfallRush.rbxlx) from the [v0.4.0 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.0), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.1/SkyfallRush.rbxlx) from the [v0.4.1 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.1), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### Ruin monuments (v0.4.1)
+
+All six distant Ember monuments now have a fitted stone terrace, tapered floating foundation, pillar feet and capitals, supported brazier, and flush orange inlays. They face toward the course and preserve the monument locations edited in Studio. Each uses 20 anchored decorative parts, without lights, particles, collision or animation. The migration runs once and preserves later monument edits.
 
 ### Latest update: vibrant worlds, start gates and lighter rendering
 
