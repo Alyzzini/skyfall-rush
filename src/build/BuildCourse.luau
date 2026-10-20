@@ -123,3 +123,4 @@ end
 if workspace.CurrentCamera then workspace.CurrentCamera.CFrame=CFrame.lookAt(Vector3.new(65,70,45),Vector3.new(0,20,-100)) end
 if not game:GetService("RunService"):IsRunning() then game:GetService("ChangeHistoryService"):SetWaypoint("Skyfall Rush: longer modular courses") end
 return summary
+

@@ -49,3 +49,4 @@ function Monuments.Apply(map)
  return "Rebuilt "..#anchors.." fitted ember monuments."
 end
 return Monuments
+

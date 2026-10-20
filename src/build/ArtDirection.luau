@@ -79,3 +79,4 @@ end
 world:SetAttribute("VisualVersion","Expedition_1")
 local atmosphere=game.Lighting:FindFirstChildOfClass("Atmosphere"); if atmosphere then atmosphere.Density=.20; atmosphere.Haze=.6 end
 return "Four world identities installed; route geometry unchanged."
+

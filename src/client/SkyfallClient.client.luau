@@ -66,7 +66,7 @@ local toolbar=frame(gui,"Toolbar",UDim2.new(.94,0,0,36),UDim2.new(.5,0,0,111),na
 local shopButton=button(toolbar,"ShopButton","SHOP",UDim2.new(.25,-6,1,0),UDim2.fromScale(0,0),gold)
 local boardButton=button(toolbar,"BoardButton","RANKINGS",UDim2.new(.25,-6,1,0),UDim2.fromScale(.25,0),Color3.fromRGB(174,190,226))
 local restartButton=button(toolbar,"RestartButton","RESTART",UDim2.new(.25,-6,1,0),UDim2.fromScale(.5,0),Color3.fromRGB(160,184,202))
-local skipButton=button(toolbar,"SkipButton","SKIP →",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
+local skipButton=button(toolbar,"SkipButton","SKIP â†’",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
 local audioButton=button(toolbar,"AudioButton","AUDIO / FX",UDim2.new(.2,-6,1,0),UDim2.fromScale(.8,0),Color3.fromRGB(140,210,235))
 for i,b in ipairs({shopButton,boardButton,restartButton,skipButton,audioButton}) do b.Size=UDim2.new(.2,-6,1,0);b.Position=UDim2.fromScale((i-1)*.2,0) end
 local raceMenuOpen=false
@@ -232,7 +232,7 @@ local function updateTrack() nowPlaying.Text="NOW PLAYING / "..(p:GetAttribute("
 p:GetAttributeChangedSignal("NowPlaying"):Connect(updateTrack);updateTrack()
 local function volumeRow(attribute,title,y)
  label(audioContent,attribute.."Label",title,UDim2.new(.45,-22,0,34),UDim2.fromOffset(12,y),white,14).TextXAlignment=Enum.TextXAlignment.Left
- local minus=button(audioContent,attribute.."Down","−",UDim2.new(.12,0,0,34),UDim2.new(.47,0,0,y),Color3.fromRGB(64,88,115))
+ local minus=button(audioContent,attribute.."Down","âˆ’",UDim2.new(.12,0,0,34),UDim2.new(.47,0,0,y),Color3.fromRGB(64,88,115))
  local value=button(audioContent,attribute.."Mute","",UDim2.new(.22,-12,0,34),UDim2.new(.60,0,0,y),Color3.fromRGB(101,179,190))
  local plus=button(audioContent,attribute.."Up","+",UDim2.new(.12,0,0,34),UDim2.new(.83,0,0,y),Color3.fromRGB(64,88,115))
  local previous=p:GetAttribute(attribute) or .3
@@ -375,16 +375,16 @@ refresh=function()
   kicker.Text=level==4 and "FOUR COURSES COMPLETE" or "LEVEL "..(level+1).." UNLOCKED"
   heading.Text=skipped and "ASSISTED CLEAR" or "COURSE COMPLETE!"
   body.Text=skipped and "USED SKIP / No time recorded.\nYou can keep exploring or restart for a ranked run." or (timeString(p:GetAttribute("FinishTime") or 0)..(ranked and " / CLEAN RUN" or " / UNRANKED").."\n"..spec.Title)
-  startButton.Text=level<4 and "NEXT LEVEL  →" or "RESTART FULL CAMPAIGN  →"
+  startButton.Text=level<4 and "NEXT LEVEL  â†’" or "RESTART FULL CAMPAIGN  â†’"
  else
   kicker.Text="SKYFALL RUSH / "..spec.Difficulty
   heading.Text=string.upper(spec.Title)
   body.Text=courseSubtitles[level].."\n"..spec.Summary
-  startButton.Text="ENTER COURSE  →"
+  startButton.Text="ENTER COURSE  â†’"
  end
  local best=p:GetAttribute("BestTime") or 0
  bestText.Text=best>0 and "PERSONAL BEST / "..timeString(best) or "Finish clean to set a personal best."
- rulesText.Text=UIS.TouchEnabled and "STICK + JUMP   •   CYAN SOLID / PINK GHOST / RED DANGER" or "WASD + SPACE   •   CYAN SOLID / PINK GHOST / RED DANGER"
+ rulesText.Text=UIS.TouchEnabled and "STICK + JUMP   â€¢   CYAN SOLID / PINK GHOST / RED DANGER" or "WASD + SPACE   â€¢   CYAN SOLID / PINK GHOST / RED DANGER"
  if state=="Armed" then objectiveText.Text="TIMER READY / Walk through the blue gate to begin"
  elseif playing then
   local section=p:GetAttribute("Section") or 1; local pattern=spec.Patterns[section]
