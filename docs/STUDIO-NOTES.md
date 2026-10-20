@@ -222,3 +222,7 @@ Rounded the remaining original balance beams; replaced thin manual patch slivers
 ## v0.6.2 — complete platform borders
 Completed outlines around hubs, runways, ramps, rounded beams, rest platforms and moving surfaces in every course. Removed superseded HubEdge and LandingGuide fragments, clipped internal joins, and retained separate five-part pad Models. Added moving-outline transforms. Saved the full place and built source packaging without starting Play.
 
+
+## v0.6.3 — leaderboard Model startup repair
+Studio output identified a fatal startup error in PolishWorld: Size is not a valid member of Model Level1.Decor.LeaderboardBoard. Resolve the physical board inside its Model, reuse its crown, and find its SurfaceGui recursively. Services.UpdateWorldBoards also resolves nested UI safely so edited boards cannot terminate the refresh loop. Optional visual passes report errors without aborting core initialization; SkyfallReady is published after the runtime initializes. The previously failing polish pass completed on the actual Edit scene. Saved and built source packaging. No Play-mode test was started.
+

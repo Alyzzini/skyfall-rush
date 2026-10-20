@@ -1,16 +1,20 @@
 -- Preserve imported/hand-edited geometry; builders are only a fallback for a missing world.
 local tools=game.ServerStorage:WaitForChild("SkyfallBuildTools")
+local function optionalVisual(name,target)
+ local ok,message=pcall(function() return require(tools[name]).Apply(target) end)
+ if not ok then warn("Skyfall visual pass "..name.." failed: "..tostring(message)) end
+end
 if not workspace:FindFirstChild("SkyfallSprint") then
  require(tools.BuildCourse)
  require(tools.ArtDirection)
 end
 require(tools.CourseEnvironments).Apply(workspace.SkyfallSprint)
-require(tools.EmberMonuments).Apply(workspace.SkyfallSprint.Levels.Level2)
+optionalVisual("EmberMonuments",workspace.SkyfallSprint.Levels.Level2)
 require(tools.CourseRefinement).Apply(workspace.SkyfallSprint)
 require(tools.PhaseRestPlatforms).Apply(workspace.SkyfallSprint)
-require(tools.PolishWorld).Apply(workspace.SkyfallSprint)
+optionalVisual("PolishWorld",workspace.SkyfallSprint)
 require(tools.ObstacleModels).Apply(workspace.SkyfallSprint)
-require(tools.PlatformOutlines).Apply(workspace.SkyfallSprint)
+optionalVisual("PlatformOutlines",workspace.SkyfallSprint)
+require(script.Parent.SkyfallRuntime)
 local ready=game.ReplicatedStorage:FindFirstChild("SkyfallReady") or Instance.new("Folder")
 ready.Name="SkyfallReady";ready.Parent=game.ReplicatedStorage
-require(script.Parent.SkyfallRuntime)

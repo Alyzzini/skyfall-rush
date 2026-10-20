@@ -169,13 +169,18 @@ end
 function Services.UpdateWorldBoards()
  local levels=workspace.SkyfallSprint.Levels
  for i=1,4 do
-  local board=levels["Level"..i].Decor.LeaderboardBoard.LeaderboardSurface
+  local container=levels["Level"..i].Decor:FindFirstChild("LeaderboardBoard",true)
+  local board=container and container:FindFirstChild("LeaderboardSurface",true)
+  local heading=board and board:FindFirstChild("Heading",true)
+  local rows=board and board:FindFirstChild("Rows",true)
+  -- An edited or temporarily streamed board must not stop record refreshes.
+  if not heading or not heading:IsA("TextLabel") or not rows or not rows:IsA("TextLabel") then continue end
   local data=Services.GetBoard("Level"..i)
-  board.Heading.Text=(data.Mode=="GLOBAL" and "GLOBAL SPEEDRUN" or "LOCAL SPEEDRUN PREVIEW").." / "..i
+  heading.Text=(data.Mode=="GLOBAL" and "GLOBAL SPEEDRUN" or "LOCAL SPEEDRUN PREVIEW").." / "..i
   local lines={}
   for rank,row in ipairs(data.Rows) do table.insert(lines,string.format("%02d  %s    %s",rank,row.Username,Rules.FormatTime(row.Milliseconds/1000))) end
-  board.Rows.TextSize=20
-  board.Rows.Text=#lines>0 and table.concat(lines,"\n") or "No clean runs yet.\n\nFinish without a skip to set a record."
+  rows.TextSize=20
+  rows.Text=#lines>0 and table.concat(lines,"\n") or "No clean runs yet.\n\nFinish without a skip to set a record."
  end
 end
 function Services.Close()

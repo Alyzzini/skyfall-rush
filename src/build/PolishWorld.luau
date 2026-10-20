@@ -10,12 +10,22 @@ function Polish.Apply(world)
   local map=world.Levels["Level"..i];local x=map.StartPosition.Position.X
   local old=map.Decor:FindFirstChild("CoursePolish");if old then old:Destroy() end
   local decor=Instance.new("Folder");decor.Name="CoursePolish";decor.Parent=map.Decor
-  local board=map.Decor:FindFirstChild("LeaderboardBoard")
-  if board then
+  local boardContainer=map.Decor:FindFirstChild("LeaderboardBoard",true)
+  local board=boardContainer
+  if board and not board:IsA("BasePart") then
+   local named=board:FindFirstChild("LeaderboardBoard",true)
+   board=named and named:IsA("BasePart") and named or board:FindFirstChildWhichIsA("BasePart",true)
+  end
+  if board and board:IsA("BasePart") then
    board.Size=Vector3.new(16,11,.65);board.Color=Color3.fromRGB(19,34,56)
    board.CFrame=CFrame.lookAt(board.Position,Vector3.new(x,board.Position.Y,5))
-   part(decor,"BoardCrown",Vector3.new(16,.14,.14),board.CFrame*CFrame.new(0,5.5,-.4),Color3.fromRGB(78,211,245),Enum.Material.Neon)
-   local surface=board:FindFirstChild("LeaderboardSurface");if surface then surface.LightInfluence=0;surface.Brightness=1 end
+   local crown=boardContainer:FindFirstChild("BoardCrown",true)
+   if crown and crown:IsA("BasePart") then
+    crown.Size=Vector3.new(16,.14,.14);crown.CFrame=board.CFrame*CFrame.new(0,5.5,-.4)
+   else
+    part(boardContainer:IsA("Model") and boardContainer or decor,"BoardCrown",Vector3.new(16,.14,.14),board.CFrame*CFrame.new(0,5.5,-.4),Color3.fromRGB(78,211,245),Enum.Material.Neon)
+   end
+   local surface=boardContainer:FindFirstChild("LeaderboardSurface",true);if surface and surface:IsA("SurfaceGui") then surface.LightInfluence=0;surface.Brightness=1 end
   end
   -- Keep the line as a readable floor cue; the translucent gate is passable.
   local line=map.StartLine;line.Color=Color3.fromRGB(66,211,255);line.CanTouch=false;line.CanQuery=false;line.CastShadow=false
@@ -50,7 +60,7 @@ function Polish.Apply(world)
      elseif p.Name=="EmberSeam" then
       -- Attach each seam to its nearest column instead of leaving it suspended.
       local nearest;local best=math.huge
-      for _,column in identity:GetChildren() do if column.Name=="RuinColumn" then local d=(column.Position-p.Position).Magnitude;if d<best then best=d;nearest=column end end end
+      for _,column in identity:GetDescendants() do if column:IsA("BasePart") and column.Name=="RuinColumn" then local d=(column.Position-p.Position).Magnitude;if d<best then best=d;nearest=column end end end
       if nearest then
        columnSeams[nearest]=(columnSeams[nearest] or 0)+1
        local side=columnSeams[nearest]%2==0 and -.9 or .9
