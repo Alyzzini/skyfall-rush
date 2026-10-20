@@ -76,7 +76,7 @@ function Runtime.Start(p,crossedGate)
 end
 function Runtime.ChooseLevel(p,index,fromNext,autoStart)
  local r=runs[p]; local profile=Services.Profiles[p]
- if not r or not profile or typeof(index)~="number" or index%1~=0 or index<1 or index>profile.Unlocked or index>4 then return false end
+ if not r or not profile or typeof(index)~="number" or index%1~=0 or index<1 or index>profile.Unlocked or index>#Config.Levels then return false end
  if fromNext then r.campaignBaseTime=r.campaignTotal or 0; r.campaignBaseEligible=r.campaignFinishedEligible==true
  else r.campaignBaseTime=0; r.campaignBaseEligible=index==1 end
  r.level=index; r.cpStage=0; r.completedSections=0;r.routeNode=0; r.orbs=0; r.collected={}; r.usedSkip=false; r.eligible=true; r.totalSections=Config.Levels[index].Sections
@@ -88,7 +88,7 @@ function Runtime.ChooseLevel(p,index,fromNext,autoStart)
   r.room=selectedRoom;if selectedRoom then selectedRoom:AddPersistentPlayer(p) end
  end
  local spec=Config.Levels[index]
- p:SetAttribute("CurrentLevel",index); p:SetAttribute("LevelTitle",spec.Title); p:SetAttribute("LevelDifficulty",spec.Difficulty); p:SetAttribute("LevelSummary",spec.Summary); p:SetAttribute("LevelSections",spec.Sections); p:SetAttribute("LevelCheckpointCount",spec.Sections/Config.CheckpointEvery-1); p:SetAttribute("LevelTotalOrbs",spec.Sections*3)
+ p:SetAttribute("CurrentLevel",index); p:SetAttribute("LevelTitle",spec.Title); p:SetAttribute("LevelDifficulty",spec.Difficulty); p:SetAttribute("LevelSummary",spec.Summary); p:SetAttribute("LevelSections",spec.Sections); p:SetAttribute("LevelCheckpointCount",spec.Sections/(spec.CheckpointEvery or Config.CheckpointEvery)-1); p:SetAttribute("LevelTotalOrbs",spec.Sections*3)
  p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("RunStartedAt",0); p:SetAttribute("FinishTime",0); p:SetAttribute("PenaltySeconds",0); p:SetAttribute("BestTime",(profile.Best["Level"..index] or 0)/1000)
  syncRank(p,r); setState(p,r,"Ready"); teleport(p,checkpointPosition(r)); action:FireClient(p,"Reset",index)
  if autoStart then Runtime.Start(p) end
@@ -114,7 +114,7 @@ local function fallReturn(p,reason)
  if r.state=="Racing" then
   if not r.usedSkip then r.penalty+=Config.FallPenalty; p:SetAttribute("PenaltySeconds",r.penalty) end
   tell(p,reason..(r.usedSkip and " / unranked run" or " / +3 seconds"))
-  r.completedSections=r.cpStage*Config.CheckpointEvery;r.routeNode=0;r.lastSplit=now()
+  r.completedSections=r.cpStage*(Config.Levels[r.level].CheckpointEvery or Config.CheckpointEvery);r.routeNode=0;r.lastSplit=now()
   p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1))
  end
  if r.state=="Finished" then teleport(p,mapOf(r).PortalTrigger.Position+Vector3.new(0,1,5)) else teleport(p,checkpointPosition(r)) end
@@ -140,7 +140,7 @@ function Runtime.Finish(p)
   p:SetAttribute("BestTime",(d.Best["Level"..r.level] or 0)/1000)
   tell(p,"LEVEL CLEAR! +"..reward.." coins. Clean time: "..Rules.FormatTime(r.elapsed))
  else tell(p,r.usedSkip and "LEVEL CLEAR / USED SKIP / NO LEADERBOARD TIME" or "LEVEL CLEAR / "..reason) end
- local d=Services.Profiles[p];d.Completed=d.Completed or {};d.Completed[tostring(r.level)]=true; d.Unlocked=math.max(d.Unlocked,math.min(4,r.level+1)); Services.Sync(p)
+ local d=Services.Profiles[p];d.Completed=d.Completed or {};d.Completed[tostring(r.level)]=true; d.Unlocked=math.max(d.Unlocked,math.min(#Config.Levels,r.level+1)); Services.Sync(p)
  r.campaignTotal=(r.campaignBaseTime or 0)+(ranked and r.elapsed or 0)
  r.campaignFinishedEligible=r.campaignBaseEligible==true and ranked
  if r.level==4 and r.campaignFinishedEligible then
@@ -199,7 +199,7 @@ action.OnServerEvent:Connect(function(p,request,arg)
  if now()-(r.actions[request] or 0)<cooldown[request] then return end; r.actions[request]=now()
  if not p:GetAttribute("ProfileLoaded") then tell(p,"Your profile is loading."); return end
  if request=="Start" then Runtime.Start(p)
- elseif request=="Next" and r.state=="Finished" and r.level<4 then Runtime.ChooseLevel(p,r.level+1,true,true)
+ elseif request=="Next" and r.state=="Finished" and r.level<#Config.Levels then Runtime.ChooseLevel(p,r.level+1,true,true)
  elseif request=="Campaign" and r.state=="Finished" then Runtime.ChooseLevel(p,1,false,true)
  elseif request=="SelectLevel" then Runtime.ChooseLevel(p,arg,false,false)
  elseif request=="Skip" then
@@ -210,13 +210,13 @@ action.OnServerEvent:Connect(function(p,request,arg)
 end)
 local lastQuery={}
 query.OnServerInvoke=function(p,key)
- if key~="Campaign" and (typeof(key)~="string" or not key:match("^Level[1-4]$")) then return {Rows={},Mode="Choose a leaderboard"} end
+ if key~="Campaign" and (typeof(key)~="string" or not key:match("^Level[1-8]$")) then return {Rows={},Mode="Choose a leaderboard"} end
  if now()-(lastQuery[p] or 0)<.8 then return Services.GetBoard(key) end
  lastQuery[p]=now(); return Services.GetBoard(key)
 end
 Players.PlayerRemoving:Connect(function(p) lastQuery[p]=nil end)
 local grant=Instance.new("BindableFunction"); grant.Name="SkyfallGrantSkip"; grant.Parent=script.Parent; grant.OnInvoke=Runtime.Skip
-for level=1,4 do
+for level=1,#Config.Levels do
  local map=maps["Level"..level]
  for _,h in map.Hazards:GetDescendants() do if h:IsA("BasePart") then table.insert(hazards,{Part=h,Base=h.CFrame,Kind=h:GetAttribute("Kind"),Level=level}) end end
  for _,p in map.Platforms:GetDescendants() do
@@ -309,7 +309,7 @@ RunService.Heartbeat:Connect(function(dt)
       p:SetAttribute("Section",math.min(r.totalSections,section+1));break
      end
     end
-    for stage=r.cpStage+1,Config.Levels[r.level].Sections/Config.CheckpointEvery-1 do
+    for stage=r.cpStage+1,Config.Levels[r.level].Sections/(Config.Levels[r.level].CheckpointEvery or Config.CheckpointEvery)-1 do
      local cp=map.Checkpoints:FindFirstChild("Checkpoint_"..stage)
      local zone=cp and cp:FindFirstChild("ArrivalZone")
      if zone and r.completedSections>=cp:GetAttribute("Section") and crossesBox(zone,previous,root.Position) then
@@ -319,10 +319,10 @@ RunService.Heartbeat:Connect(function(dt)
     end
     r.routePrevious=root.Position
     for _,orb in map.Orbs:GetChildren() do collect(p,r,orb) end
-    local progress=math.clamp(-root.Position.Z/map:GetAttribute("CourseLength"),0,1)
+    local progress=r.level>=5 and r.completedSections/r.totalSections or math.clamp(-root.Position.Z/map:GetAttribute("CourseLength"),0,1)
     if math.abs((p:GetAttribute("Progress") or 0)-progress)>.003 then p:SetAttribute("Progress",progress) end
     p:SetAttribute("RunTime",elapsed(r))
-    for _,entry in ipairs(hazards) do if entry.Level==r.level then
+    for _,entry in ipairs(hazards) do if entry.Level==r.level and not entry.Part:GetAttribute("ExpansionInactive") then
      local hpart=entry.Part; local q=hpart.CFrame:PointToObjectSpace(root.Position-Vector3.new(0,.65,0))
      if math.abs(q.X)<hpart.Size.X/2+.5 and math.abs(q.Y)<hpart.Size.Y/2+1.6 and math.abs(q.Z)<hpart.Size.Z/2+.5 then fallReturn(p,"Caught by a red hazard"); break end
     end end
@@ -337,12 +337,12 @@ RunService.Heartbeat:Connect(function(dt)
 end)
 task.spawn(function()
  while true do
-  for _,key in {"Level1","Level2","Level3","Level4","Campaign"} do Services.RefreshBoard(key); task.wait(.1) end
+  for _,key in {"Level1","Level2","Level3","Level4","Level5","Level6","Level7","Level8","Campaign"} do Services.RefreshBoard(key); task.wait(.1) end
   Services.UpdateWorldBoards(); task.wait(60)
  end
 end)
 task.spawn(function() while true do task.wait(45); for p in pairs(Services.Profiles) do task.spawn(Services.Save,p,false) end end end)
 game:BindToClose(Services.Close)
-print("Skyfall Rush ready: 32 obstacle sections, ranked timers, skips, coins, shop and global records.")
+print("Skyfall Rush ready: 64 obstacle sections, ranked timers, skips, coins, shop and global records.")
 return Runtime
 

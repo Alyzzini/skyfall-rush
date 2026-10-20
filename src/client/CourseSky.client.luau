@@ -11,6 +11,10 @@ local themes={
  {Clock=15.8,Color=Color3.fromRGB(255,211,173),Decay=Color3.fromRGB(177,119,151),Ambient=Color3.fromRGB(166,133,133),Density=.10,Haze=.25,CloudCover=.08,Tint=Color3.fromRGB(255,239,219)},
  {Clock=13.8,Color=Color3.fromRGB(185,210,255),Decay=Color3.fromRGB(111,137,196),Ambient=Color3.fromRGB(132,149,189),Density=.08,Haze=.25,CloudCover=.38,Tint=Color3.fromRGB(238,243,255)},
  {Clock=0,Color=Color3.fromRGB(185,160,235),Decay=Color3.fromRGB(105,84,158),Ambient=Color3.fromRGB(151,136,183),Density=.015,Haze=0,CloudCover=0,Tint=Color3.fromRGB(255,237,250)},
+ {Clock=14,Color=Color3.fromRGB(255,221,172),Decay=Color3.fromRGB(127,157,185),Ambient=Color3.fromRGB(154,160,174),Density=.06,Haze=.1,CloudCover=.12,Tint=Color3.fromRGB(255,245,224)},
+ {Clock=14,Color=Color3.fromRGB(170,249,222),Decay=Color3.fromRGB(75,138,157),Ambient=Color3.fromRGB(124,174,165),Density=.08,Haze=.2,CloudCover=.1,Tint=Color3.fromRGB(230,255,246)},
+ {Clock=0,Color=Color3.fromRGB(146,183,255),Decay=Color3.fromRGB(63,75,155),Ambient=Color3.fromRGB(135,155,198),Density=.025,Haze=0,CloudCover=0,Tint=Color3.fromRGB(236,244,255)},
+ {Clock=0,Color=Color3.fromRGB(232,170,249),Decay=Color3.fromRGB(108,67,145),Ambient=Color3.fromRGB(172,140,188),Density=.02,Haze=0,CloudCover=0,Tint=Color3.fromRGB(255,236,252)},
 }
 local sky=Lighting:FindFirstChildOfClass("Sky") or Instance.new("Sky")
 sky.Name="CourseSkybox";sky.StarCount=5000;sky.CelestialBodiesShown=true;sky.Parent=Lighting

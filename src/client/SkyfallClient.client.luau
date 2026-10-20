@@ -93,7 +93,7 @@ RunService.Heartbeat:Connect(function(dt)
 end)
 raceMenu.Activated:Connect(function() raceMenuOpen=not raceMenuOpen; if refresh then refresh() end end)
 local objective=frame(statusRow,"Objective",UDim2.new(.9,0,0,40),UDim2.new(.5,0,1,-15),navy,.15); objective.AnchorPoint=Vector2.new(.5,1); corner(objective,12); limit(objective,950,40)
-local objectiveText=label(objective,"Text","32 obstacle sections / 4 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
+local objectiveText=label(objective,"Text","64 obstacle sections / 8 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
 local toast=frame(gui,"Toast",UDim2.new(.9,0,0,43),UDim2.new(.5,0,1,-66),navy,.04); toast.AnchorPoint=Vector2.new(.5,1); corner(toast,12); stroke(toast,cyan,.6); limit(toast,900,43); toast.Visible=false
 local toastText=label(toast,"Text","",UDim2.new(1,-24,1,-8),UDim2.fromOffset(12,4),cyan,15); fitText(toastText,15,8)
 local toastId=0
@@ -103,15 +103,15 @@ local function showToast(words)
 end
 local modal=frame(gui,"RunCard",UDim2.new(.94,0,0,440),UDim2.new(.5,0,.5,45),navy,.02); modal.AnchorPoint=Vector2.new(.5,.5); corner(modal,20); stroke(modal,cyan,.5); limit(modal,760,440)
 local modalScale=Instance.new("UIScale"); modalScale.Parent=modal
-local kicker=label(modal,"Kicker","FOUR COURSES / SPEEDRUN",UDim2.new(1,-44,0,22),UDim2.fromOffset(22,18),cyan,12)
+local kicker=label(modal,"Kicker","EIGHT COURSES / SPEEDRUN",UDim2.new(1,-44,0,22),UDim2.fromOffset(22,18),cyan,12)
 local heading=label(modal,"Heading","THE ASCENT",UDim2.new(1,-44,0,42),UDim2.fromOffset(22,49),white,31); fitText(heading,31,14)
 local body=label(modal,"Body","Loading course...",UDim2.new(1,-52,0,82),UDim2.fromOffset(26,96),muted,15); fitText(body,15,11)
 local rulesText=label(modal,"Rules","CYAN SOLID / PINK GHOST / RED DANGER",UDim2.new(1,-44,0,26),UDim2.fromOffset(22,183),white,11)
 local bestText=label(modal,"Best","Finish clean to set a personal best.",UDim2.new(1,-44,0,20),UDim2.fromOffset(22,214),gold,12)
 local levelRow=frame(modal,"LevelSelection",UDim2.new(1,-44,0,30),UDim2.fromOffset(22,240),navy,1)
 local levelButtons={}
-for index=1,4 do
- local b=button(levelRow,"LevelButton"..index,"LEVEL "..index,UDim2.new(.25,-6,1,0),UDim2.new((index-1)*.25,3,0,0),Color3.fromRGB(44,61,84)); b.TextColor3=white; levelButtons[index]=b
+for index=1,#Config.Levels do
+ local b=button(levelRow,"LevelButton"..index,"LEVEL "..index,UDim2.new(1/#Config.Levels,-4,1,0),UDim2.new((index-1)/#Config.Levels,2,0,0),Color3.fromRGB(44,61,84)); b.TextColor3=white; levelButtons[index]=b
  b.Activated:Connect(function() if index<=(p:GetAttribute("UnlockedLevel") or 1) then action:FireServer("SelectLevel",index) else showToast("Finish the previous course to unlock this level.") end end)
 end
 local startButton=button(modal,"StartButton","START SPEEDRUN",UDim2.new(1,-44,0,49),UDim2.fromOffset(22,285),cyan)
@@ -213,9 +213,9 @@ local function loadBoard(key)
   boardNote.Text=data.Mode=="GLOBAL" and "Fastest clean times across all servers / refreshes about once a minute." or "Global records activate after publication and data access. Current session shown."
  end)
 end
-for i=1,5 do
- local key=i==5 and "Campaign" or "Level"..i
- local b=button(tabs,"Tab"..key,i==5 and "CAMPAIGN" or "LEVEL "..i,UDim2.new(.2,-5,1,0),UDim2.new((i-1)*.2,2,0,0),Color3.fromRGB(72,97,132)); b.TextColor3=white; b.Activated:Connect(function() loadBoard(key) end)
+for i=1,9 do
+ local key=i==9 and "Campaign" or "Level"..i
+ local b=button(tabs,"Tab"..key,i==9 and "1-4" or tostring(i),UDim2.new(1/9,-3,1,0),UDim2.new((i-1)/9,1,0,0),Color3.fromRGB(72,97,132)); b.TextColor3=white; b.Activated:Connect(function() loadBoard(key) end)
 end
 refreshBoardButton.Activated:Connect(function() loadBoard(boardKey) end)
 local skip=panel("SkipPanel","SKIP TO CHECKPOINT?",490,295)
@@ -239,7 +239,7 @@ skipButton.Activated:Connect(function()
  openPanel("SkipPanel")
 end)
 startButton.Activated:Connect(function()
- if p:GetAttribute("State")=="Finished" then action:FireServer((p:GetAttribute("CurrentLevel") or 1)<4 and "Next" or "Campaign") else action:FireServer("Start") end
+ if p:GetAttribute("State")=="Finished" then action:FireServer((p:GetAttribute("CurrentLevel") or 1)<#Config.Levels and "Next" or "Campaign") else action:FireServer("Start") end
 end)
 local audioPanel=panel("AudioPanel","SOUND & EFFECTS",540,390)
 local audioContent=Instance.new("ScrollingFrame");audioContent.Name="AudioControls";audioContent.BackgroundTransparency=1;audioContent.BorderSizePixel=0;audioContent.Position=UDim2.fromOffset(12,64);audioContent.Size=UDim2.new(1,-24,1,-78);audioContent.CanvasSize=UDim2.fromOffset(0,280);audioContent.ScrollBarThickness=4;audioContent.Parent=audioPanel
@@ -287,14 +287,14 @@ end
 local heroCaption=label(hero,"Caption","SKY GARDENS",UDim2.new(1,-16,0,25),UDim2.new(0,8,1,-38),white,12)
 local statPill=label(modal,"CourseStats","8 SECTIONS    /    768 STUDS",UDim2.new(.60,-18,0,24),UDim2.new(.36,0,0,184),cyan,12); statPill.TextXAlignment=Enum.TextXAlignment.Left
 local routeTitle=label(modal,"RouteTitle","CHOOSE YOUR COURSE",UDim2.new(1,-44,0,20),UDim2.fromOffset(22,262),muted,10); routeTitle.TextXAlignment=Enum.TextXAlignment.Left
-local courseNames={"ASCENT","EMBER","STORM","SOLAR"}
-local courseThemes={"SKY GARDENS","FORGOTTEN FOUNDRY","TEMPEST STATION","ORBITAL REACTOR"}
-local courseSubtitles={"Find your rhythm above the clouds.","Race through a forgotten sky foundry.","Ride the machines that harvest storms.","Escape a fractured orbital reactor."}
+local courseNames={"ASCENT","EMBER","STORM","SOLAR","DOCKS","ARCHIVE","CITADEL","CORE"}
+local courseThemes={"SKY GARDENS","FORGOTTEN FOUNDRY","TEMPEST STATION","ORBITAL REACTOR","CLOCKWORK DOCKS","PRISM ARCHIVE","PULSE CITADEL","THE CONVERGENCE"}
+local courseSubtitles={"Find your rhythm above the clouds.","Race through a forgotten sky foundry.","Ride the machines that harvest storms.","Escape a fractured orbital reactor.","Clock in above the clouds.","Find the route through the prism stacks.","Read the rhythm of the citadel.","Bring every skill to the reactor."}
 local courseCaptions={}
 for i,b in ipairs(levelButtons) do
  b.Text=""; b.ClipsDescendants=true
  local stripe=frame(b,"Accent",UDim2.new(1,0,0,3),UDim2.new(),Config.Levels[i].Color)
- local title=label(b,"CourseName",string.format("%02d  %s",i,courseNames[i]),UDim2.new(1,-12,0,22),UDim2.fromOffset(6,8),white,12); fitText(title,12,9)
+ local title=label(b,"CourseName",string.format("%02d",i),UDim2.new(1,-12,0,22),UDim2.fromOffset(6,8),white,12); fitText(title,12,9)
  local subtitle=label(b,"CourseAccess","EASY",UDim2.new(1,-12,0,18),UDim2.fromOffset(6,31),muted,10); courseCaptions[i]={title,subtitle}
 end
 -- Trail previews are drawn from the actual catalog colors; no external image assets.
@@ -382,16 +382,16 @@ refresh=function()
  heroNumber.Text=string.format("%02d",level); heroCaption.Text=courseThemes[level]; halo.BackgroundColor3=accent
  heroGradient.Color=ColorSequence.new(accent:Lerp(navy,.65),navy)
  for _,tile in ipairs(islandPieces) do tile.BackgroundColor3=accent end
- statPill.Text=spec.Sections.." SECTIONS    /    "..(spec.Sections*96).." STUDS"; statPill.TextColor3=accent
+ statPill.Text=spec.Sections.." SECTIONS    /    "..(spec.Sections*(level>=5 and 56 or 96)).." STUDS"; statPill.TextColor3=accent
  for i,labels in ipairs(courseCaptions) do labels[1].TextColor3=i==level and navy or white; labels[2].TextColor3=i==level and navy or muted; labels[2].Text=i<=(p:GetAttribute("UnlockedLevel") or 1) and Config.Levels[i].Difficulty or "LOCKED" end
  for i,b in ipairs(levelButtons) do local unlocked=i<=(p:GetAttribute("UnlockedLevel") or 1); b.Text=""; b.BackgroundColor3=i==level and accent or Color3.fromRGB(44,61,84); b.TextColor3=i==level and navy or unlocked and white or muted end
  if state=="Loading" then heading.Text="LOADING..."; body.Text="Preparing your course and wallet."; startButton.Text="LOADING..."
  elseif state=="Finished" then
   local skipped=p:GetAttribute("UsedSkip"); local ranked=p:GetAttribute("RankEligible")
-  kicker.Text=level==4 and "FOUR COURSES COMPLETE" or "LEVEL "..(level+1).." UNLOCKED"
+  kicker.Text=level==#Config.Levels and "EIGHT COURSES COMPLETE" or "LEVEL "..(level+1).." UNLOCKED"
   heading.Text=skipped and "ASSISTED CLEAR" or "COURSE COMPLETE!"
   body.Text=skipped and "USED SKIP / No time recorded.\nYou can keep exploring or restart for a ranked run." or (timeString(p:GetAttribute("FinishTime") or 0)..(ranked and " / CLEAN RUN" or " / UNRANKED").."\n"..spec.Title)
-  startButton.Text=level<4 and "NEXT LEVEL  >" or "RESTART FULL CAMPAIGN  >"
+  startButton.Text=level<#Config.Levels and "NEXT LEVEL  >" or "RESTART FULL CAMPAIGN  >"
  else
   kicker.Text="SKYFALL RUSH / "..spec.Difficulty
   heading.Text=string.upper(spec.Title)
@@ -404,7 +404,7 @@ refresh=function()
  if state=="Armed" then objectiveText.Text="TIMER READY / Walk through the blue gate to begin"
  elseif playing then
   local section=p:GetAttribute("Section") or 1; local pattern=spec.Patterns[section]
-  objectiveText.Text=string.format("%s / Section %d of %d / Checkpoint %d of %d",string.upper(pattern or "FINISH"),section,spec.Sections,p:GetAttribute("Stage") or 0,spec.Sections/Config.CheckpointEvery-1)
+  objectiveText.Text=string.format("%s / Section %d of %d / Checkpoint %d of %d",string.upper(pattern or "FINISH"),section,spec.Sections,p:GetAttribute("Stage") or 0,(p:GetAttribute("LevelCheckpointCount") or 3))
  elseif state=="Finished" then objectiveText.Text=p:GetAttribute("UsedSkip") and "USED SKIP / UNRANKED / Your previous records are unchanged." or "Course complete. Continue the campaign or replay an unlocked level."
  else objectiveText.Text="Gold coins buy cosmetics / Red is dangerous / Skips remove the current ranked time" end
 end
@@ -444,7 +444,7 @@ action.OnClientEvent:Connect(function(kind,level,id)
 end)
 local rayParams=RaycastParams.new(); rayParams.FilterType=Enum.RaycastFilterType.Include
 local previousFloor; local previousFloorPosition
-RunService.RenderStepped:Connect(function()
+RunService.RenderStepped:Connect(function(dt)
  local char=p.Character; local root=char and char:FindFirstChild("HumanoidRootPart"); local h=char and char:FindFirstChildOfClass("Humanoid"); local map=maps:FindFirstChild("Level"..(p:GetAttribute("CurrentLevel") or 1))
  if not root or not h or not map then previousFloor=nil; previousFloorPosition=nil; return end
  if previousFloor and previousFloor.Parent and previousFloorPosition and h.FloorMaterial~=Enum.Material.Air then
@@ -454,6 +454,9 @@ RunService.RenderStepped:Connect(function()
  rayParams.FilterDescendantsInstances={map.Platforms}
  local hit=workspace:Raycast(root.Position,Vector3.new(0,-5,0),rayParams)
  local floor=hit and hit.Instance
+ if floor and (p:GetAttribute("CurrentLevel") or 1)>=5 and h.FloorMaterial~=Enum.Material.Air then
+  local belt=floor:GetAttribute("ExpansionBelt");if belt then root.CFrame+=belt*math.min(dt,.05) end
+ end
  previousFloor=floor and floor:GetAttribute("Moving") and floor or nil
  previousFloorPosition=previousFloor and previousFloor.Position or nil
 end)

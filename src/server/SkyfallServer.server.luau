@@ -8,6 +8,7 @@ if not workspace:FindFirstChild("SkyfallSprint") then
  require(tools.BuildCourse)
  require(tools.ArtDirection)
 end
+if not workspace.SkyfallSprint:GetAttribute("LegacyLevelsLocked") then
 require(tools.CourseEnvironments).Apply(workspace.SkyfallSprint)
 optionalVisual("EmberMonuments",workspace.SkyfallSprint.Levels.Level2)
 require(tools.CourseRefinement).Apply(workspace.SkyfallSprint)
@@ -18,6 +19,9 @@ require(tools.DifficultyProgression).Apply(workspace.SkyfallSprint)
 require(tools.RestoreRouteCoins).Apply(workspace.SkyfallSprint)
 require(tools.RouteRegistration).Apply(workspace.SkyfallSprint)
 optionalVisual("PlatformOutlines",workspace.SkyfallSprint)
+end
+require(tools.ExpansionCourses).Apply()
+require(script.Parent.ExpansionMechanics).Init()
 require(script.Parent.SkyfallRuntime)
 local ready=game.ReplicatedStorage:FindFirstChild("SkyfallReady") or Instance.new("Folder")
 ready.Name="SkyfallReady";ready.Parent=game.ReplicatedStorage

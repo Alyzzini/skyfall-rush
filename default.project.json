@@ -44,6 +44,9 @@
       },
       "SkyfallRules": {
         "$path": "src/server/SkyfallRules.luau"
+      },
+      "ExpansionMechanics": {
+        "$path": "src/server/ExpansionMechanics.luau"
       }
     },
     "ServerStorage": {
@@ -86,6 +89,9 @@
         },
         "RouteRegistration": {
           "$path": "src/build/RouteRegistration.luau"
+        },
+        "ExpansionCourses": {
+          "$path": "src/build/ExpansionCourses.luau"
         }
       }
     },
