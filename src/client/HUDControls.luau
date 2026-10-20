@@ -14,7 +14,7 @@ function Controls.Init(hud,closePanels,restart)
  text.Font=Enum.Font.GothamBold;text.TextSize=11;text.TextColor3=Color3.fromRGB(240,247,255);text.Text="HIDE UI";text.Parent=b
  local function place()
   local inset=GuiService.TopbarInset;local available=inset.Max.X-inset.Min.X;local height=inset.Max.Y-inset.Min.Y
-  if available>=122 and height>=36 then b.Position=UDim2.fromOffset(inset.Min.X+8,inset.Min.Y+(height-36)/2)
+  if available>=174 and height>=44 then b.Position=UDim2.fromOffset(inset.Min.X+8,inset.Min.Y+(height-36)/2)
   else local topLeft=GuiService:GetGuiInset();b.Position=UDim2.fromOffset(12,topLeft.Y+8) end
  end
  GuiService:GetPropertyChangedSignal("TopbarInset"):Connect(place);place()

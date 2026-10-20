@@ -262,3 +262,7 @@ Removed the TouchEnabled-only creation guard and race-only visibility rule that 
 ## v0.8.4 — compact shift-lock icon
 Replaced the labeled shift-lock capsule with a 44-pixel circle containing only a centered padlock. It sits 14 pixels inside the bottom-right safe edge, with color indicating enabled state. Text labels are removed. Shift-lock functionality and the keyboard shortcut remain. Saved and built without starting Play.
 
+
+## v0.8.5 — lock beside the HUD toggle
+Moved the small text-free lock circle beside HIDE UI / SHOW UI, with an eight-pixel gap and vertical alignment. Its position follows the actual toggle layout, including screen resizing and safe-area changes. The top bar reserves space for both controls; limited space moves the pair below Roblox controls. Both remain accessible with the game HUD hidden. Saved and built without starting Play.
+

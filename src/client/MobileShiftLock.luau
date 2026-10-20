@@ -17,11 +17,14 @@ function ShiftLock.Init(hud)
  local aim=Instance.new("Frame");aim.Name="AimDot";aim.Size=UDim2.fromOffset(5,5);aim.AnchorPoint=Vector2.new(.5,.5);aim.Position=UDim2.fromScale(.5,.5);aim.BackgroundColor3=Color3.fromRGB(235,255,253);aim.BorderSizePixel=0;aim.Visible=false;aim.Parent=gui
  local aimRound=Instance.new("UICorner");aimRound.CornerRadius=UDim.new(1,0);aimRound.Parent=aim
  local aimStroke=Instance.new("UIStroke");aimStroke.Color=Color3.fromRGB(16,25,39);aimStroke.Parent=aim
+ local hudToggle=playerGui:WaitForChild("SkyfallHUDToggle"):WaitForChild("ToggleHUD")
  local function place()
-  local _,bottom=GuiService:GetGuiInset()
-  b.Position=UDim2.new(1,-36-bottom.X,1,-36-bottom.Y)
+  local position,size=hudToggle.AbsolutePosition,hudToggle.AbsoluteSize
+  b.Position=UDim2.fromOffset(position.X+size.X+8+22,position.Y+size.Y/2)
  end
- gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(place);place()
+ hudToggle:GetPropertyChangedSignal("AbsolutePosition"):Connect(place)
+ hudToggle:GetPropertyChangedSignal("AbsoluteSize"):Connect(place)
+ gui:GetPropertyChangedSignal("AbsoluteSize"):Connect(place);place();task.defer(place)
  local wanted=false;local menuOpen=false;local controlled;local originalOffset;local originalRotate;local originalMouse
  local function release()
   if controlled and controlled.Parent then controlled.CameraOffset=originalOffset;controlled.AutoRotate=originalRotate end
