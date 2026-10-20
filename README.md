@@ -21,7 +21,11 @@ Race across floating courses that become longer and harder. Chain jumps, read so
 
 ## Try the Studio prototype
 
-[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.1/SkyfallRush.rbxlx) from the [v0.4.1 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.1), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+[Download SkyfallRush.rbxlx](https://github.com/Alyzzini/skyfall-rush/releases/download/v0.4.2/SkyfallRush.rbxlx) from the [v0.4.2 release](https://github.com/Alyzzini/skyfall-rush/releases/tag/v0.4.2), open it in Roblox Studio, and press **Play → Enter Course → cross the blue gate**. The updated download includes the hand-edited world, enclosed 3D worlds, transparent fall catcher, source and builders. You do not need Rojo to open it.
+
+### HUD alignment fix (v0.4.2)
+
+The race header, section strip, Menu and Visuals controls share one centered 1,100-pixel maximum width. Wide screens keep a single aligned status row; narrow screens place controls on a second row. The expanded race toolbar sits beneath that group.
 
 ### Ruin monuments (v0.4.1)
 

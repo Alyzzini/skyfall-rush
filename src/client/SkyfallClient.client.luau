@@ -48,7 +48,10 @@ task.spawn(function()
  local module=p:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule",10)
  if module then local ok,result=pcall(function() return require(module):GetControls() end); if ok then controls=result; movementEnabled=nil; if refresh then refresh() end end end
 end)
-local top=frame(gui,"Header",UDim2.new(.94,0,0,90),UDim2.new(.5,0,0,12),navy,.08); top.AnchorPoint=Vector2.new(.5,0); corner(top,16); stroke(top,cyan,.65); limit(top,1100,90)
+-- One width-constrained container keeps every race control aligned on ultrawide screens.
+local hud=frame(gui,"RaceHUD",UDim2.new(.94,0,0,190),UDim2.new(.5,0,0,12),navy,1);hud.AnchorPoint=Vector2.new(.5,0);limit(hud,1100,220)
+local statusRow=frame(hud,"StatusRow",UDim2.new(1,0,0,32),UDim2.fromOffset(0,84),navy,1)
+local top=frame(hud,"Header",UDim2.new(1,0,0,76),UDim2.new(),navy,.08);corner(top,16);stroke(top,cyan,.65)
 local brand=label(top,"Brand","SKYFALL RUSH",UDim2.new(.37,-22,0,28),UDim2.fromOffset(18,12),white,22); brand.TextXAlignment=Enum.TextXAlignment.Left; fitText(brand,22,10)
 local levelText=label(top,"Level","LEVEL 1 / THE ASCENT",UDim2.new(.37,-22,0,20),UDim2.fromOffset(18,45),muted,12); levelText.TextXAlignment=Enum.TextXAlignment.Left; fitText(levelText,12,8)
 local timer=label(top,"Timer","00:00.000",UDim2.new(.35,0,0,35),UDim2.new(.36,0,0,8),white,30); timer.Font=Enum.Font.Code; fitText(timer,30,12)
@@ -63,8 +66,8 @@ local boardButton=button(toolbar,"BoardButton","RANKINGS",UDim2.new(.25,-6,1,0),
 local restartButton=button(toolbar,"RestartButton","RESTART",UDim2.new(.25,-6,1,0),UDim2.fromScale(.5,0),Color3.fromRGB(160,184,202))
 local skipButton=button(toolbar,"SkipButton","SKIP →",UDim2.new(.25,-6,1,0),UDim2.fromScale(.75,0),Color3.fromRGB(200,150,255))
 local raceMenuOpen=false
-local raceMenu=button(gui,"RaceMenu","MENU",UDim2.fromOffset(78,30),UDim2.new(.97,0,0,83),navy); raceMenu.AnchorPoint=Vector2.new(1,0); raceMenu.TextColor3=white; raceMenu.Visible=false
-local graphics=button(gui,"Graphics","VISUALS: AUTO",UDim2.fromOffset(132,28),UDim2.new(.97,0,0,154),navy);graphics.AnchorPoint=Vector2.new(1,0);graphics.TextColor3=muted;stroke(graphics,cyan,.75)
+local raceMenu=button(statusRow,"RaceMenu","MENU",UDim2.fromOffset(78,30),UDim2.new(.97,0,0,83),navy); raceMenu.AnchorPoint=Vector2.new(1,0); raceMenu.TextColor3=white; raceMenu.Visible=false
+local graphics=button(statusRow,"Graphics","VISUALS: AUTO",UDim2.fromOffset(132,28),UDim2.new(.97,0,0,154),navy);graphics.AnchorPoint=Vector2.new(1,0);graphics.TextColor3=muted;stroke(graphics,cyan,.75)
 local graphicsMode="Auto";local autoLow=false
 local function applyGraphics()
  p:SetAttribute("LowGraphics",graphicsMode=="Low" or graphicsMode=="Auto" and autoLow)
@@ -83,7 +86,7 @@ RunService.Heartbeat:Connect(function(dt)
  end
 end)
 raceMenu.Activated:Connect(function() raceMenuOpen=not raceMenuOpen; if refresh then refresh() end end)
-local objective=frame(gui,"Objective",UDim2.new(.9,0,0,40),UDim2.new(.5,0,1,-15),navy,.15); objective.AnchorPoint=Vector2.new(.5,1); corner(objective,12); limit(objective,950,40)
+local objective=frame(statusRow,"Objective",UDim2.new(.9,0,0,40),UDim2.new(.5,0,1,-15),navy,.15); objective.AnchorPoint=Vector2.new(.5,1); corner(objective,12); limit(objective,950,40)
 local objectiveText=label(objective,"Text","56 obstacle sections / 4 courses / cosmetics with coins",UDim2.new(1,-24,1,-6),UDim2.fromOffset(12,3),white,13); fitText(objectiveText,13,8)
 local toast=frame(gui,"Toast",UDim2.new(.9,0,0,43),UDim2.new(.5,0,1,-66),navy,.04); toast.AnchorPoint=Vector2.new(.5,1); corner(toast,12); stroke(toast,cyan,.6); limit(toast,900,43); toast.Visible=false
 local toastText=label(toast,"Text","",UDim2.new(1,-24,1,-8),UDim2.fromOffset(12,4),cyan,15); fitText(toastText,15,8)
@@ -267,6 +270,26 @@ for _,item in ipairs(Config.Catalog) do
  row.Description.TextSize=11; row:FindFirstChild("Name").TextSize=14
  row:FindFirstChild("Name").Text=item.Name; fitText(row:FindFirstChild("Name"),14,11)
 end
+local function layoutRaceHUD(playing)
+ local narrow=gui.AbsoluteSize.X<600
+ local headerHeight=compact and 64 or 76
+ local rowY=playing and headerHeight+8 or 0
+ local rowHeight=playing and narrow and 68 or 32
+ statusRow.Position=UDim2.fromOffset(0,rowY);statusRow.Size=UDim2.new(1,0,0,rowHeight)
+ objective.AnchorPoint=Vector2.zero;objective.Position=UDim2.new()
+ objective.Size=UDim2.new(1,playing and narrow and 0 or -226,0,32)
+ raceMenu.Size=UDim2.fromOffset(78,32);graphics.Size=UDim2.fromOffset(132,32)
+ local controlsY=playing and narrow and 36 or 0
+ raceMenu.Position=UDim2.new(1,-140,0,controlsY)
+ graphics.Position=UDim2.new(1,0,0,controlsY)
+ if playing then
+  toolbar.Parent=hud;toolbar.Size=UDim2.new(1,0,0,32)
+  toolbar.Position=UDim2.new(.5,0,0,rowY+rowHeight+8)
+ else
+  toolbar.Parent=gui;toolbar.Size=UDim2.new(.88,0,0,32)
+  toolbar.Position=UDim2.new(.5,0,1,-45)
+ end
+end
 local function fitCard()
  local v=gui.AbsoluteSize; compact=v.Y<500
  local narrow=v.X<600
@@ -283,7 +306,7 @@ local function fitCard()
  levelRow.Position=UDim2.fromOffset(22,289); levelRow.Size=UDim2.new(1,-44,0,59)
  startButton.Position=UDim2.fromOffset(22,362); startButton.Size=UDim2.new(1,-44,0,43)
  footer.Visible=false
- top.Size=UDim2.new(.94,0,0,compact and 64 or 76)
+ top.Size=UDim2.new(1,0,0,compact and 64 or 76)
  brand.Position=UDim2.fromOffset(15,compact and 5 or 7); brand.TextSize=16
  levelText.Position=UDim2.fromOffset(15,compact and 32 or 38)
  timer.Position=UDim2.new(.36,0,0,compact and 0 or 2)
@@ -306,10 +329,10 @@ refresh=function()
  modal.Visible=not playing and not overlay.Visible
  updateMovement(playing and not overlay.Visible)
  top.Visible=playing
- raceMenu.Visible=playing; raceMenu.Text=raceMenuOpen and "CLOSE" or "MENU"; raceMenu.Position=UDim2.new(.97,0,0,compact and 83 or 96)
+ raceMenu.Visible=playing; raceMenu.Text=raceMenuOpen and "CLOSE" or "MENU"
  toolbar.Visible=not playing or raceMenuOpen
- toolbar.Position=playing and UDim2.new(.5,0,0,compact and 123 or 136) or UDim2.new(.5,0,1,-45)
- objective.Visible=playing; objective.AnchorPoint=Vector2.new(0,0); objective.Position=UDim2.new(.03,0,0,compact and 83 or 96); objective.Size=UDim2.new(.70,-5,0,30)
+ objective.Visible=playing;graphics.Visible=not overlay.Visible
+ layoutRaceHUD(playing)
  kicker.TextColor3=accent; startButton.BackgroundColor3=accent
  veil.Visible=not playing and not overlay.Visible
  heroNumber.Text=string.format("%02d",level); heroCaption.Text=courseThemes[level]; halo.BackgroundColor3=accent

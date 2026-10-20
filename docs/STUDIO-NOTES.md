@@ -197,3 +197,8 @@ All 12 project script sources compiled without Luau syntax errors during this pa
 ## Fitted Ember monuments (v0.4.1)
 
 Replaced all six distant arch/butte/fissure groups with cohesive 20-part monuments. AncientArch positions from the current user-edited Studio scene determine the new locations. The silhouette has fitted feet/capitals, a connected terrace and tapered underside; glow strips are flush to the pillar/lintel/foundation faces, and the central ember sits in a supported brazier. Monuments face inward toward the route. No gameplay surfaces, start gates, timing or ranking namespace changed. The edit-time scene was visually inspected; the two changed builder modules compiled. No gameplay tests were run for this cosmetic update.
+
+
+## HUD alignment (v0.4.2)
+
+Replaced independent viewport-edge positioning with a shared RaceHUD container and StatusRow. Header, section instructions, Menu and Visuals align to the same bounded width; under 600 pixels, status text uses its own row. Expanded toolbar is positioned below the status group. The main menu retains its bottom toolbar and top-right visuals control inside the same width bounds. Client source compiles; no gameplay or ranking changes.
