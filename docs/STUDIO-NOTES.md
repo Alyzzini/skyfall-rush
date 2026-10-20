@@ -238,3 +238,7 @@ Square jump pads shrink by two studs per level: 10 / 8 / 6 / 4; Stormworks uses 
 ## v0.7.1 — spin angle precision and restored coins
 Fixed sweeper rotation precision: CFrame.Angles now receives an angle modulo one revolution rather than the enormous Unix-time-based phase. Restored three gold orbs per section, 24 per course, 96 overall. Coins are 1.2-stud balls centered 2.6 studs above actual route surfaces; moving-platform coins retain follow offsets. Curve and maze placements follow route control points and avoid sweeper centers. Edit-mode downward ray checks found a platform beneath all 96 coins. The existing user play session was stopped for editing; no new Play session was started. Source packaging built successfully.
 
+
+## v0.7.2 — all-course route and checkpoint repair
+Rebuilt 32 section arrival volumes and 96 sequential route checks using actual landing hubs and restored coin locations. Moving route checks now follow their platforms. Recentered all 12 checkpoints and added full-deck arrival zones. Server progression uses swept segment/box intersections to catch jumps and fast frames. Missed route checks make a run unranked rather than blocking casual section and checkpoint progress. Partial checks clear on skips, respawns and resets. Rush_v9 separates revised validation records. Physical obstacle geometry remains preserved. Saved and built without a new Play session. See ROUTE-REGISTRATION.md.
+

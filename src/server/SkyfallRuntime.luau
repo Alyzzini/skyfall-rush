@@ -10,7 +10,7 @@ local runs=Runtime.Runs
 local maps=workspace.SkyfallSprint.Levels
 local action=game.ReplicatedStorage.SkyfallAction
 local query=game.ReplicatedStorage.SkyfallQuery
-local hazards={}; local phasePads={}; local ferries={}; local following={}
+local hazards={}; local phasePads={}; local ferries={}; local following={};local movingRouteNodes={}
 local now=function() return workspace:GetServerTimeNow() end
 local function updateTrim(pad)
  local assembly=pad.Parent
@@ -25,6 +25,22 @@ local function moveSurface(part,target)
  local details=part:FindFirstChild("OutlineDetails")
  if details then for _,edge in details:GetDescendants() do if edge:IsA("BasePart") then edge.CFrame=delta*edge.CFrame end end end
  part.CFrame=target
+end
+-- Swept segment against an oriented volume: jumping or fast frames cannot skip a thin check.
+local function crossesBox(box,previous,current)
+ local a=box.CFrame:PointToObjectSpace(previous);local b=box.CFrame:PointToObjectSpace(current)
+ local half=box.Size/2;local delta=b-a;local enter,leave=0,1
+ for _,axis in {"X","Y","Z"} do
+  local origin,step,extent=a[axis],delta[axis],half[axis]
+  if math.abs(step)<.00001 then if math.abs(origin)>extent then return false end
+  else
+   local first,last=(-extent-origin)/step,(extent-origin)/step
+   if first>last then first,last=last,first end
+   enter=math.max(enter,first);leave=math.min(leave,last)
+   if enter>leave then return false end
+  end
+ end
+ return true
 end
 local function rootOf(p) return p.Character and p.Character:FindFirstChild("HumanoidRootPart") end
 local function mapOf(r) return maps["Level"..r.level] end
@@ -42,14 +58,14 @@ local function checkpointPosition(r)
 end
 local function teleport(p,position)
  local r=runs[p]; local root=rootOf(p)
- if r then r.authorizedUntil=now()+.6; r.lastPosition=position; r.lastObserved=now(); r.lastReturn=now() end
+ if r then r.routePrevious=nil;r.authorizedUntil=now()+.6; r.lastPosition=position; r.lastObserved=now(); r.lastReturn=now() end
  if root then root.CFrame=CFrame.new(position); root.AssemblyLinearVelocity=Vector3.zero; root.AssemblyAngularVelocity=Vector3.zero end
 end
 function Runtime.Start(p,crossedGate)
  local r=runs[p]; if not r or not Services.Profiles[p] then return false end
  if r.level==1 then r.campaignBaseTime=0; r.campaignBaseEligible=true end
  r.usedSkip=false; r.eligible=true; r.invalidReason=nil; r.startedAt=crossedGate and now() or nil; r.penalty=0; r.elapsed=0; r.cpStage=0; r.completedSections=0;r.routeNode=0; r.totalSections=Config.Levels[r.level].Sections; r.lastSplit=now(); r.collected={}; r.orbs=0; r.lastSpring=0
- r.portalDebounce=0
+ r.portalDebounce=0;r.routePrevious=nil
  p:SetAttribute("Stage",0); p:SetAttribute("Section",1); p:SetAttribute("Orbs",0); p:SetAttribute("Progress",0); p:SetAttribute("RunTime",0); p:SetAttribute("FinishTime",0); p:SetAttribute("RunStartedAt",r.startedAt or 0); p:SetAttribute("PenaltySeconds",0)
  syncRank(p,r); setState(p,r,crossedGate and "Racing" or "Armed")
  if not crossedGate then teleport(p,checkpointPosition(r));r.gatePrevious=nil end
@@ -80,7 +96,7 @@ function Runtime.ChooseLevel(p,index,fromNext,autoStart)
 end
 function Runtime.Skip(p)
  local r=runs[p]; if not r or r.state~="Racing" then return false,"Start a run first." end
- r.usedSkip=true; r.eligible=false; r.invalidReason="USED SKIP"; r.elapsed=0
+ r.routeNode=0;r.routePrevious=nil;r.usedSkip=true; r.eligible=false; r.invalidReason="USED SKIP"; r.elapsed=0
  p:SetAttribute("RunTime",0); p:SetAttribute("FinishTime",0); p:SetAttribute("RunStartedAt",0); p:SetAttribute("PenaltySeconds",0); syncRank(p,r)
  local map=mapOf(r); local nextCheckpoint=map.Checkpoints:FindFirstChild("Checkpoint_"..(r.cpStage+1))
  if nextCheckpoint then
@@ -214,6 +230,12 @@ for level=1,4 do
   if p:GetAttribute("Spring") then p.Touched:Connect(function(hit) local player=touchedPlayer(hit); if player then spring(player,p,level) end end) end
  end
  for _,orb in map.Orbs:GetChildren() do if orb:GetAttribute("FollowPlatform") then table.insert(following,{Orb=orb,Platform=map.Platforms:FindFirstChild(orb:GetAttribute("FollowPlatform"),true),Offset=orb:GetAttribute("FollowOffset"),Level=level}) end end
+ for _,node in map.RouteGates:GetDescendants() do
+  if node:IsA("BasePart") and node:GetAttribute("FollowPlatform") then
+   local platform=map.Platforms:FindFirstChild(node:GetAttribute("FollowPlatform"),true)
+   if platform then table.insert(movingRouteNodes,{Node=node,Platform=platform,Offset=node:GetAttribute("FollowOffset"),Level=level}) end
+  end
+ end
  for _,obj in map.Decor:GetDescendants() do
   if obj:IsA("ProximityPrompt") then obj.Triggered:Connect(function(p) action:FireClient(p,obj.Parent.Name=="ShopKiosk" and "OpenShop" or "OpenBoard",level) end) end
  end
@@ -232,6 +254,7 @@ RunService.Heartbeat:Connect(function(dt)
   elseif entry.Kind=="Lift" then h.CFrame=entry.Base+Vector3.new(0,(math.sin(phase)+1)*.5*(h:GetAttribute("Amplitude") or 8),0) end
  end
  for _,entry in ipairs(ferries) do if active[entry.Level] then local p=entry.Part; moveSurface(p,entry.Base+(p:GetAttribute("MotionAxis") or Vector3.xAxis)*(math.sin(t*p:GetAttribute("Speed")+p:GetAttribute("Phase"))*p:GetAttribute("Amplitude"))) end end
+ for _,entry in ipairs(movingRouteNodes) do if active[entry.Level] and entry.Node.Parent and entry.Platform.Parent then entry.Node.Position=entry.Platform.Position+entry.Offset end end
  for _,entry in ipairs(following) do if active[entry.Level] then entry.Orb.Position=entry.Platform.Position+entry.Offset end end
  end
  if accumulator<.1 then return end; accumulator=0
@@ -264,21 +287,37 @@ RunService.Heartbeat:Connect(function(dt)
      r.eligible=false; r.invalidReason="UNRANKED / ROUTE CHECK"; syncRank(p,r)
     end
     r.lastPosition=root.Position; r.lastObserved=t
+    local previous=r.routePrevious or root.Position
+    if (root.Position-previous).Magnitude>40 then previous=root.Position end
     local nextGate=map.RouteGates:FindFirstChild("Gate_"..(r.completedSections+1))
     if nextGate then
-     local node=nextGate:FindFirstChild("Node_"..((r.routeNode or 0)+1))
-     if node then local q=node.CFrame:PointToObjectSpace(root.Position);if math.abs(q.X)<6 and math.abs(q.Y)<6 and math.abs(q.Z)<4 then r.routeNode=(r.routeNode or 0)+1 end end
-     local q=nextGate.CFrame:PointToObjectSpace(root.Position)
-     if math.abs(q.X)<13 and math.abs(q.Y)<7 and math.abs(q.Z)<4 and not nextGate:FindFirstChild("Node_"..((r.routeNode or 0)+1)) then
-      if t-(r.lastSplit or r.startedAt)<1.25 then r.eligible=false; r.invalidReason="UNRANKED / ROUTE CHECK"; syncRank(p,r) end
-      r.completedSections+=1;r.routeNode=0; r.lastSplit=t; p:SetAttribute("Section",math.min(r.totalSections,r.completedSections+1))
+     for _=1,3 do
+      local node=nextGate:FindFirstChild("Node_"..((r.routeNode or 0)+1))
+      if node and crossesBox(node,previous,root.Position) then r.routeNode=(r.routeNode or 0)+1 else break end
      end
     end
-    local cp=map.Checkpoints:FindFirstChild("Checkpoint_"..(r.cpStage+1))
-    if cp and r.completedSections>=cp:GetAttribute("Section") and (root.Position-(cp.Position+Vector3.new(0,2.5,0))).Magnitude<6 then
-     r.cpStage+=1; p:SetAttribute("Stage",r.cpStage); Services.Award(p,20); tell(p,"Checkpoint "..r.cpStage.." saved / +20 coins")
-     action:FireClient(p,"Feedback","Checkpoint",cp.Position)
+    -- Landing on a later hub recovers casual progress. Missing checks disqualify records.
+    for section=r.completedSections+1,r.totalSections do
+     local arrival=map.RouteGates:FindFirstChild("Gate_"..section)
+     if arrival and crossesBox(arrival,previous,root.Position) then
+      local missed=section~=r.completedSections+1 or arrival:FindFirstChild("Node_"..((r.routeNode or 0)+1))~=nil
+      if missed or t-(r.lastSplit or r.startedAt)<1.25 then
+       r.eligible=false;r.invalidReason="UNRANKED / MISSED ROUTE CHECK";syncRank(p,r)
+       if missed then tell(p,"Landing saved. A missed route check makes this run unranked.") end
+      end
+      r.completedSections=section;r.routeNode=0;r.lastSplit=t
+      p:SetAttribute("Section",math.min(r.totalSections,section+1));break
+     end
     end
+    for stage=r.cpStage+1,Config.Levels[r.level].Sections/Config.CheckpointEvery-1 do
+     local cp=map.Checkpoints:FindFirstChild("Checkpoint_"..stage)
+     local zone=cp and cp:FindFirstChild("ArrivalZone")
+     if zone and r.completedSections>=cp:GetAttribute("Section") and crossesBox(zone,previous,root.Position) then
+      r.cpStage=stage;p:SetAttribute("Stage",stage);Services.Award(p,20)
+      tell(p,"Checkpoint "..stage.." saved / +20 coins");action:FireClient(p,"Feedback","Checkpoint",cp.Position)
+     end
+    end
+    r.routePrevious=root.Position
     for _,orb in map.Orbs:GetChildren() do collect(p,r,orb) end
     local progress=math.clamp(-root.Position.Z/map:GetAttribute("CourseLength"),0,1)
     if math.abs((p:GetAttribute("Progress") or 0)-progress)>.003 then p:SetAttribute("Progress",progress) end

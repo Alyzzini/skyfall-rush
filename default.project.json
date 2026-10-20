@@ -83,6 +83,9 @@
         },
         "RestoreRouteCoins": {
           "$path": "src/build/RestoreRouteCoins.luau"
+        },
+        "RouteRegistration": {
+          "$path": "src/build/RouteRegistration.luau"
         }
       }
     },

@@ -1,6 +1,6 @@
 -- ReplicatedStorage > SkyfallConfig. Change the course version after changing ranked routes.
 return {
-    Version = "Rush_v8",
+    Version = "Rush_v9",
     SectionLength = 96,
     CheckpointEvery = 2,
     WalkSpeed = 20,
@@ -11,7 +11,7 @@ return {
     PrototypeSkipEnabled = true, -- Free prototype. No purchase prompt or Robux charge.
     SkipProductId = 0, -- Reserved for a future developer product / ProcessReceipt integration.
     ProfileStore = "Skyfall_Profile_v3",
-    RecordStorePrefix = "Skyfall_Rush_v8_",
+    RecordStorePrefix = "Skyfall_Rush_v9_",
     Levels = {
         {Title="The Ascent", Difficulty="EASY", Sections=8, X=0, Color=Color3.fromRGB(70,235,220), Summary="Learn precise jumps, ghost timing, boulder hops and switchback bridges.", Patterns={"Jumps","Hurdles","Slalom","Phase","BoulderHop","Switchback","Balance","Spinners"}},
         {Title="Ember Ruins", Difficulty="MEDIUM", Sections=8, X=4096, Color=Color3.fromRGB(255,173,82), Summary="Navigate a ruin maze, cross a curved bridge, climb the terraces and time the foundry.", Patterns={"Crumble","Maze","Conveyor","ArchCrossing","TerraceClimb","Spring","Alternating","Crusher"}},
