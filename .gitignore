@@ -14,5 +14,5 @@ Thumbs.db
 *.pem
 *.key
 .tools/
-build/
+/build/
 .vscode/*.log
