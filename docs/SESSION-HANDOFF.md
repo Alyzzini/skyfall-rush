@@ -1,6 +1,6 @@
 # Current handoff — v0.11.1
 
-Project: repository root
+Project: this repository's root folder.
 Open SkyfallRush.code-workspace for source or SkyfallRush.rbxlx for the complete Studio game.
 
 Levels 1–8 are locked by the owner. Do not rebuild, rebalance, move or modify them. Levels 9–12 form the new advanced chapter; see ADVANCED-9-12.md. The owner explicitly handles gameplay testing. Do not start Play without new authorization.
