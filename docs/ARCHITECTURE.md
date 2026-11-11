@@ -1,10 +1,12 @@
 # Architecture
 
+The current project contains twelve courses and 96 sections, as defined in [SkyfallConfig](../src/shared/SkyfallConfig.luau). The overview below explains the implementation; later versioned sections preserve its development history. Runtime and production validation limits remain documented in the [quality review](QUALITY-REVIEW.md).
+
 ## Flow
 
 ```mermaid
 flowchart LR
-    Build[Procedural builders] --> World[Four course maps]
+    Build[Procedural builders] --> World[Twelve course maps]
     Entry[Server bootstrap] --> Build
     Entry --> Ready[SkyfallReady marker]
     Ready --> Client[Client HUD and presentation]
@@ -18,7 +20,7 @@ flowchart LR
 
 ## Boundaries
 
-`SkyfallConfig` holds four course specifications, 12 obstacle patterns, movement settings, catalog definitions, persistence names and the free-skip feature flag.
+`SkyfallConfig` holds twelve course specifications with eight sections each, obstacle patterns, movement settings, an 18-item cosmetic catalog, persistence names and the free-skip feature flag. Checkpoint spacing is configured per chapter.
 
 `SkyfallServer` builds missing geometry before starting the race runtime. It creates `SkyfallReady` after world construction so the client does not enumerate a partially built map. Existing world geometry is preserved on ordinary game startup.
 

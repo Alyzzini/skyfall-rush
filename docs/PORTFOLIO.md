@@ -4,11 +4,11 @@
 
 **Skyfall Rush — Roblox / Luau game development project**
 
-A procedural speedrun platformer spanning four themed courses and 32 obstacle sections. The project combines race progression, skip-aware leaderboard eligibility, cosmetic purchases, persistent profile logic and a responsive player interface. Source is organized for VS Code and Roblox Studio with Rojo.
+A Roblox speedrun prototype spanning twelve themed courses and 96 obstacle sections. The project combines race progression, skip-aware leaderboard eligibility, an 18-item cosmetic catalog, persistent profile logic and a responsive player interface. Source is organized for VS Code and Roblox Studio with Rojo, with reusable world builders and a preserved, hand-edited world model.
 
 ## Suggested résumé bullets
 
-- Developed a Roblox speedrun obby in Luau with four progressively harder courses, 32 obstacle sections and reusable movement/timing mechanics.
+- Developed a Roblox speedrun prototype in Luau with twelve themed courses, 96 obstacle sections and reusable movement/timing mechanics.
 - Implemented server-owned race timing, sequential route checks, skip-based run disqualification, cosmetic purchase validation and DataStore-backed profile/leaderboard logic.
 - Built responsive course selection, racing HUD, cosmetic shop and ranking interfaces, with procedural world generation and a Rojo workflow for VS Code.
 
@@ -18,9 +18,9 @@ Use these bullets to describe the project, and be ready to discuss its design de
 
 **Skyfall Rush** | Luau, Roblox Studio, Rojo, Git
 
-Procedural speedrun game with four themed courses, server-managed race progression, cosmetic economy, responsive UI and persistent-data implementation.
+Roblox speedrun prototype with twelve themed courses, 96 obstacle sections, server-managed race progression, a cosmetic economy, responsive UI and persistent-data implementation.
 
-Source: https://github.com/Alyzzini/skyfall-rush
+Source: [Alyzzini/skyfall-rush](https://github.com/Alyzzini/skyfall-rush)
 
 ## Walkthrough for an interview
 
@@ -33,4 +33,4 @@ Source: https://github.com/Alyzzini/skyfall-rush
 
 ## Honest status
 
-Playable prototype; source and visual assets are included. The original place is unpublished. Live cross-server persistence, real Robux purchases, the latest course revision and low-end device performance are not yet validated. Repository publication is separate from publishing a playable Roblox experience.
+Development prototype; source and visual assets are included. The original place is unpublished. Levels 9–12 have not had a Play-mode validation pass, and full traversal of the expansion and current route revisions remains with the owner. Live cross-server persistence, physical touch controls, multiplayer latency and low-end performance still require validation. Skip is free; paid skip purchase integration is not implemented. Repository publication is separate from publishing a playable Roblox experience. See the [quality review](QUALITY-REVIEW.md) for the recorded checks and remaining work.
